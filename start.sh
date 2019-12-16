@@ -13,6 +13,9 @@ echo "Booting containers"
 docker-compose up &
 PROCESS=$!
 
+sleep 2
+
+echo "Fixing user permissions..."
 docker exec -ti local-wordpress /bin/bash -c "usermod -u $(id -u) www-data"
 docker exec -ti local-wordpress /bin/bash -c "groupmod -g $(id -g) www-data"
 docker restart local-wordpress
