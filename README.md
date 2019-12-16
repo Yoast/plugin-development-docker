@@ -32,8 +32,10 @@ If you are using PHPStorm follow these instructions:
 1. Host: local.wordpress.test
 1. Port: 80
 1. File/Directory `plugins/<your-plugin-name>` maps to the absoulte path `/var/www/html/wp-content/plugins/<your-plugin-name>`.
+1. File/Directory `wordpress` maps to the absoulte path `/var/www/html`.
 1. Apply
 
+In PHPStorm you can also add the `wordpress` directory to provide full WordPress indexation.
 
 #### Visual Studio Code
 If you are using VSCode simply copy/paste the following `launch.json` ( don't forget to edit `<your-plugin-name` ) which you can edit by running `Debug: open launch.json`:
@@ -47,7 +49,8 @@ If you are using VSCode simply copy/paste the following `launch.json` ( don't fo
             "request": "launch",
             "port": 9000,
             "pathMappings": {
-                "/var/www/html/wp-content/plugins/<your-plugin-name>": "${workspaceRoot}"
+                "/var/www/html/wp-content/plugins/<your-plugin-name>": "${workspaceRoot}",
+                "/var/www/html": "${workspaceRoot}/../../wordpress",
             },
         }
     ]
@@ -57,9 +60,8 @@ This assumes your plugin is the root of your opened VSCode project.
 
 Also make sure you have the [XDebug extension installed](https://marketplace.visualstudio.com/items?itemName=felixfbecker.php-debug)!
 
-
 #### Browser
-For FireFox you'll want to [install the FireFox XDebug helper](https://addons.mozilla.org/en-US/firefox/addon/xdebug-helper-for-firefox/).
+For Firefox you'll want to [install the Firefox XDebug helper](https://addons.mozilla.org/en-US/firefox/addon/xdebug-helper-for-firefox/).
 For Chrome you'll want to [install the Chrome XDebug helper](https://chrome.google.com/webstore/detail/xdebug-helper/eadndfjplgieldjbigjakmdgkmoaaaoc?hl=en).
 
 Both of these do exactly the same. They add an icon to your URL bar where you can choose the XDebug settings for your request:
