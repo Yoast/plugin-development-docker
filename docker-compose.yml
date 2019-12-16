@@ -18,7 +18,7 @@ services:
     container_name: 'local-wordpress'
     depends_on:
       - db
-    build: './containers/wordpress'
+    build: './containers/local-wordpress'
     ports:
       - '80:80'
     restart: always
