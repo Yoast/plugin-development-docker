@@ -1,0 +1,34 @@
+---
+version: '3.3'
+services:
+  db:
+    container_name: 'local-wordpress-db'
+    image: 'mysql:5.7'
+    volumes:
+      - './data/mysql:/var/lib/mysql'
+    ports:
+      - 18766:3306
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: somewordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+  wordpress:
+    container_name: 'local-wordpress'
+    depends_on:
+      - db
+    build: './containers/wordpress'
+    ports:
+      - '80:80'
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: 'db:3306'
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - "./wordpress:/var/www/html"
+      - "./plugins:/var/www/html/wp-content/plugins"
+      - "./data/xdebug:/var/xdebug"
+      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"

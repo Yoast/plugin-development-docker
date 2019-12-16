@@ -1,0 +1,13 @@
+xdebug.remote_enable = On
+xdebug.remote_host   = host.docker.internal
+xdebug.remote_port   = 9000
+
+xdebug.profiler_enable_trigger = On
+xdebug.profiler_output_dir     = /var/xdebug
+xdebug.profiler_output_name    = cachegrind.out.%R.%p
+
+xdebug.remote_log = /var/xdebug/xdebug.log
+
+error_reporting        = E_ALL
+display_startup_errors = On
+display_errors         = On
