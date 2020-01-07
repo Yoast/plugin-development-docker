@@ -1,4 +1,7 @@
 #!/bin/bash
+source ./config/config.sh
+URL="http://$HOST"
+
 trap stop_docker INT
 function stop_docker {
 	STOPPING=true
@@ -22,7 +25,7 @@ docker restart local-wordpress
 
 echo "Waiting for containters to boot..."
 while [ "$BOOTED" != "true"  ]; do
-	if curl -I http://local.wordpress.test 2>/dev/null | grep -q "HTTP/1.1 200 OK"; then
+	if curl -I $URL 2>/dev/null | grep -q "HTTP/1.1 200 OK"; then
 		BOOTED=true
 	else
 		sleep 2
@@ -30,7 +33,7 @@ while [ "$BOOTED" != "true"  ]; do
 	fi
 done
 
-open "http://local.wordpress.test" 2>/dev/null || x-www-browser "http://local.wordpress.test"
+open $URL 2>/dev/null || x-www-browser $URL
 
 while [ "$STOPPING" != 'true' ]; do
 	CLOCK_SOURCE=`docker exec -ti local-wordpress /bin/bash -c 'cat /sys/devices/system/clocksource/clocksource0/current_clocksource'| tr -d '[:space:]'`

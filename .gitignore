@@ -2,6 +2,7 @@ data/mysql
 data/xdebug/*
 !data/xdebug/.gitkeep
 config/php.ini
+config/config.sh
 plugins/*
 !plugins/.gitkeep
 wordpress/*
