@@ -1,8 +1,8 @@
 xdebug/*
 !xdebug/.gitkeep
 config/php.ini
+config/config.sh
 plugins/*
 !plugins/.gitkeep
 wordpress/*
 !wordpress/.gitkeep
-/vendor/

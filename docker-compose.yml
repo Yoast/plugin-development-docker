@@ -16,7 +16,7 @@ services:
       - 3306
     restart: always
     environment:
-      VIRTUAL_HOST: basic-database.wordpress.test
+      VIRTUAL_HOST: ${BASIC_DATABASE_HOST:-basic-database.wordpress.test}
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
@@ -33,12 +33,12 @@ services:
     expose:
       - 80
     environment:
-      - ADMIN_USERNAME=admin
-      - ADMIN_EMAIL=admin@example.com
-      - ADMIN_PASSWORD=admin
-      - SITE_TITLE=Basic
-      - SITE_URL=basic.wordpress.test
-      - VIRTUAL_HOST=basic.wordpress.test
+      ADMIN_USERNAME: admin
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_PASSWORD: admin
+      SITE_TITLE: Basic
+      SITE_URL: basic.wordpress.test
+      VIRTUAL_HOST: ${BASIC_HOST:-basic.wordpress.test}
     volumes:
       - "./plugins:/var/www/html/wp-content/plugins"
       - "./config/basic-wordpress-config.php:/var/www/html/wp-config.php"
@@ -52,7 +52,7 @@ services:
       - 3306
     restart: always
     environment:
-      VIRTUAL_HOST: woocommerce-database.wordpress.test
+      VIRTUAL_HOST: ${WOOCOMMERCE_DATABASE_HOST:-woocommerce-database.wordpress.test}
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
@@ -69,12 +69,12 @@ services:
     expose:
       - 80
     environment:
-      - ADMIN_USERNAME=admin
-      - ADMIN_EMAIL=admin@example.com
-      - ADMIN_PASSWORD=admin
-      - SITE_TITLE=WooCommerce
-      - SITE_URL=woocommerce.wordpress.test
-      - VIRTUAL_HOST=woocommerce.wordpress.test
+      ADMIN_USERNAME: admin
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_PASSWORD: admin
+      SITE_TITLE: WooCommerce
+      SITE_URL: woocommerce.wordpress.test
+      VIRTUAL_HOST: ${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}
     volumes:
       - "./plugins:/var/www/html/wp-content/plugins"
       - "./wordpress:/var/www/html"
@@ -88,7 +88,7 @@ services:
       - 3306
     restart: always
     environment:
-      VIRTUAL_HOST: multisite-database.wordpress.test
+      VIRTUAL_HOST: ${MULTISITE_DATABASE_HOST:-multisite-database.wordpress.test}
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
@@ -105,12 +105,12 @@ services:
     expose:
       - 80
     environment:
-      - ADMIN_USERNAME=admin
-      - ADMIN_EMAIL=admin@example.com
-      - ADMIN_PASSWORD=admin
-      - SITE_TITLE=multisite
-      - SITE_URL=multisite.wordpress.test
-      - VIRTUAL_HOST=multisite.wordpress.test
+      ADMIN_USERNAME: admin
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_PASSWORD: admin
+      SITE_TITLE: multisite
+      SITE_URL: ${MULTISITE_HOST:-multisite.wordpress.test}
+      VIRTUAL_HOST: multisite.wordpress.test
     volumes:
       - "./plugins:/var/www/html/wp-content/plugins"
       - "./wordpress:/var/www/html"

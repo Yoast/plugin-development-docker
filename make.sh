@@ -1,5 +1,7 @@
 #!/bin/bash
 cp -n config/php.ini.default config/php.ini
+cp -n config/config.sh.default config/config.sh
+chmod u+x config/config.sh
 
 change_hostfile () {
     local URL=$1
@@ -29,9 +31,11 @@ change_hostfile () {
     fi
 }
 
-change_hostfile basic.wordpress.test
-change_hostfile woocommerce.wordpress.test
-change_hostfile multisite.wordpress.test
-change_hostfile basic-database.wordpress.test
-change_hostfile woocommerce-database.wordpress.test
-change_hostfile multisite-database.wordpress.test
+source ./config/config.sh
+
+change_hostfile $BASIC_HOST
+change_hostfile $WOOCOMMERCE_HOST
+change_hostfile $MULTISITE_HOST
+change_hostfile $BASIC_DATABASE_HOST
+change_hostfile $WOOCOMMERCE_DATABASE_HOST
+change_hostfile $MULTISITE_DATABASE_HOST

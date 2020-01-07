@@ -1,4 +1,6 @@
 #!/bin/bash
+source ./config/config.sh
+
 trap stop_docker INT
 function stop_docker {
 	STOPPING=true
@@ -12,6 +14,11 @@ if [[ -z "$@" ]]; then
 else
 	CONTAINERS="$@"
 fi
+URLS=(
+	['basic-wordpress']=$BASIC_HOST
+	['woocommerce-wordpress']=$WOOCOMMERCE_HOST
+	['multisite-wordpress']=$MULTISITE_HOST
+)
 
 echo "Starting containers:"
 for CONTAINER in $CONTAINERS; do
@@ -52,18 +59,20 @@ for CONTAINER in $CONTAINERS; do
 	fi
 done
 
-# Then wait for a 200 on the homepage.
-echo "Waiting for containters to boot..."
-while [ "$BOOTED" != "true"  ]; do
-	if curl -I http://basic.wordpress.test 2>/dev/null | grep -q "HTTP/1.1 200 OK"; then
-		BOOTED=true
-	else
-		sleep 2
-		echo "Waiting for containters to boot..."
-	fi
+echo "Waiting for containers to boot..."
+for $CONTAINER in $CONTAINERS; do
+	URL=${URLS[$CONTAINER]}
+	while [ "$BOOTED" != "true"  ]; do
+		if curl -I $URL 2>/dev/null | grep -q -e "HTTP/1.1 200 OK" -e "HTTP/1.1 302 Found"; then
+			BOOTED=true
+		else
+			sleep 2
+			echo "Waiting for $CONTAINER to boot..."
+		fi
+	done
 done
 
-open "http://basic.wordpress.test" 2>/dev/null || x-www-browser "http://basic.wordpress.test"
+open ${URLS[$CONTAINERS[0]]} 2>/dev/null || x-www-browser "http://basic.wordpress.test"
 echo "Containers have booted! Happy developing!"
 echo "Outputting logs now:"
 docker-compose logs -f &

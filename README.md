@@ -16,6 +16,17 @@ Next up run `./start.sh`. This will create and start your containers. Your brows
 
 You can always run `./clean.sh` to delete all persistent data of your WordPresss environment and start again from scratch.
 
+### Running alternate containers
+
+By default `./start.sh` will start the basic wordpress container. Alternatively you can call `./start.sh $CONTAINER_NAMES` to start other containers.
+
+The following are available:
+- basic-wordpress: The basic image that's started by default. Can be accessed via basic.wordpress.test.
+- woocommerce-wordpress: A WooCommerce installation. Can be accessed via woocommerce.wordpress.test.
+- multisite-wordpress: A multisite installation. Can be accessed via multisite.wordpress.test.
+
+For example, calling `,/start.sh woocommerce-wordpress` will start only the WooCommerce container. Calling `./start.sh basic-wordpress multisite-wordpress` will start both the basic WordPress and multisite containers.
+
 ### Setting up your plugins.
 
 Simply clone, extract or download any plugins you want available in your environment into the `plugins` directory. They will be immediately visible inside your WordPress installation. Don't forget to activate them!
