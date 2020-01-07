@@ -20,13 +20,13 @@ docker exec -ti local-wordpress /bin/bash -c "usermod -u $(id -u) www-data"
 docker exec -ti local-wordpress /bin/bash -c "groupmod -g $(id -g) www-data"
 docker restart local-wordpress
 
-echo "Waiting for containters to boot..."
+echo "Waiting for containers to boot..."
 while [ "$BOOTED" != "true"  ]; do
-	if curl -I http://local.wordpress.test 2>/dev/null | grep -q "HTTP/1.1 200 OK"; then
+	if curl -I http://local.wordpress.test 2>/dev/null | grep -q -e "HTTP/1.1 200 OK" -e "HTTP/1.1 302 Found"; then
 		BOOTED=true
 	else
 		sleep 2
-		echo "Waiting for containters to boot..."
+		echo "Waiting for containers to boot..."
 	fi
 done
 
