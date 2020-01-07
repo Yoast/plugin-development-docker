@@ -1,34 +1,124 @@
 ---
-version: '3.3'
+version: "3.3"
 services:
-  db:
-    container_name: 'local-wordpress-db'
-    image: 'mysql:5.7'
-    volumes:
-      - './data/mysql:/var/lib/mysql'
+  nginx:
+    container_name: "nginx-router-wordpress"
+    image: jwilder/nginx-proxy
     ports:
-      - 18766:3306
+      - "80:80"
+      - "3306:3306"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+  basic-database:
+    container_name: "wordpress-basic-database"
+    image: "mysql:5.7"
+    expose:
+      - 3306
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: somewordpress
+      VIRTUAL_HOST: basic-database.wordpress.test
+      MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
       MYSQL_PASSWORD: wordpress
-  wordpress:
-    container_name: 'local-wordpress'
+    volumes:
+      - "basic-database-data:/var/lib/mysql"
+  basic-wordpress:
+    container_name: "basic-wordpress"
     depends_on:
-      - db
-    build: './containers/local-wordpress'
-    ports:
-      - '80:80'
+      - nginx
+      - basic-database
+    build: "./containers/wordpress"
+    restart: always
+    expose:
+      - 80
+    environment:
+      - ADMIN_USERNAME=admin
+      - ADMIN_EMAIL=admin@example.com
+      - ADMIN_PASSWORD=admin
+      - SITE_TITLE=Basic
+      - SITE_URL=basic.wordpress.test
+      - VIRTUAL_HOST=basic.wordpress.test
+    volumes:
+      - "./plugins:/var/www/html/wp-content/plugins"
+      - "./config/basic-wordpress-config.php:/var/www/html/wp-config.php"
+      - "./wordpress:/var/www/html"
+      - "./xdebug:/var/xdebug"
+      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"
+  woocommerce-database:
+    container_name: "wordpress-woocommerce-database"
+    image: "mysql:5.7"
+    expose:
+      - 3306
     restart: always
     environment:
-      WORDPRESS_DB_HOST: 'db:3306'
-      WORDPRESS_DB_USER: wordpress
-      WORDPRESS_DB_PASSWORD: wordpress
-      WORDPRESS_DB_NAME: wordpress
+      VIRTUAL_HOST: woocommerce-database.wordpress.test
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
     volumes:
-      - "./wordpress:/var/www/html"
+      - "woocommerce-database-data:/var/lib/mysql"
+  woocommerce-wordpress:
+    container_name: "woocommerce-wordpress"
+    depends_on:
+      - nginx
+      - woocommerce-database
+    build: "./containers/wordpress"
+    restart: always
+    expose:
+      - 80
+    environment:
+      - ADMIN_USERNAME=admin
+      - ADMIN_EMAIL=admin@example.com
+      - ADMIN_PASSWORD=admin
+      - SITE_TITLE=WooCommerce
+      - SITE_URL=woocommerce.wordpress.test
+      - VIRTUAL_HOST=woocommerce.wordpress.test
+    volumes:
       - "./plugins:/var/www/html/wp-content/plugins"
+      - "./wordpress:/var/www/html"
+      - "./config/woocommerce-wordpress-config.php:/var/www/html/wp-config.php"
       - "./data/xdebug:/var/xdebug"
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"
+  multisite-database:
+    container_name: "wordpress-multisite-database"
+    image: "mysql:5.7"
+    expose:
+      - 3306
+    restart: always
+    environment:
+      VIRTUAL_HOST: multisite-database.wordpress.test
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    volumes:
+      - "multisite-database-data:/var/lib/mysql"
+  multisite-wordpress:
+    container_name: "multisite-wordpress"
+    depends_on:
+      - nginx
+      - multisite-database
+    build: "./containers/wordpress"
+    restart: always
+    expose:
+      - 80
+    environment:
+      - ADMIN_USERNAME=admin
+      - ADMIN_EMAIL=admin@example.com
+      - ADMIN_PASSWORD=admin
+      - SITE_TITLE=multisite
+      - SITE_URL=multisite.wordpress.test
+      - VIRTUAL_HOST=multisite.wordpress.test
+    volumes:
+      - "./plugins:/var/www/html/wp-content/plugins"
+      - "./wordpress:/var/www/html"
+      - "./config/multisite-wordpress-config.php:/var/www/html/wp-config.php"
+      - "./data/xdebug:/var/xdebug"
+      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"
+
+volumes:
+  basic-database-data:
+  woocommerce-database-data:
+  multisite-database-data:

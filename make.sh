@@ -13,7 +13,7 @@ change_hostfile () {
             grep -E "^([0-9]{1,3}[\.]){3}[0-9]{1,3}[[:space:]]+$URL" /etc/hosts;
             select yn in "Change it to use docker" "Leave it"; do
                 case $yn in
-                    "Change it to use docker" )  
+                    "Change it to use docker" )
                         echo need sudo to edit hostfile
                         grep -v -E "^([0-9]{1,3}[\.]){3}[0-9]{1,3}[[:space:]]+$URL" /etc/hosts | sudo tee /etc/hosts > /dev/null
                         echo "127.0.0.1 $URL" | sudo tee -a /etc/hosts > /dev/null
@@ -29,4 +29,9 @@ change_hostfile () {
     fi
 }
 
-change_hostfile local.wordpress.test
+change_hostfile basic.wordpress.test
+change_hostfile woocommerce.wordpress.test
+change_hostfile multisite.wordpress.test
+change_hostfile basic-database.wordpress.test
+change_hostfile woocommerce-database.wordpress.test
+change_hostfile multisite-database.wordpress.test
