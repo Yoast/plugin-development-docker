@@ -1,5 +1,7 @@
 #!/bin/bash
 cp -n config/php.ini.default config/php.ini
+cp -n config/config.sh.default config/config.sh
+chmod u+x config/config.sh
 
 change_hostfile () {
     local URL=$1
@@ -13,7 +15,7 @@ change_hostfile () {
             grep -E "^([0-9]{1,3}[\.]){3}[0-9]{1,3}[[:space:]]+$URL" /etc/hosts;
             select yn in "Change it to use docker" "Leave it"; do
                 case $yn in
-                    "Change it to use docker" )  
+                    "Change it to use docker" )
                         echo need sudo to edit hostfile
                         grep -v -E "^([0-9]{1,3}[\.]){3}[0-9]{1,3}[[:space:]]+$URL" /etc/hosts | sudo tee /etc/hosts > /dev/null
                         echo "127.0.0.1 $URL" | sudo tee -a /etc/hosts > /dev/null
@@ -29,4 +31,5 @@ change_hostfile () {
     fi
 }
 
-change_hostfile local.wordpress.test
+source ./config/config.sh
+change_hostfile $HOST
