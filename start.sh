@@ -14,11 +14,9 @@ if [[ -z "$@" ]]; then
 else
 	CONTAINERS="$@"
 fi
-URLS=(
-	['basic-wordpress']=$BASIC_HOST
-	['woocommerce-wordpress']=$WOOCOMMERCE_HOST
-	['multisite-wordpress']=$MULTISITE_HOST
-)
+URL_basic_wordpress=${BASIC_HOST:-basic.wordpress.test}
+URL_woocommerce_wordpress=${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}
+URL_multisite_wordpress=${MULTISITE_HOST:-multisite.wordpress.test}
 
 echo "Starting containers:"
 for CONTAINER in $CONTAINERS; do
@@ -60,26 +58,29 @@ for CONTAINER in $CONTAINERS; do
 done
 
 echo "Waiting for containers to boot..."
-for $CONTAINER in $CONTAINERS; do
-	URL=${URLS[$CONTAINER]}
+for CONTAINER in $CONTAINERS; do
+	URL_VAR="URL_${CONTAINER//-/_}"
+	URL=${!URL_VAR}
 	while [ "$BOOTED" != "true"  ]; do
 		if curl -I $URL 2>/dev/null | grep -q -e "HTTP/1.1 200 OK" -e "HTTP/1.1 302 Found"; then
 			BOOTED=true
 		else
 			sleep 2
-			echo "Waiting for $CONTAINER to boot..."
+			echo "Waiting for $CONTAINER to boot... Checking $URL"
 		fi
 	done
 done
 
-open ${URLS[$CONTAINERS[0]]} 2>/dev/null || x-www-browser "http://basic.wordpress.test"
+URL_VAR="URL_${CONTAINERS[0]//-/_}"
+echo "Starting ${!URL_VAR}"
+open ${!URL_VAR} 2>/dev/null || x-www-browser ${!URL_VAR}
 echo "Containers have booted! Happy developing!"
 echo "Outputting logs now:"
 docker-compose logs -f &
 PROCESS=$!
 
 while [ "$STOPPING" != 'true' ]; do
-	CLOCK_SOURCE=`docker exec -ti basic-wordpress /bin/bash -c 'cat /sys/devices/system/clocksource/clocksource0/current_clocksource'| tr -d '[:space:]'`
+	CLOCK_SOURCE=`docker exec -ti ${CONTAINERS[0]} /bin/bash -c 'cat /sys/devices/system/clocksource/clocksource0/current_clocksource'| tr -d '[:space:]'`
 	if [[ "$CLOCK_SOURCE" != 'tsc' && "$STOPPING" != 'true' ]]; then
 		echo "Restarting docker now to fix out-of-sync hardware clock!"
 		docker ps -q | xargs -L1 docker stop
@@ -91,7 +92,7 @@ while [ "$STOPPING" != 'true' ]; do
 			echo "Giving docker time to start..."
 		done
 		echo "Docker is up and running again! Booting containers!"
-		docker-compose up --detach
+		docker-compose up --detach $CONTAINERS
 	fi
 	sleep 5
 done
