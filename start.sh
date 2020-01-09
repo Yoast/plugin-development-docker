@@ -14,9 +14,9 @@ if [[ -z "$@" ]]; then
 else
 	CONTAINERS="$@"
 fi
-URL_basic_wordpress=${BASIC_HOST:-basic.wordpress.test}
-URL_woocommerce_wordpress=${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}
-URL_multisite_wordpress=${MULTISITE_HOST:-multisite.wordpress.test}
+URL_basic_wordpress="http://${BASIC_HOST:-basic.wordpress.test}"
+URL_woocommerce_wordpress="http://${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}"
+URL_multisite_wordpress="http://${MULTISITE_HOST:-multisite.wordpress.test}"
 
 echo "Starting containers:"
 for CONTAINER in $CONTAINERS; do
