@@ -25,7 +25,7 @@ The following are available:
 - woocommerce-wordpress: A WooCommerce installation. Can be accessed via woocommerce.wordpress.test.
 - multisite-wordpress: A multisite installation. Can be accessed via multisite.wordpress.test.
 
-For example, calling `,/start.sh woocommerce-wordpress` will start only the WooCommerce container. Calling `./start.sh basic-wordpress multisite-wordpress` will start both the basic WordPress and multisite containers.
+For example, calling `./start.sh woocommerce-wordpress` will start only the WooCommerce container. Calling `./start.sh basic-wordpress multisite-wordpress` will start both the basic WordPress and multisite containers.
 
 ### Setting up your plugins.
 
