@@ -42,6 +42,7 @@ done
 # Then install WordPress.
 for CONTAINER in $CONTAINERS; do
 	echo "Checking if $CONTAINER is installed!"
+	docker exec -ti $CONTAINER /bin/bash -c 'until [[ -f .htaccess ]]; do sleep 1; done'
 	docker exec -ti $CONTAINER /bin/bash -c 'wp --allow-root core is-installed'
 	IS_INSTALLED=$?
 	if [ $IS_INSTALLED == 1 ]; then
@@ -51,7 +52,6 @@ for CONTAINER in $CONTAINERS; do
 		docker container restart $CONTAINER
 		docker exec -ti $CONTAINER /bin/bash -c 'chown -R www-data:www-data /var/www'
 		docker exec --user $USER_ID -ti $CONTAINER /bin/bash -c 'php -d memory_limit=512M "$(which wp)" package install git@github.com:herregroen/wp-cli-faker.git'
-		docker exec --user $USER_ID -ti $CONTAINER /bin/bash -c 'cp wp-config.php.default ../wp-config.php'
 		docker cp ./seeds $CONTAINER:/seeds
 		docker exec --user $USER_ID -ti $CONTAINER /seeds/$CONTAINER-seed.sh
 	fi

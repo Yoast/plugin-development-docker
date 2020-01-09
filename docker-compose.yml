@@ -32,6 +32,7 @@ services:
     restart: always
     expose:
       - 80
+    entrypoint: entrypoint.sh
     environment:
       ADMIN_USERNAME: admin
       ADMIN_EMAIL: admin@example.com
