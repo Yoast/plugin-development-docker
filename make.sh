@@ -34,7 +34,7 @@ change_hostfile () {
 source ./config/config.sh
 
 change_hostfile ${BASIC_HOST:-basic.wordpress.test}
-change_hostfile ${WOOCOMMERCE_HOST:-woocomerce.wordpress.test}
+change_hostfile ${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}
 change_hostfile ${MULTISITE_HOST:-multisite.wordpress.test}
 change_hostfile ${BASIC_DATABASE_HOST:-basic-database.wordpress.test}
 change_hostfile ${WOOCOMMERCE_DATABASE_HOST:-woocommerce-database.wordpress.test}
