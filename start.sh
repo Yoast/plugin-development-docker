@@ -51,7 +51,7 @@ for CONTAINER in $CONTAINERS; do
 		docker exec -ti $CONTAINER /bin/bash -c "groupmod -g ${GROUP_ID} www-data"
 		docker container restart $CONTAINER
 		docker exec -ti $CONTAINER /bin/bash -c 'chown -R www-data:www-data /var/www'
-		docker exec --user $USER_ID -ti $CONTAINER /bin/bash -c 'php -d memory_limit=512M "$(which wp)" package install git@github.com:herregroen/wp-cli-faker.git'
+		docker exec --user $USER_ID -ti $CONTAINER /bin/bash -c 'php -d memory_limit=512M "$(which wp)" package install git@github.com:Yoast/wp-cli-faker.git'
 		docker cp ./seeds $CONTAINER:/seeds
 		docker exec --user $USER_ID -ti $CONTAINER /seeds/$CONTAINER-seed.sh
 	fi
