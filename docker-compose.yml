@@ -6,14 +6,13 @@ services:
     image: jwilder/nginx-proxy
     ports:
       - "80:80"
-      - "3306:3306"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
   basic-database:
     container_name: "wordpress-basic-database"
     image: "mysql:5.7"
-    expose:
-      - 3306
+    ports:
+      - "1987:3306"
     restart: always
     environment:
       VIRTUAL_HOST: ${BASIC_DATABASE_HOST:-basic-database.wordpress.test}
@@ -48,8 +47,8 @@ services:
   woocommerce-database:
     container_name: "wordpress-woocommerce-database"
     image: "mysql:5.7"
-    expose:
-      - 3306
+    ports:
+      - "1988:3306"
     restart: always
     environment:
       VIRTUAL_HOST: ${WOOCOMMERCE_DATABASE_HOST:-woocommerce-database.wordpress.test}
@@ -84,8 +83,8 @@ services:
   multisite-database:
     container_name: "wordpress-multisite-database"
     image: "mysql:5.7"
-    expose:
-      - 3306
+    ports:
+      - "1989:3306"
     restart: always
     environment:
       VIRTUAL_HOST: ${MULTISITE_DATABASE_HOST:-multisite-database.wordpress.test}
