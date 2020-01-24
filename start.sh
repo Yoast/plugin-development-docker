@@ -31,9 +31,15 @@ GROUP_ID=`id -g`
 echo "Booting containers"
 docker-compose up --detach $CONTAINERS
 
+PORT_basic_wordpress=1987
+PORT_woocommerce_wordpress=1988
+PORT_multisite_wordpress=1989
 # First wait for the DBs to boot.
-for DB_HOST in basic-database.wordpress.test woocommerce-database.wordpress.test multisite-database.wordpress.test; do
-	until nc -z -v -w30 $DB_HOST 3306; do
+echo "Waiting for databases to boot..."
+for CONTAINER in $CONTAINERS; do
+	PORT_VAR="PORT_${CONTAINER//-/_}"
+	PORT=${!PORT_VAR}
+	until nc -z -v -w30 localhost ${PORT}; do
 		echo "Waiting for database connection..."
 		sleep 2
 	done
