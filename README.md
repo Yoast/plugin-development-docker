@@ -4,16 +4,23 @@ This is a fairly simple docker container to facilitate development of WordPress 
 
 ### Prerequisites
 
-Make sure you have [Docker installed](https://docs.docker.com/v17.09/engine/installation/) before starting. You will also need [docker-compose](https://docs.docker.com/compose/install/).
+Mac users:
+- [Docker Desktop](https://docs.docker.com/docker-for-mac/install/) includes everything you need.
 
-If you're on mac simply install [Docker Desktop](https://docs.docker.com/docker-for-mac/install/) it includes everything you need.
+Otherwise install:
+- [Docker](https://docs.docker.com/v17.09/engine/installation/)
+- [docker-compose](https://docs.docker.com/compose/install/)
 
-### Setting up the container.
+### Setting up the container
 
-In order to configure your host file and create the necessary config files first run `./make.sh`. You will likely need to enter your sudo password as this will add local.wordpress.test to your hosts file.
+#### 1. run `./make.sh`
+This will configure your host-file and create the necessary config files first.
+You will likely need to enter your sudo password as this will add local.wordpress.test to your hosts file.
 
-Next up run `./start.sh`. This will create and start your containers. Your browser will automatically open with your WordPress environment. If this is your first time booting the container you will enter the WordPress installation wizard to set up your admin account.
+#### 2. run `./start.sh`
+This will create and start your containers. Your browser will automatically open with your WordPress environment. If this is your first time booting the container you will enter the WordPress installation wizard to set up your admin account.
 
+#### Resetting everything
 You can always run `./clean.sh` to delete all persistent data of your WordPresss environment and start again from scratch.
 
 ### Running alternate containers
