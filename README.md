@@ -42,6 +42,12 @@ Simply clone, extract or download any plugins you want available in your environ
 
 This container is already preconfigured with XDebug. The only thing left to do is to configure your IDE and browser.
 
+### Running WP CLI commands.
+
+You can run `./wp.sh` to run WP CLI commands. By default this will execute the command in the first running WordPress container ( created from this project ). However if the first argument is the name of a container it will specifically run in that container.
+
+For example: `./wp.sh shell` will run `wp shell` in the first active WordPress installation. `./wp.sh woocommerce-wordpress cache flush` will run `wp cache flush` in the woocommerce-wordpresss installation.
+
 #### PHPStorm
 If you are using PHPStorm follow these instructions:
 1. Open up `Preferences -> Languages & Frameworks -> PHP -> Servers`
