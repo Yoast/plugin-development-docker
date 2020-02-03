@@ -114,6 +114,7 @@ services:
       - "./plugins:/var/www/html/wp-content/plugins"
       - "./wordpress:/var/www/html"
       - "./config/multisite-wordpress-config.php:/var/www/html/wp-config.php"
+      - "./config/multisite.htaccess:/var/www/html/.htaccess"
       - "./data/xdebug:/var/xdebug"
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"
 
