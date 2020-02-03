@@ -95,3 +95,20 @@ Both of these do exactly the same. They add an icon to your URL bar where you ca
 - Setting it to `Trace` will make PHP output a full trace of every function call. These will also be located in the `data/xdebug` directory.
     - By default parameters and return values are not included in traces. You can change these settings by changing your `config/php.ini`. For documentation on which values to change see [the XDebug documentation](https://xdebug.org/docs/execution_trace).
     - For viewing these files with a GUI you could use [xdebug-trace-tree](https://github.com/splitbrain/xdebug-trace-tree). Cloning that project in the `wordpress` directory and visiting `http://local.wordpress.test/xdebug-trace-tree` should get you up and running.
+
+### Connecting to the database.
+
+All database ports are forwarded to localhost to make them easily accessible from various tools. You'll want to enter the following configuration:
+| Property | Value     |
+| -------- | --------- |
+| Host     | 127.0.0.1 |
+| Username | wordpress |
+| Password | wordpress |
+| Database | wordpress |
+
+The port differs based on the installation you're running.
+| Site                  | Port |
+| --------------------- | ---- |
+| basic-wordpress       | 1987 |
+| woocommerce-wordpress | 1988 |
+| multisite-wordpress   | 1989 |

@@ -55,6 +55,8 @@ define( 'SECURE_AUTH_SALT', '871447c69100eef4d968066bc17aaa738fbd7ff2');
 define( 'LOGGED_IN_SALT',   '1c553810538136a3a256020e40b77e61e8259ab7');
 define( 'NONCE_SALT',       '32aa31e0165ea7b48e0952fe44098978e44d7807');
 
+define( 'FS_METHOD', 'direct' );
+
 /**#@-*/
 
 /**
