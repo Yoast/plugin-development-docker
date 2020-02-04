@@ -99,6 +99,7 @@ Both of these do exactly the same. They add an icon to your URL bar where you ca
 ### Connecting to the database.
 
 All database ports are forwarded to localhost to make them easily accessible from various tools. You'll want to enter the following configuration:
+
 | Property | Value     |
 | -------- | --------- |
 | Host     | 127.0.0.1 |
@@ -107,6 +108,7 @@ All database ports are forwarded to localhost to make them easily accessible fro
 | Database | wordpress |
 
 The port differs based on the installation you're running.
+
 | Site                  | Port |
 | --------------------- | ---- |
 | basic-wordpress       | 1987 |
