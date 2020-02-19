@@ -38,9 +38,11 @@ For example, calling `./start.sh woocommerce-wordpress` will start only the WooC
 
 Simply clone, extract or download any plugins you want available in your environment into the `plugins` directory. They will be immediately visible inside your WordPress installation. Don't forget to activate them!
 
-### Setting up XDebug
+### Debugging and XDebug
 
 This container is already preconfigured with XDebug. The only thing left to do is to configure your IDE and browser.
+
+Adding the parameter `yoastdebug` to your URL will trigger the yoast debugging constants and show debugging logs on sitemaps and pretty print json-ld and such.
 
 ### Running WP CLI commands.
 
