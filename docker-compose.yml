@@ -8,6 +8,7 @@ services:
       - "80:80"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
+      - "./config/yoastnginx.conf:/etc/nginx/conf.d/yoastnginx.conf"
   basic-database:
     container_name: "wordpress-basic-database"
     image: "mysql:5.7"
