@@ -38,24 +38,26 @@ For example, calling `./start.sh woocommerce-wordpress` will start only the WooC
 
 Simply clone, extract or download any plugins you want available in your environment into the `plugins` directory. They will be immediately visible inside your WordPress installation. Don't forget to activate them!
 
-### Debugging and XDebug
-
-This container is already preconfigured with XDebug. The only thing left to do is to configure your IDE and browser.
-
-Adding the parameter `yoastdebug` to your URL will trigger the yoast debugging constants and show debugging logs on sitemaps and pretty print json-ld and such.
-
 ### Running WP CLI commands.
 
 You can run `./wp.sh` to run WP CLI commands. By default this will execute the command in the first running WordPress container ( created from this project ). However if the first argument is the name of a container it will specifically run in that container.
 
 For example: `./wp.sh shell` will run `wp shell` in the first active WordPress installation. `./wp.sh woocommerce-wordpress cache flush` will run `wp cache flush` in the woocommerce-wordpresss installation.
 
+### WordPress Debugging 
+
+The docker environments come preconfigured with WordPress debugging on. If you want to enable Yoast debugging specifically, you can add the parameter `yoastdebug` to your URL. This will trigger the yoast debugging constants and show debugging logs on sitemaps and pretty print json-ld and such.
+
+### XDebug
+
+This container is already preconfigured with XDebug. The only thing left to do is to configure your IDE and browser. See the following 2 headers.
+
 #### PHPStorm
 If you are using PHPStorm follow these instructions:
 1. Open up `Preferences -> Languages & Frameworks -> PHP -> Servers`
 1. Click the `+` icon
-1. Name: local.wordpress.test
-1. Host: local.wordpress.test
+1. Name: Give it a recognizeable name or use the following Host.
+1. Host: `<domain name here>` (default for this docker: `basic.wordpress.test`)
 1. Port: 80
 1. File/Directory `plugins/<your-plugin-name>` maps to the absoulte path `/var/www/html/wp-content/plugins/<your-plugin-name>`.
 1. File/Directory `wordpress` maps to the absoulte path `/var/www/html`.
@@ -87,6 +89,8 @@ This assumes your plugin is the root of your opened VSCode project.
 Also make sure you have the [XDebug extension installed](https://marketplace.visualstudio.com/items?itemName=felixfbecker.php-debug)!
 
 #### Browser
+These plugins are optional and xdebug will work without them.
+
 For Firefox you'll want to [install the Firefox XDebug helper](https://addons.mozilla.org/en-US/firefox/addon/xdebug-helper-for-firefox/).
 For Chrome you'll want to [install the Chrome XDebug helper](https://chrome.google.com/webstore/detail/xdebug-helper/eadndfjplgieldjbigjakmdgkmoaaaoc?hl=en).
 
