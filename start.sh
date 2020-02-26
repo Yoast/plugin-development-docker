@@ -86,7 +86,7 @@ docker-compose logs -f &
 PROCESS=$!
 
 while [ "$STOPPING" != 'true' ]; do
-	CLOCK_SOURCE=`docker exec -ti ${CONTAINERS[0]} /bin/bash -c 'cat /sys/devices/system/clocksource/clocksource0/current_clocksource' | tr -d '[:space:]'`
+	CLOCK_SOURCE=`docker exec -ti nginx-router-wordpress /bin/bash -c 'cat /sys/devices/system/clocksource/clocksource0/current_clocksource' | tr -d '[:space:]'`
 	if [[ "$CLOCK_SOURCE" != 'tsc' && "$STOPPING" != 'true' ]]; then
 		echo "Restarting docker now to fix out-of-sync hardware clock!"
 		docker ps -q | xargs -L1 docker stop
