@@ -18,7 +18,7 @@ This will configure your host-file and create the necessary config files first.
 You will likely need to enter your sudo password as this will add local.wordpress.test to your hosts file.
 
 #### 2. run `./start.sh`
-This will create and start your containers. Your browser will automatically open with your WordPress environment. If this is your first time booting the container you will enter the WordPress installation wizard to set up your admin account.
+This will create and start your containers. Your browser will automatically open with your WordPress environment.
 
 #### Resetting everything
 You can always run `./clean.sh` to delete all persistent data of your WordPresss environment and start again from scratch.
@@ -120,3 +120,14 @@ The port differs based on the installation you're running.
 | basic-wordpress       | 1987 |
 | woocommerce-wordpress | 1988 |
 | multisite-wordpress   | 1989 |
+
+
+## Troubleshooting
+
+### WordPress is not installed (completely)
+The first run after a make can fail. Quit all docker containers with `docker-compose down` and run `bash start.sh` again.
+Issue: https://github.com/Yoast/plugin-development-docker/issues/11
+
+### Multisite main site is not working on custom domain
+Changing the domain name of the multisite in `config.sh` does not work yet and causes the main site to do a redirect to the domain `multisite.wordpress.test`. Change the variable `DOMAIN_CURRENT_SITE` in `seeds/multisite-wordpress-seed.sh` to the custom domain you use and restart docker.
+Issue: https://github.com/Yoast/plugin-development-docker/issues/9
