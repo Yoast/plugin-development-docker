@@ -5,7 +5,7 @@ services:
     container_name: "nginx-router-wordpress"
     image: jwilder/nginx-proxy
     ports:
-      - "80:80"
+      - "127.0.0.1:80:80"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - "./config/yoastnginx.conf:/etc/nginx/conf.d/yoastnginx.conf"
@@ -37,8 +37,8 @@ services:
       ADMIN_EMAIL: admin@example.com
       ADMIN_PASSWORD: admin
       SITE_TITLE: Basic
-      SITE_URL: basic.wordpress.test
-      VIRTUAL_HOST: ${BASIC_HOST:-basic.wordpress.test}
+      SITE_URL: ${BASIC_HOST:-basic.wordpress.test}
+      VIRTUAL_HOST: ${BASIC_HOST:-applecrumble.wordpress.test}
     volumes:
       - "./plugins:/var/www/html/wp-content/plugins"
       - "./config/basic-wordpress-config.php:/var/www/html/wp-config.php"
@@ -73,7 +73,7 @@ services:
       ADMIN_EMAIL: admin@example.com
       ADMIN_PASSWORD: admin
       SITE_TITLE: WooCommerce
-      SITE_URL: woocommerce.wordpress.test
+      SITE_URL: ${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}
       VIRTUAL_HOST: ${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}
     volumes:
       - "./plugins:/var/www/html/wp-content/plugins"
@@ -110,7 +110,7 @@ services:
       ADMIN_PASSWORD: admin
       SITE_TITLE: multisite
       SITE_URL: ${MULTISITE_HOST:-multisite.wordpress.test}
-      VIRTUAL_HOST: multisite.wordpress.test
+      VIRTUAL_HOST: ${MULTISITE_HOST:-multisite.wordpress.test}
     volumes:
       - "./plugins:/var/www/html/wp-content/plugins"
       - "./wordpress:/var/www/html"
