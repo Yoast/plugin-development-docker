@@ -126,8 +126,10 @@ The port differs based on the installation you're running.
 
 ### WordPress is not installed (completely)
 The first run after a make can fail. Quit all docker containers with `docker-compose down` and run `bash start.sh` again.
+
 Issue: https://github.com/Yoast/plugin-development-docker/issues/11
 
 ### Multisite main site is not working on custom domain
 Changing the domain name of the multisite in `config.sh` does not work yet and causes the main site to do a redirect to the domain `multisite.wordpress.test`. Change the variable `DOMAIN_CURRENT_SITE` in `seeds/multisite-wordpress-seed.sh` to the custom domain you use and restart docker.
+
 Issue: https://github.com/Yoast/plugin-development-docker/issues/9
