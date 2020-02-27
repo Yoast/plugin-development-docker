@@ -5,7 +5,7 @@ chmod u+x config/config.sh
 
 kill_port_80_usage () {
     echo "checking if port 80 is free to use"
-    if lsof -nP +c 15 | grep LISTEN | grep -q -E ":80"; then
+    if lsof -nP +c 15 | grep LISTEN | grep -s -E "[0-9]:80 "; then
         select yn in "Stop apachectl to use docker" "Leave it (I will fix it myself!)"; do
            case $yn in
                 "Stop apachectl so we can use docker" )  
