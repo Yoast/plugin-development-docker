@@ -1,10 +1,10 @@
 #!/bin/sh
 
 # You can overwrite the host names here. If you change them you will need to run ./clean.sh && ./make.sh && ./start.sh again.
-#BASIC_HOST=basic.wordpress.test
-#WOOCOMMERCE_HOST=woocommerce.wordpress.test
-#MULTISITE_HOST=multisite.wordpress.test
+#export BASIC_HOST=basic.wordpress.test
+#export WOOCOMMERCE_HOST=woocommerce.wordpress.test
+#export MULTISITE_HOST=multisite.wordpress.test
 
-#BASIC_DATABASE_HOST=basic-database.wordpress.test
-#WOOCOMMERCE_DATABASE_HOST=woocommerce-database.wordpress.test
-#MULTISITE_DATABASE_HOST=multisite-database.wordpress.test
+#export BASIC_DATABASE_HOST=basic-database.wordpress.test
+#export WOOCOMMERCE_DATABASE_HOST=woocommerce-database.wordpress.test
+#export MULTISITE_DATABASE_HOST=multisite-database.wordpress.test
