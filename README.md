@@ -34,6 +34,20 @@ The following are available:
 
 For example, calling `./start.sh woocommerce-wordpress` will start only the WooCommerce container. Calling `./start.sh basic-wordpress multisite-wordpress` will start both the basic WordPress and multisite containers.
 
+### Running WordPress trunk, beta or RC
+
+If you need WordPress trunk, a beta or a release candidate, there are two ways of going about that:
+
+- Switch using WP CLI: 
+  ```bash
+  /wp.sh core update --version=nightly
+  ```
+  Note that you'll have to repeat this daily if you want to be on the latest nightly. If you want to switch back, do, note the `--force` because you're downgrading:
+  ```bash
+  /wp.sh core update --version=5.3 --force
+  ```
+- Install and use the [WordPress beta tester plugin](https://wordpress.org/plugins/wordpress-beta-tester/).
+  
 ### Setting up your plugins.
 
 Simply clone, extract or download any plugins you want available in your environment into the `plugins` directory. They will be immediately visible inside your WordPress installation. Don't forget to activate them!
