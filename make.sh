@@ -4,12 +4,12 @@ cp -n config/config.sh.default config/config.sh
 chmod u+x config/config.sh
 
 kill_port_80_usage () {
-    echo "checking if port 80 is free to use"
-    if lsof -nP +c 15 | grep LISTEN | grep -q -E ":80"; then
+    echo "Checking if port 80 is free to use"
+    if lsof -nP +c 15 | grep LISTEN | grep -s -E "[0-9]:80 "; then
         select yn in "Stop apachectl to use docker" "Leave it (I will fix it myself!)"; do
            case $yn in
                 "Stop apachectl so we can use docker" )  
-                    echo need sudo to STOP apachectl
+                    echo "Need sudo to STOP apachectl"
                         sudo apachectl start
                     break
                 ;;
@@ -21,21 +21,21 @@ kill_port_80_usage () {
     fi
 }
 
-
 change_hostfile () {
     local URL=$1
-    echo "checking hostfile entry for: $URL"
+    echo -n "Checking hostfile entry for: ${URL}... "
 
     if grep -q -E "^([0-9]{1,3}[\.]){3}[0-9]{1,3}[[:space:]]+$URL" /etc/hosts; then
         if grep -q -E "^127\.0\.0\.1[[:space:]]+$URL" /etc/hosts; then
-            echo OK
+            echo "OK"
         else
-            echo "Found this entry for: $URL"
+            echo "Found this entry:"
             grep -E "^([0-9]{1,3}[\.]){3}[0-9]{1,3}[[:space:]]+$URL" /etc/hosts;
             select yn in "Change it to use docker" "Leave it"; do
                 case $yn in
                     "Change it to use docker" )
-                        echo need sudo to edit hostfile
+                        echo "Need sudo to edit hostfile"
+                        check_hosts_newline
                         grep -v -E "^([0-9]{1,3}[\.]){3}[0-9]{1,3}[[:space:]]+$URL" /etc/hosts | sudo tee /etc/hosts > /dev/null
                         echo "127.0.0.1 $URL" | sudo tee -a /etc/hosts > /dev/null
                         break
@@ -45,11 +45,16 @@ change_hostfile () {
             done
         fi
     else
-        echo adding $URL to hostfile need sudo
+        echo "Adding, need sudo"
+        check_hosts_newline
         echo "127.0.0.1       $URL" | sudo tee -a /etc/hosts > /dev/null
     fi
 }
 
+function check_hosts_newline() {
+    hosts_lastchar=$(tail -c 1 /etc/hosts)
+    [[ "$hosts_lastchar" != "" ]] && echo '' | sudo tee -a /etc/hosts
+}
 
 source ./config/config.sh
 
