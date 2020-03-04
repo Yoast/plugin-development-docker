@@ -51,7 +51,7 @@ change_hostfile () {
     fi
 }
 
-function check_hosts_newline() {
+function check_hosts_newline () {
     hosts_lastchar=$(tail -c 1 /etc/hosts)
     [[ "$hosts_lastchar" != "" ]] && echo '' | sudo tee -a /etc/hosts
 }
