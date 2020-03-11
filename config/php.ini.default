@@ -18,3 +18,6 @@ display_errors         = On
 
 upload_max_filesize = 100M
 post_max_size = 100M
+
+max_execution_time = 3600
+request_terminate_timeout = 3600
