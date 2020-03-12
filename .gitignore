@@ -4,5 +4,8 @@ config/php.ini
 config/config.sh
 plugins/*
 !plugins/.gitkeep
+sa-plugins/*
 wordpress/*
 !wordpress/.gitkeep
+.idea/
+.vscode/

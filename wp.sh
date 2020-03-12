@@ -1,6 +1,6 @@
 #!/bin/bash
 case "$1" in
-    basic-wordpress|woocommerce-wordpress|multisite-wordpress)
+    basic-wordpress|woocommerce-wordpress|multisite-wordpress|standalone-wordpress)
         CONTAINER=`shift`
         ;;
     *)
