@@ -23,7 +23,7 @@ for CONTAINER in $CONTAINERS; do
 	echo "  - $CONTAINER"
 done
 echo "Ensuring all containers are built"
-docker-compose build --pull $CONTAINERS
+docker-compose build --pull --parallel $CONTAINERS
 
 USER_ID=`id -u`
 GROUP_ID=`id -g`
