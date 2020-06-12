@@ -17,6 +17,7 @@ fi
 URL_basic_wordpress="http://${BASIC_HOST:-basic.wordpress.test}"
 URL_woocommerce_wordpress="http://${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}"
 URL_multisite_wordpress="http://${MULTISITE_HOST:-multisite.wordpress.test}"
+URL_standalone_wordpress="http://${STANDALONE_HOST:-standalone.wordpress.test}"
 
 echo "Starting containers:"
 for CONTAINER in $CONTAINERS; do
@@ -34,6 +35,7 @@ docker-compose up --detach $CONTAINERS
 PORT_basic_wordpress=1987
 PORT_woocommerce_wordpress=1988
 PORT_multisite_wordpress=1989
+PORT_standalone_wordpress=1990
 # First wait for the DBs to boot.
 echo "Waiting for databases to boot..."
 for CONTAINER in $CONTAINERS; do
