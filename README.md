@@ -50,6 +50,7 @@ If you need WordPress trunk, a beta or a release candidate, there are two ways o
   
 ### Setting up your plugins.
 
+Run `./plugins.sh` - this will install default plugins to your container for easier debugging and developing.
 Simply clone, extract or download any plugins you want available in your environment into the `plugins` directory. They will be immediately visible inside your WordPress installation. Don't forget to activate them!
 
 ### Running WP CLI commands.
