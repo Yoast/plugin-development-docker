@@ -8,7 +8,7 @@ function activate_plugin {
   # Get all the running containers and store the amount
   running_containers=$(docker ps --filter "ancestor=wordpress" --filter "label=com.docker.compose.project.working_dir=$(pwd)" --format "{{.Names}}")
 
-  for container in "${running_containers[@]}"; do
+  for container in $running_containers; do
     $(echo ./wp.sh $container plugin install $1 --activate)
   done
 }
