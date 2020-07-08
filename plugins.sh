@@ -3,6 +3,7 @@
 # List the plugins that should be installed:
 declare -a PluginList=("query-monitor" "user-switching" "https://github.com/Yoast/yoast-test-helper")
 
+# Activate the plugin for all running containers.
 function activate_plugin {
   # Get all the running containers and store the amount
   running_containers=$(docker ps --filter "ancestor=wordpress" --filter "label=com.docker.compose.project.working_dir=$(pwd)" --format "{{.Names}}")
@@ -12,6 +13,7 @@ function activate_plugin {
   done
 }
 
+# Install a plugin from a Github repository.
 function install_github_plugin {
   plugin=$1
   slug=${plugin##*/}
@@ -37,7 +39,7 @@ function install_github_plugin {
   activate_plugin $slug
 }
 
-
+# Loop through the list and install the plugins.
 for plugin in "${PluginList[@]}"; do
 	echo Installing $plugin.
   if [[ $plugin == "https://github.com"* ]]; then
