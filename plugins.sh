@@ -1,5 +1,17 @@
 #!/bin/bash
 
+# List the plugins that should be installed:
+declare -a PluginList=("query-monitor" "user-switching" "https://github.com/Yoast/yoast-test-helper")
+
+function activate_plugin {
+  # Get all the running containers and store the amount
+  running_containers=$(docker ps --filter "ancestor=wordpress" --filter "label=com.docker.compose.project.working_dir=$(pwd)" --format "{{.Names}}")
+
+  for container in "${running_containers[@]}"; do
+    $(echo ./wp.sh $container plugin install $1 --activate)
+  done
+}
+
 function install_github_plugin {
   plugin=$1
   slug=${plugin##*/}
@@ -22,10 +34,9 @@ function install_github_plugin {
 
   cd -
 
-  $(echo ./wp.sh plugin install $slug --activate)
+  activate_plugin $slug
 }
 
-declare -a PluginList=("query-monitor" "user-switching" "https://github.com/Yoast/yoast-test-helper")
 
 for plugin in "${PluginList[@]}"; do
 	echo Installing $plugin.
@@ -35,7 +46,7 @@ for plugin in "${PluginList[@]}"; do
     if [ -d "./plugins/$plugin/.git" ]; then
 		  echo "Git clone found, not installing from WordPress.org."
 	  else
-  		$(echo ./wp.sh plugin install $plugin --activate)
+	    activate_plugin $plugin
 	  fi
 	fi
 done
