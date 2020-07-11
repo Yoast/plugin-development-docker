@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # List the plugins that should be installed:
-declare -a PluginList=("query-monitor" "user-switching" "https://github.com/Yoast/yoast-test-helper")
+declare -a PluginList=("query-monitor" "user-switching" "https://github.com/Yoast/yoast-test-helper" "https://github.com/Yoast/wordpress-seo/")
 
 # Activate the plugin for all running containers.
 function activate_plugin {
