@@ -48,6 +48,8 @@ services:
       - "./wordpress:/var/www/html"
       - "./xdebug:/var/xdebug"
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"
+    labels:
+      - com.yoast.plugin-development-docker.mainwpinstance
 
   # WooCommerce WordPress:
   woocommerce-database:
@@ -86,6 +88,8 @@ services:
       - "./config/woocommerce-wordpress-config.php:/var/www/html/wp-config.php"
       - "./data/xdebug:/var/xdebug"
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"
+    labels:
+      - com.yoast.plugin-development-docker.mainwpinstance
 
   # Multisite WordPress:
   multisite-database:
@@ -125,6 +129,8 @@ services:
       - "./config/multisite.htaccess:/var/www/html/.htaccess"
       - "./data/xdebug:/var/xdebug"
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"
+    labels:
+      - com.yoast.plugin-development-docker.mainwpinstance
 
   # Standalone WordPress:
   standalone-database:
