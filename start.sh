@@ -54,7 +54,7 @@ for CONTAINER in $CONTAINERS; do
 	docker exec -ti $CONTAINER /bin/bash -c 'wp --allow-root core is-installed 2>/dev/null'
 	IS_INSTALLED=$?
 
-  docker exec -ti $CONTAINER /bin/bash -c "usermod -u ${USER_ID} www-data"
+	docker exec -ti $CONTAINER /bin/bash -c "usermod -u ${USER_ID} www-data"
 	docker exec -ti $CONTAINER /bin/bash -c "groupmod -o -g ${GROUP_ID} www-data"
 	docker container restart $CONTAINER
 
