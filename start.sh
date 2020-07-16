@@ -84,7 +84,7 @@ done
 for CONTAINER in $CONTAINERS; do
 	URL_VAR="URL_${CONTAINER//-/_}"
 	echo "Starting ${!URL_VAR}"
-	open ${!URL_VAR} 2>/dev/null || x-www-browser ${!URL_VAR}
+	open ${!URL_VAR} 2>/dev/null || x-www-browser ${!URL_VAR} &
 	break
 done
 
