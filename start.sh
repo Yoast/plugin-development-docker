@@ -53,11 +53,13 @@ for CONTAINER in $CONTAINERS; do
 	docker exec -ti $CONTAINER /bin/bash -c 'until [[ -f .htaccess ]]; do sleep 1; done'
 	docker exec -ti $CONTAINER /bin/bash -c 'wp --allow-root core is-installed 2>/dev/null'
 	IS_INSTALLED=$?
+
+  docker exec -ti $CONTAINER /bin/bash -c "usermod -u ${USER_ID} www-data"
+	docker exec -ti $CONTAINER /bin/bash -c "groupmod -o -g ${GROUP_ID} www-data"
+	docker container restart $CONTAINER
+
 	if [ $IS_INSTALLED == 1 ]; then
 		echo "Installing WordPress for $CONTAINER"
-		docker exec -ti $CONTAINER /bin/bash -c "usermod -u ${USER_ID} www-data"
-		docker exec -ti $CONTAINER /bin/bash -c "groupmod -o -g ${GROUP_ID} www-data"
-		docker container restart $CONTAINER
 		docker exec -ti $CONTAINER /bin/bash -c 'mkdir -p /var/www/.wp-cli/packages; chown -R www-data:www-data /var/www;'
 		docker exec --user $USER_ID -ti $CONTAINER /bin/bash -c 'php -d memory_limit=512M "$(which wp)" package install git@github.com:Yoast/wp-cli-faker.git'
 		docker cp ./seeds $CONTAINER:/seeds
