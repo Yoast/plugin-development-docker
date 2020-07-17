@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Get all the running containers and store the amount
-running_containers=$(docker ps --filter "ancestor=wordpress" --filter "label=com.docker.compose.project.working_dir=$(pwd)" --format "{{.Names}}")
+running_containers=$(docker ps --filter "ancestor=wordpress" --filter "label="com.yoast.plugin-development-docker.mainwpinstance"" --format "{{.Names}}")
 count_containers=$(echo "$running_containers" | wc -l)
 
 # Check if the first argument is a docker container...
@@ -20,9 +20,5 @@ elif [[ "$((count_containers))" > 1 ]]; then
     exit 1
 fi
 
-# Execute the WP-CLI command, capture & display the output and errors
-wp_result=$(docker exec -ti --user www-data $CONTAINER wp $@ 2>&1)
-echo $wp_result
-
-# If the error looks like the first argument to WP-CLI is wrong, hint that it might be a mistyped containername
-[[ $(echo $wp_result | grep 'not a registered wp command.') ]] && echo -e "\nMaybe you got the Docker container name wrong.\nNote that you don't need a container name if only one container is running.\nThis container is running:\n${running_containers}" && exit 1
+# Execute the WP-CLI command
+docker exec -ti --user www-data $CONTAINER wp $@
