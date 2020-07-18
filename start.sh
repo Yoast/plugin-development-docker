@@ -47,10 +47,12 @@ echo "Waiting for databases to boot..."
 for CONTAINER in $CONTAINERS; do
 	PORT_VAR="PORT_${CONTAINER//-/_}"
 	PORT=${!PORT_VAR}
-	until nc -z -v -w30 localhost ${PORT}; do
-		echo "Waiting for database connection..."
-		sleep 2
-	done
+	if ! [ "$DOCKER_DB_NO_WAIT" ]; then
+		until nc -z -v -w30 host.docker.internal ${PORT}; do
+			echo "Waiting for database connection..."
+			sleep 2
+		done
+	fi
 done
 
 # Then install WordPress.
