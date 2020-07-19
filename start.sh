@@ -70,9 +70,9 @@ for CONTAINER in $CONTAINERS; do
 		docker exec --user "$USER_ID" -ti "$CONTAINER" /bin/bash -c 'php -d memory_limit=512M "$(which wp)" package install git@github.com:Yoast/wp-cli-faker.git'
 		docker cp ./seeds "$CONTAINER":/seeds
 		docker exec --user "$USER_ID" -ti "$CONTAINER" /seeds/"$CONTAINER"-seed.sh
-	else
-		echo WordPress is installed.
 	fi
+
+	echo WordPress is installed.
 done
 
 echo "Waiting for containers to boot..."
