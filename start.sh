@@ -37,23 +37,23 @@ for CONTAINER in $CONTAINERS; do
 	echo "  - $CONTAINER"
 done
 
-echo "Ensuring all containers are built..."
+echo "Ensuring all containers are built."
 docker-compose build --pull --parallel $CONTAINERS
 
-echo "Booting containers..."
+echo "Booting containers."
 docker-compose up --detach $CONTAINERS
 
-echo "Waiting for databases to boot..."
-for CONTAINER in $CONTAINERS; do
-	PORT_VAR="PORT_${CONTAINER//-/_}"
-	PORT=${!PORT_VAR}
-	if ! [ "$DOCKER_DB_NO_WAIT" ]; then
+if ! [ "$DOCKER_DB_NO_WAIT" ]; then
+	echo "Waiting for databases to boot."
+	for CONTAINER in $CONTAINERS; do
+		PORT_VAR="PORT_${CONTAINER//-/_}"
+		PORT=${!PORT_VAR}
 		until nc -z -v -w30 host.docker.internal ${PORT}; do
 			echo "Waiting for database connection..."
 			sleep 2
 		done
-	fi
-done
+	done
+fi
 
 # Then install WordPress.
 for CONTAINER in $CONTAINERS; do
@@ -63,14 +63,15 @@ for CONTAINER in $CONTAINERS; do
 	docker exec -ti "$CONTAINER" /bin/bash -c 'wp --allow-root core is-installed 2>/dev/null'
 	IS_INSTALLED=$?
 
-	# 1 == not installed (exit code)
-	if [ $IS_INSTALLED == 1 ]; then
+	if ! [ $IS_INSTALLED ]; then
 		echo "Installing WordPress for $CONTAINER..."
 
 		docker exec -ti "$CONTAINER" /bin/bash -c 'mkdir -p /var/www/.wp-cli/packages; chown -R www-data: /var/www;'
 		docker exec --user "$USER_ID" -ti "$CONTAINER" /bin/bash -c 'php -d memory_limit=512M "$(which wp)" package install git@github.com:Yoast/wp-cli-faker.git'
 		docker cp ./seeds "$CONTAINER":/seeds
 		docker exec --user "$USER_ID" -ti "$CONTAINER" /seeds/"$CONTAINER"-seed.sh
+	else
+		echo WordPress is installed.
 	fi
 done
 
@@ -89,6 +90,8 @@ for CONTAINER in $CONTAINERS; do
 done
 
 echo "Containers have booted! Happy developing!"
+sleep 2
+
 echo "Outputting logs now:"
 docker-compose logs -f &
 PROCESS=$!
