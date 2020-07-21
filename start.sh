@@ -28,9 +28,11 @@ PORT_standalone_wordpress=1990
 USER_ID=`id -u`
 GROUP_ID=`id -g`
 
-cp containers/wordpress/Dockerfile.template containers/wordpress/Dockerfile
-sed -i -e "s/\$UID/$USER_ID/g" containers/wordpress/Dockerfile
-sed -i -e "s/\$GID/$GROUP_ID/g" containers/wordpress/Dockerfile
+if [ ! -f './containers/wordpress/Dockerfile' ]; then
+	cp containers/wordpress/Dockerfile.template containers/wordpress/Dockerfile
+	sed -i -e "s/\$UID/${USER_ID}/g" containers/wordpress/Dockerfile
+	sed -i -e "s/\$GID/${GROUP_ID}/g" containers/wordpress/Dockerfile
+fi
 
 echo "Starting containers:"
 for CONTAINER in $CONTAINERS; do
@@ -48,7 +50,7 @@ if ! [ "$DOCKER_DB_NO_WAIT" ]; then
 	for CONTAINER in $CONTAINERS; do
 		PORT_VAR="PORT_${CONTAINER//-/_}"
 		PORT=${!PORT_VAR}
-		until nc -z -v -w30 host.docker.internal ${PORT}; do
+		until nc -z -v -w30 localhost ${PORT}; do
 			echo "Waiting for database connection..."
 			sleep 2
 		done

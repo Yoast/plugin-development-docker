@@ -10,5 +10,6 @@ case $1 in
         echo "Option '--all' defined. Removing non-default config files."
         rm -f ./config/config.sh
         rm -f ./config/php.ini
+        rm -f ./containers/wordpress/Dockerfile
         ;;
 esac
