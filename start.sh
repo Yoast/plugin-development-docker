@@ -1,4 +1,10 @@
 #!/bin/bash
+
+if ! [[ -f './config/php.ini' ]]; then
+	echo '[!] Warning: php.ini config file not found. Running make.sh.'
+	/bin/bash ./make.sh
+fi
+
 source ./config/config.sh
 
 trap stop_docker INT
@@ -8,12 +14,6 @@ function stop_docker {
 	wait $PROCESS
 	exit
 }
-
-if ! [[ -f './config/php.ini' ]] || [[ -d './config/php.ini']]; then
-	echo 'Non-existing or corrupt php.ini config file found. Please run "make.sh" to create the needed config files.'
-	echo 'If this message reappears immediately, make sure php.ini is not a directory.'
-	exit 1
-fi
 
 if [[ -z "$@" ]]; then
 	CONTAINERS=basic-wordpress

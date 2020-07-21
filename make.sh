@@ -1,4 +1,8 @@
 #!/bin/bash
+
+# Remove corrupt php.ini folder, if existing.
+[[ -d './config/php.ini' ]] && rm -rf './config/php.ini'
+
 cp -n config/php.ini.default config/php.ini
 cp -n config/config.sh.default config/config.sh
 chmod u+x config/config.sh
