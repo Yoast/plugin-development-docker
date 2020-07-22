@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if ! [[ -f './config/php.ini' ]] || ! [[ -f './config/config/sh' ]]; then
+if ! [[ -f './config/php.ini' ]]; then
 	echo '[!] Warning: config file(s) not found. Running make.sh.'
 	/bin/bash ./make.sh
 fi
