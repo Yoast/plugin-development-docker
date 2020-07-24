@@ -1,4 +1,10 @@
 #!/bin/bash
+
+if ! [[ -f './config/php.ini' ]]; then
+	echo '[!] Warning: config file(s) not found. Running make.sh.'
+	/bin/bash ./make.sh
+fi
+
 source ./config/config.sh
 
 trap stop_docker INT
@@ -58,7 +64,7 @@ for CONTAINER in $CONTAINERS; do
 		docker exec -ti $CONTAINER /bin/bash -c "usermod -u ${USER_ID} www-data"
 		docker exec -ti $CONTAINER /bin/bash -c "groupmod -o -g ${GROUP_ID} www-data"
 		docker container restart $CONTAINER
-		docker exec -ti $CONTAINER /bin/bash -c 'mkdir -p /var/www/.wp-cli/packages; chown -R www-data:www-data /var/www;'
+		docker exec -ti $CONTAINER /bin/bash -c 'mkdir -p /var/www/.wp-cli/packages; chown -R www-data:www-data /var/www/.wp-cli;'
 		docker exec --user $USER_ID -ti $CONTAINER /bin/bash -c 'php -d memory_limit=512M "$(which wp)" package install git@github.com:Yoast/wp-cli-faker.git'
 		docker cp ./seeds $CONTAINER:/seeds
 		docker exec --user $USER_ID -ti $CONTAINER /seeds/$CONTAINER-seed.sh
