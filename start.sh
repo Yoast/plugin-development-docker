@@ -69,9 +69,11 @@ for CONTAINER in $CONTAINERS; do
 
 	docker exec -ti "$CONTAINER" /bin/bash -c 'until [[ -f .htaccess ]]; do sleep 1; done'
 	docker exec -ti "$CONTAINER" /bin/bash -c 'wp --allow-root core is-installed 2>/dev/null'
+	# $? is the exit code of the previous command.
+	# We check if WP is installed, if it is not, it returns with exit code 1
 	IS_INSTALLED=$?
 
-	if ! [ $IS_INSTALLED ]; then
+	if [[ $IS_INSTALLED == 1 ]]; then
 		echo "Installing WordPress for $CONTAINER..."
 
 		docker exec -ti "$CONTAINER" /bin/bash -c 'mkdir -p /var/www/.wp-cli/packages; chown -R www-data: /var/www/.wp-cli;'
