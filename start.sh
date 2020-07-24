@@ -35,9 +35,9 @@ USER_ID=`id -u`
 GROUP_ID=`id -g`
 
 if [ ! -f './containers/wordpress/Dockerfile' ]; then
-	cp containers/wordpress/Dockerfile.template containers/wordpress/Dockerfile
-	sed -i -e "s/\$UID/${USER_ID}/g" containers/wordpress/Dockerfile
-	sed -i -e "s/\$GID/${GROUP_ID}/g" containers/wordpress/Dockerfile
+	cp ./ './containers/wordpress/Dockerfile.template' './containers/wordpress/Dockerfile'
+	sed -i '' -e "s/\$UID/${USER_ID}/g" './containers/wordpress/Dockerfile'
+	sed -i '' -e "s/\$GID/${GROUP_ID}/g" './containers/wordpress/Dockerfile'
 fi
 
 echo "Starting containers:"
