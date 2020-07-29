@@ -1,0 +1,13 @@
+version: "2"
+syncs:
+  plugins-sync:
+    src: './plugins/'
+    host_disk_mount_mode: delegated
+    sync_excludes: ['*/node_modules', '*/.git']
+    sync_userid: 501
+    sync_groupid: 20
+  wordpress-sync:
+    src: './wordpress/'
+    host_disk_mount_mode: delegated
+    sync_userid: 501
+    sync_groupid: 20
