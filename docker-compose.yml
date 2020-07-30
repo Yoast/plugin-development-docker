@@ -48,10 +48,6 @@ services:
       - "./wordpress:/var/www/html:delegated"
       - "./xdebug:/var/xdebug:delegated"
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:delegated"
-      # Mount empty folders for node_modules
-      - "node_modules:/var/www/html/wp-content/plugins/wordpress-seo/node_modules"
-      - "node_modules:/var/www/html/wp-content/plugins/wordpress-seo-premium/node_modules"
-      - "node_modules:/var/www/html/wp-content/plugins/wordpress-seo-premium/premium/node_modules"
     labels:
       - com.yoast.plugin-development-docker.mainwpinstance
 
@@ -92,10 +88,6 @@ services:
       - "./config/woocommerce-wordpress-config.php:/var/www/html/wp-config.php:delegated"
       - "./data/xdebug:/var/xdebug:delegated"
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:delegated"
-      # Mount empty folders for node_modules
-      - "node_modules:/var/www/html/wp-content/plugins/wordpress-seo/node_modules"
-      - "node_modules:/var/www/html/wp-content/plugins/wordpress-seo-premium/node_modules"
-      - "node_modules:/var/www/html/wp-content/plugins/wordpress-seo-premium/premium/node_modules"
     labels:
       - com.yoast.plugin-development-docker.mainwpinstance
 
@@ -137,10 +129,6 @@ services:
       - "./config/multisite.htaccess:/var/www/html/.htaccess:delegated"
       - "./data/xdebug:/var/xdebug:delegated"
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:delegated"
-      # Mount empty folders for node_modules
-      - "node_modules:/var/www/html/wp-content/plugins/wordpress-seo/node_modules"
-      - "node_modules:/var/www/html/wp-content/plugins/wordpress-seo-premium/node_modules"
-      - "node_modules:/var/www/html/wp-content/plugins/wordpress-seo-premium/premium/node_modules"
     labels:
       - com.yoast.plugin-development-docker.mainwpinstance
 
@@ -181,14 +169,9 @@ services:
       - "./wordpress:/var/www/html:delegated"
       - "./xdebug:/var/xdebug:delegated"
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:delegated"
-      # Mount empty folders for node_modules
-      - "node_modules:/var/www/html/wp-content/plugins/wordpress-seo/node_modules"
-      - "node_modules:/var/www/html/wp-content/plugins/wordpress-seo-premium/node_modules"
-      - "node_modules:/var/www/html/wp-content/plugins/wordpress-seo-premium/premium/node_modules"
 
 volumes:
   basic-database-data:
   woocommerce-database-data:
   multisite-database-data:
   standalone-database-data:
-  node_modules:
