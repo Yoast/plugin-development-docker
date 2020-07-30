@@ -9,7 +9,7 @@ services:
       - "127.0.0.1:80:80"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - "./config/yoastnginx.conf:/etc/nginx/conf.d/yoastnginx.conf"
+      - "./config/yoastnginx.conf:/etc/nginx/conf.d/yoastnginx.conf:delegated"
   
   # Basic WordPress:
   basic-database:
@@ -25,7 +25,7 @@ services:
       MYSQL_USER: wordpress
       MYSQL_PASSWORD: wordpress
     volumes:
-      - "basic-database-data:/var/lib/mysql"
+      - "basic-database-data:/var/lib/mysql:delegated"
   basic-wordpress:
     container_name: "basic-wordpress"
     depends_on:
@@ -43,11 +43,11 @@ services:
       SITE_URL: ${BASIC_HOST:-basic.wordpress.test}
       VIRTUAL_HOST: ${BASIC_HOST:-basic.wordpress.test}
     volumes:
-      - "./plugins:/var/www/html/wp-content/plugins"
-      - "./config/basic-wordpress-config.php:/var/www/html/wp-config.php"
-      - "./wordpress:/var/www/html"
-      - "./xdebug:/var/xdebug"
-      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"
+      - "./plugins:/var/www/html/wp-content/plugins:delegated"
+      - "./config/basic-wordpress-config.php:/var/www/html/wp-config.php:delegated"
+      - "./wordpress:/var/www/html:delegated"
+      - "./xdebug:/var/xdebug:delegated"
+      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:delegated"
     labels:
       - com.yoast.plugin-development-docker.mainwpinstance
 
@@ -65,7 +65,7 @@ services:
       MYSQL_USER: wordpress
       MYSQL_PASSWORD: wordpress
     volumes:
-      - "woocommerce-database-data:/var/lib/mysql"
+      - "woocommerce-database-data:/var/lib/mysql:delegated"
   woocommerce-wordpress:
     container_name: "woocommerce-wordpress"
     depends_on:
@@ -83,11 +83,11 @@ services:
       SITE_URL: ${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}
       VIRTUAL_HOST: ${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}
     volumes:
-      - "./plugins:/var/www/html/wp-content/plugins"
-      - "./wordpress:/var/www/html"
-      - "./config/woocommerce-wordpress-config.php:/var/www/html/wp-config.php"
-      - "./data/xdebug:/var/xdebug"
-      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"
+      - "./plugins:/var/www/html/wp-content/plugins:delegated"
+      - "./wordpress:/var/www/html:delegated"
+      - "./config/woocommerce-wordpress-config.php:/var/www/html/wp-config.php:delegated"
+      - "./data/xdebug:/var/xdebug:delegated"
+      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:delegated"
     labels:
       - com.yoast.plugin-development-docker.mainwpinstance
 
@@ -105,7 +105,7 @@ services:
       MYSQL_USER: wordpress
       MYSQL_PASSWORD: wordpress
     volumes:
-      - "multisite-database-data:/var/lib/mysql"
+      - "multisite-database-data:/var/lib/mysql:delegated"
   multisite-wordpress:
     container_name: "multisite-wordpress"
     depends_on:
@@ -123,12 +123,12 @@ services:
       SITE_URL: ${MULTISITE_HOST:-multisite.wordpress.test}
       VIRTUAL_HOST: ${MULTISITE_HOST:-multisite.wordpress.test}
     volumes:
-      - "./plugins:/var/www/html/wp-content/plugins"
-      - "./wordpress:/var/www/html"
-      - "./config/multisite-wordpress-config.php:/var/www/html/wp-config.php"
-      - "./config/multisite.htaccess:/var/www/html/.htaccess"
-      - "./data/xdebug:/var/xdebug"
-      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"
+      - "./plugins:/var/www/html/wp-content/plugins:delegated"
+      - "./wordpress:/var/www/html:delegated"
+      - "./config/multisite-wordpress-config.php:/var/www/html/wp-config.php:delegated"
+      - "./config/multisite.htaccess:/var/www/html/.htaccess:delegated"
+      - "./data/xdebug:/var/xdebug:delegated"
+      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:delegated"
     labels:
       - com.yoast.plugin-development-docker.mainwpinstance
 
@@ -146,7 +146,7 @@ services:
       MYSQL_USER: wordpress
       MYSQL_PASSWORD: wordpress
     volumes:
-      - "standalone-database-data:/var/lib/mysql"
+      - "standalone-database-data:/var/lib/mysql:delegated"
   standalone-wordpress:
     container_name: "standalone-wordpress"
     depends_on:
@@ -164,11 +164,11 @@ services:
       SITE_URL: ${STANDALONE_HOST:-standalone.wordpress.test}
       VIRTUAL_HOST: ${STANDALONE_HOST:-standalone.wordpress.test}
     volumes:
-      - "./sa-plugins:/var/www/html/wp-content/plugins"
-      - "./config/standalone-wordpress-config.php:/var/www/html/wp-config.php"
-      - "./wordpress:/var/www/html"
-      - "./xdebug:/var/xdebug"
-      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"
+      - "./sa-plugins:/var/www/html/wp-content/plugins:delegated"
+      - "./config/standalone-wordpress-config.php:/var/www/html/wp-config.php:delegated"
+      - "./wordpress:/var/www/html:delegated"
+      - "./xdebug:/var/xdebug:delegated"
+      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:delegated"
 
 volumes:
   basic-database-data:
