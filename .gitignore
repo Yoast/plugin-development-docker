@@ -10,3 +10,5 @@ wordpress/*
 containers/wordpress/Dockerfile
 .idea/
 .vscode/
+.DS_Store
+data/.DS_Store

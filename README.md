@@ -11,7 +11,7 @@ Otherwise install:
 - [Docker](https://docs.docker.com/v17.09/engine/installation/)
 - [docker-compose](https://docs.docker.com/compose/install/)
 
-### Setting up the container
+## Setting up the container
 
 #### 1. run `./make.sh`
 This will configure your host-file and create the necessary config files first.
@@ -23,7 +23,9 @@ This will create and start your containers. Your browser will automatically open
 #### Resetting everything
 You can always run `./clean.sh` to delete all persistent data of your WordPresss environment and start again from scratch.
 
-### Running alternate containers
+## Maintenance and CLI commands
+
+#### Running alternate containers
 
 By default `./start.sh` will start the basic wordpress container. Alternatively you can call `./start.sh $CONTAINER_NAMES` to start other containers.
 
@@ -34,36 +36,52 @@ The following are available:
 
 For example, calling `./start.sh woocommerce-wordpress` will start only the WooCommerce container. Calling `./start.sh basic-wordpress multisite-wordpress` will start both the basic WordPress and multisite containers.
 
-### Running WordPress trunk, beta or RC
+#### Running WordPress trunk, beta or RC
 
 If you need WordPress trunk, a beta or a release candidate, there are two ways of going about that:
 
 - Switch using WP CLI: 
   ```bash
-  /wp.sh core update --version=nightly
+  ./wp.sh core update --version=nightly
   ```
   Note that you'll have to repeat this daily if you want to be on the latest nightly. If you want to switch back, do, note the `--force` because you're downgrading:
   ```bash
-  /wp.sh core update --version=5.3 --force
+  ./wp.sh core update --version=5.4 --force
+  ./wp.sh core update --version=5.4 --force
   ```
 - Install and use the [WordPress beta tester plugin](https://wordpress.org/plugins/wordpress-beta-tester/).
   
-### Setting up your plugins.
+#### Setting up your plugins.
 
 Run `./plugins.sh` - this will install default plugins to your container for easier debugging and developing.
 Simply clone, extract or download any plugins you want available in your environment into the `plugins` directory. They will be immediately visible inside your WordPress installation. Don't forget to activate them!
 
-### Running WP CLI commands.
+#### Running WP CLI commands.
 
 You can run `./wp.sh` to run WP CLI commands. By default this will execute the command in the first running WordPress container ( created from this project ). However if the first argument is the name of a container it will specifically run in that container.
 
 For example: `./wp.sh shell` will run `wp shell` in the first active WordPress installation. `./wp.sh woocommerce-wordpress cache flush` will run `wp cache flush` in the woocommerce-wordpresss installation.
 
-### WordPress Debugging 
+#### Updating your local WordPress installation
+
+The local WordPress site won't be updated automatically. You have a few options to update your installation, with some pros and cons.
+
+1) The simplest way to update your WordPress installation is to click the update button in the WP admin. This process makes sure that you keep your data (like posts, plugins etc).
+2) A bit more forced way of updating (and resetting your database) can be accomplished with the following commands:
+```bash
+  ./clean.sh && 
+  ./make.sh &&
+  ./start.sh
+```
+3) If one of the methods fails, please contact the DevOps team. We can help you with updating specific docker images.
+
+_You might add the specific container argument after the ``./start.sh`` command._
+
+## WordPress Debugging 
 
 The docker environments come preconfigured with WordPress debugging on. If you want to enable Yoast debugging specifically, you can add the parameter `yoastdebug` to your URL. This will trigger the yoast debugging constants and show debugging logs on sitemaps and pretty print json-ld and such.
 
-### XDebug
+#### XDebug
 
 This container is already preconfigured with XDebug. The only thing left to do is to configure your IDE and browser. See the following 2 headers.
 
