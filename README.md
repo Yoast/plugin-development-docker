@@ -47,7 +47,7 @@ If you need WordPress trunk, a beta or a release candidate, there are two ways o
   Note that you'll have to repeat this daily if you want to be on the latest nightly. If you want to switch back, do, note the `--force` because you're downgrading:
   ```bash
   ./wp.sh core update --version=5.4 --force
-  ß./wp.sh core update --version=5.4 --force
+  ./wp.sh core update --version=5.4 --force
   ```
 - Install and use the [WordPress beta tester plugin](https://wordpress.org/plugins/wordpress-beta-tester/).
   
@@ -73,6 +73,7 @@ The local WordPress site won't be updated automatically. You have a few options 
   ./make.sh &&
   ./start.sh
 ```
+3) If one of the methods fails, please contact the DevOps team. We can help you with updating specific docker images.
 
 _You might add the specific container argument after the ``./start.sh`` command._
 
