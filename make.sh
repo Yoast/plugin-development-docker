@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Prevent script from running as root (root-related actions will prompt for the needed credentials)
-[[ $EUID -eq 0 ]] && echo "Do not run as root." && exit 1
+[[ $EUID -eq 0 ]] && echo "Do not run with sudo / as root." && exit 1
 
 # Remove corrupt php.ini folder, if existing.
 [[ -d './config/php.ini' ]] && rm -rf './config/php.ini'
