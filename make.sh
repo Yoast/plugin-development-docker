@@ -17,7 +17,7 @@ kill_port_80_usage () {
            case $yn in
                 "Stop apachectl so we can use docker" )  
                     echo "Need sudo to STOP apachectl"
-                        sudo apachectl start
+                        sudo apachectl stop
                     break
                 ;;
                 "Leave it (I will fix it myself!)" ) break;;
