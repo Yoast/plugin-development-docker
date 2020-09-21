@@ -148,12 +148,13 @@ All database ports are forwarded to localhost to make them easily accessible fro
 
 The port differs based on the installation you're running.
 
-| Site                  | Port |
-| --------------------- | ---- |
-| basic-wordpress       | 1987 |
-| woocommerce-wordpress | 1988 |
-| multisite-wordpress   | 1989 |
-
+| Site                      | Port |
+|---------------------------|------|
+| basic-wordpress           | 1987 |
+| woocommerce-wordpress     | 1988 |
+| multisite-wordpress       | 1989 |
+| standalone-wordpress      | 1990 |
+| multisitedomain-wordpress | 1991 |
 
 ## Troubleshooting
 
