@@ -121,11 +121,52 @@ services:
       ADMIN_PASSWORD: admin
       SITE_TITLE: multisite
       SITE_URL: ${MULTISITE_HOST:-multisite.wordpress.test}
-      VIRTUAL_HOST: ${MULTISITE_HOST:-multisite.wordpress.test}
+      VIRTUAL_HOST: ${MULTISITE_HOST:-multisite.wordpress.test},test.${MULTISITE_HOST:-multisite.wordpress.test},translate.${MULTISITE_HOST:-multisite.wordpress.test}
     volumes:
       - "./plugins:/var/www/html/wp-content/plugins:delegated"
       - "./wordpress:/var/www/html:delegated"
       - "./config/multisite-wordpress-config.php:/var/www/html/wp-config.php:delegated"
+      - "./config/multisite.htaccess:/var/www/html/.htaccess:delegated"
+      - "./data/xdebug:/var/xdebug:delegated"
+      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:delegated"
+    labels:
+      - com.yoast.plugin-development-docker.mainwpinstance
+
+  # Multisite WordPress using Subdomains:
+  multisitedomain-database:
+    container_name: "wordpress-multisitedomain-database"
+    image: "mysql:5.7"
+    ports:
+      - "1991:3306"
+    restart: always
+    environment:
+      VIRTUAL_HOST: ${MULTISITE_DATABASE_HOST:-multisite-database.wordpress.test}
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    volumes:
+      - "multisitedomain-database-data:/var/lib/mysql:delegated"
+  multisitedomain-wordpress:
+    container_name: "multisitedomain-wordpress"
+    depends_on:
+      - nginx
+      - multisitedomain-database
+    build: "./containers/wordpress"
+    restart: always
+    expose:
+      - 80
+    environment:
+      ADMIN_USERNAME: admin
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_PASSWORD: admin
+      SITE_TITLE: multisite
+      SITE_URL: ${MULTISITE_HOST:-multisite.wordpress.test}
+      VIRTUAL_HOST: ${MULTISITE_HOST:-multisite.wordpress.test},test.${MULTISITE_HOST:-multisite.wordpress.test},translate.${MULTISITE_HOST:-multisite.wordpress.test}
+    volumes:
+      - "./plugins:/var/www/html/wp-content/plugins:delegated"
+      - "./wordpress:/var/www/html:delegated"
+      - "./config/multisitedomain-wordpress-config.php:/var/www/html/wp-config.php:delegated"
       - "./config/multisite.htaccess:/var/www/html/.htaccess:delegated"
       - "./data/xdebug:/var/xdebug:delegated"
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:delegated"
@@ -174,4 +215,5 @@ volumes:
   basic-database-data:
   woocommerce-database-data:
   multisite-database-data:
+  multisitedomain-database-data: 
   standalone-database-data:

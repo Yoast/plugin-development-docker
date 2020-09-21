@@ -68,6 +68,8 @@ source ./config/config.sh
 change_hostfile ${BASIC_HOST:-basic.wordpress.test}
 change_hostfile ${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}
 change_hostfile ${MULTISITE_HOST:-multisite.wordpress.test}
+change_hostfile test.${MULTISITE_HOST:-multisite.wordpress.test}
+change_hostfile translate.${MULTISITE_HOST:-multisite.wordpress.test}
 change_hostfile ${STANDALONE_HOST:-standalone.wordpress.test}
 change_hostfile ${BASIC_DATABASE_HOST:-basic-database.wordpress.test}
 change_hostfile ${WOOCOMMERCE_DATABASE_HOST:-woocommerce-database.wordpress.test}

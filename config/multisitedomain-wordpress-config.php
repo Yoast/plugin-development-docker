@@ -29,7 +29,7 @@ define( 'DB_USER', 'wordpress');
 define( 'DB_PASSWORD', 'wordpress');
 
 /** MySQL hostname */
-define( 'DB_HOST', 'multisite-database');
+define( 'DB_HOST', 'multisitedomain-database');
 
 /** Database Charset to use in creating database tables. */
 define( 'DB_CHARSET', 'utf8');
@@ -93,7 +93,7 @@ if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROT
 
 define( 'WP_ALLOW_MULTISITE', true );
 define( 'MULTISITE', true );
-define( 'SUBDOMAIN_INSTALL', false );
+define( 'SUBDOMAIN_INSTALL', true );
 $base = '/';
 define( 'DOMAIN_CURRENT_SITE', $_ENV['SITE_URL'] );
 define( 'PATH_CURRENT_SITE', '/' );
