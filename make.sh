@@ -29,14 +29,16 @@ kill_port_80_usage () {
 }
 
 find_hostfile () {
+    #try mac first
     local hostfile = /etc/hosts
-    if test -f "$hostfile"; then
+    if [ ! -f "$hostfile" ]; then
         read "Found hostfile at ${hostfile}"
         return hostfile;
     fi
     
+	#try windows next
     hostfile = /windows/system32/drivers/etc/hosts
-    if test -f "$hostfile"; then
+    if [ ! -f "$hostfile" ]; then
         read "Found hostfile at ${hostfile}"
         return hostfile
     fi
