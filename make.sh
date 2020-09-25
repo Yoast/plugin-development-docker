@@ -11,8 +11,14 @@ cp -n config/config.sh.default config/config.sh
 chmod u+x config/config.sh
 
 hostfile = ''
+platform = APPLE
 
 kill_port_80_usage () {
+    # mac only currently
+    if [[ "$platform" != APPLE ]]; then
+        return;
+    fi
+
     echo "Checking if port 80 is free to use"
     if lsof -nP +c 15 | grep LISTEN | grep -s -E "[0-9]:80 "; then
         select yn in "Stop apachectl to use docker" "Leave it (I will fix it myself!)"; do
@@ -33,14 +39,20 @@ kill_port_80_usage () {
 find_hostfile () {
     # try windows first, mac second; add future platforms here.
     # make sure there aren't any conflicts e.g. the windows bash host may also provide an /etc/hosts file
+    index = 0
     for hosts_candidate in "C:/windows/system32/drivers/etc/hosts" "/etc/hosts"; do
         echo -n "looking for hostfile at "$hosts_candidate
         if [ -f "$hosts_candidate" ]; then
             #file exists, assign hostfile in outer function to current value
             echo -n "Found host file at ${hosts_candidate}" 
+            
             hostfile=$hosts_candidate
+            [[ "$index" == 0 ]] && $platform = APPLE
+            [[ "$index" == 1 ]] && $platform = WINDOWS
+
             return;
         fi
+        index = 1 + $index
     done
 
     echo "host file not found!"
