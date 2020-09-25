@@ -28,23 +28,41 @@ kill_port_80_usage () {
     fi
 }
 
+find_hostfile () {
+    local hostfile = /etc/hosts
+    if test -f "$hostfile"; then
+        read "Found hostfile at ${hostfile}"
+        return hostfile;
+    fi
+    
+    hostfile = /windows/system32/drivers/etc/hosts
+    if test -f "$hostfile"; then
+        read "Found hostfile at ${hostfile}"
+        return hostfile
+    fi
+    read "host file not found!"
+    exit 404
+}
+
 change_hostfile () {
     local URL=$1
     echo -n "Checking hostfile entry for: ${URL}... "
 
-    if grep -q -E "^([0-9]{1,3}[\.]){3}[0-9]{1,3}[[:space:]]+$URL" /etc/hosts; then
-        if grep -q -E "^127\.0\.0\.1[[:space:]]+$URL" /etc/hosts; then
+    local hostfile = find_hostfile
+
+    if grep -q -E "^([0-9]{1,3}[\.]){3}[0-9]{1,3}[[:space:]]+$URL" $hostfile then
+        if grep -q -E "^127\.0\.0\.1[[:space:]]+$URL" $hostfile; then
             echo "OK"
         else
             echo "Found this entry:"
-            grep -E "^([0-9]{1,3}[\.]){3}[0-9]{1,3}[[:space:]]+$URL" /etc/hosts;
+            grep -E "^([0-9]{1,3}[\.]){3}[0-9]{1,3}[[:space:]]+$URL" $hostfile;
             select yn in "Change it to use docker" "Leave it"; do
                 case $yn in
                     "Change it to use docker" )
                         echo "Need sudo to edit hostfile"
                         check_hosts_newline
-                        grep -v -E "^([0-9]{1,3}[\.]){3}[0-9]{1,3}[[:space:]]+$URL" /etc/hosts | sudo tee /etc/hosts > /dev/null
-                        echo "127.0.0.1 $URL" | sudo tee -a /etc/hosts > /dev/null
+                        grep -v -E "^([0-9]{1,3}[\.]){3}[0-9]{1,3}[[:space:]]+$URL" $hostfile | sudo tee $hostfile > /dev/null
+                        echo "127.0.0.1 $URL" | sudo tee -a $hostfile > /dev/null
                         break
                     ;;
                     "Leave it" ) break;;
@@ -54,13 +72,13 @@ change_hostfile () {
     else
         echo "Adding, need sudo"
         check_hosts_newline
-        echo "127.0.0.1       $URL" | sudo tee -a /etc/hosts > /dev/null
+        echo "127.0.0.1       $URL" | sudo tee -a $hostfile > /dev/null
     fi
 }
 
 function check_hosts_newline () {
-    hosts_lastchar=$(tail -c 1 /etc/hosts)
-    [[ "$hosts_lastchar" != "" ]] && echo '' | sudo tee -a /etc/hosts
+    hosts_lastchar=$(tail -c 1 $hostfile)
+    [[ "$hosts_lastchar" != "" ]] && echo '' | sudo tee -a $hostfile
 }
 
 source ./config/config.sh
