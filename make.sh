@@ -10,6 +10,8 @@ cp -n config/php.ini.default config/php.ini
 cp -n config/config.sh.default config/config.sh
 chmod u+x config/config.sh
 
+hostfile = ''
+
 kill_port_80_usage () {
     echo "Checking if port 80 is free to use"
     if lsof -nP +c 15 | grep LISTEN | grep -s -E "[0-9]:80 "; then
@@ -29,30 +31,27 @@ kill_port_80_usage () {
 }
 
 find_hostfile () {
-    #try mac first
-    local hostfile = /etc/hosts
-    if [ ! -f "$hostfile" ]; then
-        read "Found hostfile at ${hostfile}"
-        return hostfile;
-    fi
-    
-	#try windows next
-    hostfile = /windows/system32/drivers/etc/hosts
-    if [ ! -f "$hostfile" ]; then
-        read "Found hostfile at ${hostfile}"
-        return hostfile
-    fi
-    read "host file not found!"
+    # try windows first, mac second; add future platforms here.
+    # make sure there aren't any conflicts e.g. the windows bash host may also provide an /etc/hosts file
+    for hosts_candidate in "C:/windows/system32/drivers/etc/hosts" "/etc/hosts"; do
+        echo -n "looking for hostfile at "$hosts_candidate
+        if [ -f "$hosts_candidate" ]; then
+            #file exists, assign hostfile in outer function to current value
+            echo -n "Found host file at ${hosts_candidate}" 
+            hostfile=$hosts_candidate
+            return;
+        fi
+    done
+
+    echo "host file not found!"
     exit 404
 }
 
 change_hostfile () {
     local URL=$1
-    echo -n "Checking hostfile entry for: ${URL}... "
+	echo -n "Checking hostfile entry for: ${URL}... "
 
-    local hostfile = find_hostfile
-
-    if grep -q -E "^([0-9]{1,3}[\.]){3}[0-9]{1,3}[[:space:]]+$URL" $hostfile then
+    if grep -q -E "^([0-9]{1,3}[\.]){3}[0-9]{1,3}[[:space:]]+$URL" $hostfile; then
         if grep -q -E "^127\.0\.0\.1[[:space:]]+$URL" $hostfile; then
             echo "OK"
         else
@@ -84,6 +83,8 @@ function check_hosts_newline () {
 }
 
 source ./config/config.sh
+
+find_hostfile
 
 change_hostfile ${BASIC_HOST:-basic.wordpress.test}
 change_hostfile ${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}
