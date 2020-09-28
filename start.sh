@@ -30,8 +30,6 @@ PORT_standalone_wordpress=1990
 
 USER_ID=`id -u`
 GROUP_ID=`id -g`
-DOCKERTEMPLATE='./containers/wordpress/Dockerfile.template'
-DOCKERFILE='./containers/wordpress/Dockerfile'
 PLATFORM=APPLE
 STOPPING=false
 
@@ -43,8 +41,8 @@ function stop_docker {
     exit
 }
 
-function find_environment {
-    local matches=`systeminfo | grep "Microsoft Windows" -o -c`
+function get_platform {
+    local is_windows=`systeminfo | grep "Microsoft Windows" -o -c`
 
 	if [ $is_windows >= 1 ]; then
 		PLATFORM=WINDOWS
@@ -55,6 +53,8 @@ function find_environment {
 }
 
 function create_dockerfile {
+    DOCKERTEMPLATE='./containers/wordpress/Dockerfile.template'
+    DOCKERFILE='./containers/wordpress/Dockerfile'
     if [ ! -f "$DOCKERFILE" ]; then
         echo -n "Creating Dockerfile from template. $DOCKERTEMPLATE => $DOCKERFILE"
         cp "$DOCKERTEMPLATE" "$DOCKERFILE"
@@ -79,7 +79,7 @@ function boot_containers() {
     docker-compose up --detach $CONTAINERS
 }
 
-function await_database_connections () {
+function await_database_connections() {
     if ! [ "$DOCKER_DB_NO_WAIT" ]; then
         echo "Waiting for databases to boot."
         for CONTAINER in $CONTAINERS; do
@@ -94,7 +94,7 @@ function await_database_connections () {
                     sleep 2
                 done
             elif [ $PLATFORM == WINDOWS ]; then
-                until netstat -an | grep ${PORT} -o -c; do
+                until netstat -an | grep ${PORT} -o; do
                     echo "Waiting for database connection at port $PORT..."
                     sleep 2
                 done
@@ -103,49 +103,75 @@ function await_database_connections () {
     fi
 }
 
-find_environment
+function install_wordpress() {
+    for CONTAINER in $CONTAINERS; do
+        echo "Checking if WordPress is installed in $CONTAINER..."
+
+        docker exec -ti "$CONTAINER" /bin/bash -c 'until [[ -f .htaccess ]]; do sleep 1; done'
+        docker exec -ti "$CONTAINER" /bin/bash -c 'wp --allow-root core is-installed 2>/dev/null'
+        # $? is the exit code of the previous command.
+        # We check if WP is installed, if it is not, it returns with exit code 1
+        IS_INSTALLED=$?
+
+        if [[ $IS_INSTALLED == 1 ]]; then
+            echo "Installing WordPress for $CONTAINER..."
+
+            docker exec -ti "$CONTAINER" /bin/bash -c 'mkdir -p /var/www/.wp-cli/packages; chown -R www-data: /var/www/.wp-cli;'
+            docker exec --user "$USER_ID" -ti "$CONTAINER" /bin/bash -c 'php -d memory_limit=512M "$(which wp)" package install git@github.com:Yoast/wp-cli-faker.git'
+            docker cp ./seeds "$CONTAINER":/seeds
+            docker exec --user "$USER_ID" -ti "$CONTAINER" /seeds/"$CONTAINER"-seed.sh
+        fi
+
+        echo WordPress is installed.
+    done
+}
+
+function await_containers() {
+    echo "Waiting for containers to boot..."
+    local BOOTED=false
+
+    for CONTAINER in $CONTAINERS; do
+        URL_VAR="URL_${CONTAINER//-/_}"
+        URL=${!URL_VAR}
+        while [ "$BOOTED" != "true"  ]; do
+            if curl -I "$URL" 2>/dev/null | grep -q -e "HTTP/1.1 200 OK" -e "HTTP/1.1 302 Found"; then
+                BOOTED=true
+            else
+                sleep 2
+                echo "Waiting for $CONTAINER to boot... Checking $URL"
+            fi
+        done
+        #Reset for next container
+        BOOTED=false
+    done
+}
+
+function quit_docker_app() {
+    if [ $PLATFORM == APPLE ]; then
+        #mac
+        osascript -e 'quit app "Docker"'
+    fi
+}
+
+function start_docker_app() {
+    if [ $PLATFORM == APPLE ]; then
+        open --background -a Docker
+        echo "Giving docker time to start..."
+        until docker info 2> /dev/null 1> /dev/null; do
+            sleep 2
+            echo "Giving docker time to start..."
+        done
+    fi
+}
+
+get_platform
 create_dockerfile
 build_containers
+run
 boot_containers
 await_database_connections
-
-# Then install WordPress.
-for CONTAINER in $CONTAINERS; do
-    echo "Checking if WordPress is installed in $CONTAINER..."
-
-    docker exec -ti "$CONTAINER" /bin/bash -c 'until [[ -f .htaccess ]]; do sleep 1; done'
-    docker exec -ti "$CONTAINER" /bin/bash -c 'wp --allow-root core is-installed 2>/dev/null'
-    # $? is the exit code of the previous command.
-    # We check if WP is installed, if it is not, it returns with exit code 1
-    IS_INSTALLED=$?
-
-    if [[ $IS_INSTALLED == 1 ]]; then
-        echo "Installing WordPress for $CONTAINER..."
-
-        docker exec -ti "$CONTAINER" /bin/bash -c 'mkdir -p /var/www/.wp-cli/packages; chown -R www-data: /var/www/.wp-cli;'
-        docker exec --user "$USER_ID" -ti "$CONTAINER" /bin/bash -c 'php -d memory_limit=512M "$(which wp)" package install git@github.com:Yoast/wp-cli-faker.git'
-        docker cp ./seeds "$CONTAINER":/seeds
-        docker exec --user "$USER_ID" -ti "$CONTAINER" /seeds/"$CONTAINER"-seed.sh
-    fi
-
-    echo WordPress is installed.
-done
-
-echo "Waiting for containers to boot..."
-for CONTAINER in $CONTAINERS; do
-    URL_VAR="URL_${CONTAINER//-/_}"
-    URL=${!URL_VAR}
-    while [ "$BOOTED" != "true"  ]; do
-        if curl -I "$URL" 2>/dev/null | grep -q -e "HTTP/1.1 200 OK" -e "HTTP/1.1 302 Found"; then
-            BOOTED=true
-        else
-            sleep 2
-            echo "Waiting for $CONTAINER to boot... Checking $URL"
-        fi
-    done
-    #Reset for next container
-    BOOTED=false
-done
+install_wordpress
+await_containers
 
 echo "Containers have booted! Happy developing!"
 sleep 2
@@ -154,23 +180,16 @@ echo "Outputting logs now:"
 docker-compose logs -f &
 PROCESS=$!
 
-#Run until stopped with CTRL + C
+#watchdog
 while [ "$STOPPING" != 'true' ]; do
     CLOCK_SOURCE=$(docker exec -ti nginx-router-wordpress /bin/bash -c 'cat /sys/devices/system/clocksource/clocksource0/current_clocksource' | tr -d '[:space:]')
     if [[ "$CLOCK_SOURCE" != 'tsc' && "$CLOCK_SOURCE" != 'hyperv_clocksource_tsc_page' && "$STOPPING" != 'true' ]]; then
         echo "Restarting docker now to fix out-of-sync hardware clock!"
         docker ps -q | xargs -L1 docker stop
         
-        if [ $PLATFORM === APPLE ]; then
-            osascript -e 'quit app "Docker"'
-        fi
-        
-        open --background -a Docker
-        echo "Giving docker time to start..."
-        until docker info 2> /dev/null 1> /dev/null; do
-            sleep 2
-            echo "Giving docker time to start..."
-        done
+        quit_docker_app
+        start_docker_app
+
         echo "Docker is up and running again! Booting containers!"
         boot_containers
     fi
