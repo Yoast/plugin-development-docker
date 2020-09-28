@@ -11,20 +11,6 @@ fi
 source ./config/config.sh
 PLATFORM=APPLE
 
-trap stop_docker INT
-function stop_docker {
-    STOPPING=true
-    docker-compose down
-    wait $PROCESS
-    exit
-}
-
-function find_environment {
-	if [[ -f 'C:/Windows/System32/Drivers/Etc/hosts' ]]; then
-		PLATFORM = WINDOWS;
-	fi
-}
-
 if [[ -z "$@" ]]; then
     CONTAINERS=basic-wordpress
 else
@@ -48,6 +34,59 @@ GROUP_ID=`id -g`
 DOCKERTEMPLATE='./containers/wordpress/Dockerfile.template'
 DOCKERFILE='./containers/wordpress/Dockerfile'
 
+trap stop_docker INT
+function stop_docker {
+    STOPPING=true
+    docker-compose down
+    wait $PROCESS
+    exit
+}
+
+function find_environment {
+    local result = `systeminfo | grep "Microsoft Windows"`
+	if [[ result =~ Microsoft ]]; then
+		PLATFORM = WINDOWS
+	else
+        PLATFORM = APPLE
+    fi
+    echo "Platform = $PLATFORM"
+}
+
+function build_containers() {
+    echo "Ensuring all containers are built."
+    docker-compose build --pull --parallel $CONTAINERS
+}
+
+function boot_containers() {
+    echo "Booting containers."
+    docker-compose up --detach $CONTAINERS
+}
+
+function await_database_connection () {
+    if ! [ "$DOCKER_DB_NO_WAIT" ]; then
+        echo "Waiting for databases to boot."
+        for CONTAINER in $CONTAINERS; do
+            PORT_VAR="PORT_${CONTAINER//-/_}"
+            PORT=${!PORT_VAR}
+            
+            echo "Waiting for database connection at port $PORT..."
+            
+            if [ $PLATFORM == APPLE ]; then 
+                until nc -z -v -w30 localhost ${PORT}; do
+                    echo "Waiting for database connection at port $PORT..."
+                    sleep 2
+                done
+            elif [ $PLATFORM == WINDOWS ]; then
+                netstat -a -b | grep ${PORT};
+                until netstat -a -b | grep ${PORT}; do
+                    echo "Waiting for database connection at port $PORT..."
+                    sleep 2
+                done
+            fi
+        done
+    fi
+}
+
 #if [ ! -f "$DOCKERFILE" ]; then
     echo -n "Creating Dockerfile from template. $DOCKERTEMPLATE => $DOCKERFILE"
     cp "$DOCKERTEMPLATE" "$DOCKERFILE"
@@ -61,43 +100,10 @@ for CONTAINER in $CONTAINERS; do
     echo "  - $CONTAINER"
 done
 
-echo "Ensuring all containers are built."
-docker-compose build --pull --parallel $CONTAINERS
-
-function boot_containers() {
-    echo "Booting containers."
-    docker-compose up --detach $CONTAINERS
-}
-
-function await_database_connection () {
-    port = $1
-    echo "Waiting for database connection at port $port..."
-    
-    if [ $PLATFORM == APPLE ]; then 
-        until nc -z -v -w30 localhost ${port}; do
-            echo "Waiting for database connection at port $port..."
-            sleep 2
-        done
-    else if [ $PLATFORM == WINDOWS ]; then
-        netstat -a -b | grep ${port};
-        until netstat -a -b | grep ${port}; do
-            echo "Waiting for database connection at port $port..."
-            sleep 2
-        done
-    fi
-}
-
+find_environment
+build_containers
 boot_containers
-
-if ! [ "$DOCKER_DB_NO_WAIT" ]; then
-    echo "Waiting for databases to boot."
-    for CONTAINER in $CONTAINERS; do
-        PORT_VAR="PORT_${CONTAINER//-/_}"
-        PORT=${!PORT_VAR}
-        
-        await_database_connection $PORT
-    done
-fi
+await_database_connection
 
 # Then install WordPress.
 for CONTAINER in $CONTAINERS; do
@@ -142,6 +148,7 @@ echo "Outputting logs now:"
 docker-compose logs -f &
 PROCESS=$!
 
+#Run until stopped with CTRL + C
 while [ "$STOPPING" != 'true' ]; do
     CLOCK_SOURCE=$(docker exec -ti nginx-router-wordpress /bin/bash -c 'cat /sys/devices/system/clocksource/clocksource0/current_clocksource' | tr -d '[:space:]')
     if [[ "$CLOCK_SOURCE" != 'tsc' && "$CLOCK_SOURCE" != 'hyperv_clocksource_tsc_page' && "$STOPPING" != 'true' ]]; then
