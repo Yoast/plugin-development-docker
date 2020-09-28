@@ -80,10 +80,10 @@ function await_database_connection () {
         done
     else if [ $PLATFORM == WINDOWS ]; then
         netstat -a -b | grep ${port};
-        # until netstat -a -b | grep ${port}; do
-        #     echo "Waiting for database connection at port $port..."
-        #     sleep 2
-        # done
+        until netstat -a -b | grep ${port}; do
+            echo "Waiting for database connection at port $port..."
+            sleep 2
+        done
     fi
 }
 
