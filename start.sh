@@ -9,7 +9,6 @@ if ! [[ -f './config/php.ini' ]]; then
 fi
 
 source ./config/config.sh
-PLATFORM=APPLE
 
 if [[ -z "$@" ]]; then
     CONTAINERS=basic-wordpress
@@ -33,6 +32,8 @@ USER_ID=`id -u`
 GROUP_ID=`id -g`
 DOCKERTEMPLATE='./containers/wordpress/Dockerfile.template'
 DOCKERFILE='./containers/wordpress/Dockerfile'
+PLATFORM=APPLE
+STOPPING=false
 
 trap stop_docker INT
 function stop_docker {
@@ -43,13 +44,29 @@ function stop_docker {
 }
 
 function find_environment {
-    local result = `systeminfo | grep "Microsoft Windows"`
-	if [[ result =~ Microsoft ]]; then
-		PLATFORM = WINDOWS
+    local matches=`systeminfo | grep "Microsoft Windows" -o -c`
+
+	if [ $is_windows >= 1 ]; then
+		PLATFORM=WINDOWS
 	else
-        PLATFORM = APPLE
+        PLATFORM=APPLE
     fi
     echo "Platform = $PLATFORM"
+}
+
+function create_dockerfile {
+    if [ ! -f "$DOCKERFILE" ]; then
+        echo -n "Creating Dockerfile from template. $DOCKERTEMPLATE => $DOCKERFILE"
+        cp "$DOCKERTEMPLATE" "$DOCKERFILE"
+        
+        sed -i -e "s/\$UID/${USER_ID}/g" "$DOCKERFILE"
+        sed -i -e "s/\$GID/${GROUP_ID}/g" "$DOCKERFILE"
+    fi
+
+    echo "Starting containers:"
+    for CONTAINER in $CONTAINERS; do
+        echo "  - $CONTAINER"
+    done
 }
 
 function build_containers() {
@@ -62,7 +79,7 @@ function boot_containers() {
     docker-compose up --detach $CONTAINERS
 }
 
-function await_database_connection () {
+function await_database_connections () {
     if ! [ "$DOCKER_DB_NO_WAIT" ]; then
         echo "Waiting for databases to boot."
         for CONTAINER in $CONTAINERS; do
@@ -77,8 +94,7 @@ function await_database_connection () {
                     sleep 2
                 done
             elif [ $PLATFORM == WINDOWS ]; then
-                netstat -a -b | grep ${PORT};
-                until netstat -a -b | grep ${PORT}; do
+                until netstat -an | grep ${PORT} -o -c; do
                     echo "Waiting for database connection at port $PORT..."
                     sleep 2
                 done
@@ -87,23 +103,11 @@ function await_database_connection () {
     fi
 }
 
-#if [ ! -f "$DOCKERFILE" ]; then
-    echo -n "Creating Dockerfile from template. $DOCKERTEMPLATE => $DOCKERFILE"
-    cp "$DOCKERTEMPLATE" "$DOCKERFILE"
-    
-    sed -i -e "s/\$UID/${USER_ID}/g" "$DOCKERFILE"
-    sed -i -e "s/\$GID/${GROUP_ID}/g" "$DOCKERFILE"
-#fi
-
-echo "Starting containers:"
-for CONTAINER in $CONTAINERS; do
-    echo "  - $CONTAINER"
-done
-
 find_environment
+create_dockerfile
 build_containers
 boot_containers
-await_database_connection
+await_database_connections
 
 # Then install WordPress.
 for CONTAINER in $CONTAINERS; do
@@ -139,6 +143,8 @@ for CONTAINER in $CONTAINERS; do
             echo "Waiting for $CONTAINER to boot... Checking $URL"
         fi
     done
+    #Reset for next container
+    BOOTED=false
 done
 
 echo "Containers have booted! Happy developing!"
