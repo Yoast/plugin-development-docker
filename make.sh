@@ -56,7 +56,7 @@ find_hostfile () {
     done
 
     echo "host file not found!"
-    exit 404
+    exit 1
 }
 
 change_hostfile () {
