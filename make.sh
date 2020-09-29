@@ -38,7 +38,8 @@ kill_port_80_usage () {
 
 find_hostfile () {
     # try windows first, mac second; add future platforms here.
-    # make sure there aren't any conflicts e.g. the windows bash host may also provide an /etc/hosts file
+    # check the most unique identifier first to make sure there aren't any conflicts;
+	# e.g. windows git bash also has an /etc/hosts file, so the fact that file exists only means something if C:/Windows does NOT exist.
     index = 0
     for hosts_candidate in "C:/windows/system32/drivers/etc/hosts" "/etc/hosts"; do
         echo -n "looking for hostfile at "$hosts_candidate

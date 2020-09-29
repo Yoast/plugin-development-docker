@@ -4,8 +4,8 @@
 [[ $EUID -eq 0 ]] && echo "Do not run with sudo / as root." && exit 1
 
 if ! [[ -f './config/php.ini' ]]; then
-    echo '[!] Warning: config file(s) not found. Running make.sh.'
-    /bin/bash ./make.sh
+    echo '[!] Warning: config file(s) not found. Please run ./make.sh first.'
+	exit 1;
 fi
 
 source ./config/config.sh
@@ -16,20 +16,22 @@ else
     CONTAINERS="$@"
 fi
 
+#define constants
 URL_basic_wordpress="http://${BASIC_HOST:-basic.wordpress.test}"
 URL_woocommerce_wordpress="http://${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}"
 URL_multisite_wordpress="http://${MULTISITE_HOST:-multisite.wordpress.test}"
-URL_multisitedomain_wordpress="http://${MULTISITE_HOST:-multisite.wordpress.test}"
 URL_standalone_wordpress="http://${STANDALONE_HOST:-standalone.wordpress.test}"
+URL_multisitedomain_wordpress="http://${MULTISITE_HOST:-multisite.wordpress.test}"
 
-PORT_basic_wordpress=1987
-PORT_woocommerce_wordpress=1988
-PORT_multisite_wordpress=1989
-PORT_multisitedomain_wordpress=1991
-PORT_standalone_wordpress=1990
+DB_PORT_basic_wordpress=1987
+DB_PORT_woocommerce_wordpress=1988
+DB_PORT_multisite_wordpress=1989
+DB_PORT_standalone_wordpress=1990
+DB_PORT_multisitedomain_wordpress=1991
 
 USER_ID=`id -u`
 GROUP_ID=`id -g`
+#set defaults
 PLATFORM=APPLE
 STOPPING=false
 
@@ -43,8 +45,8 @@ function stop_docker {
 
 function get_platform {
     local is_windows=`systeminfo | grep "Microsoft Windows" -o -c`
-
-	if [ $is_windows >= 1 ]; then
+    
+	if [[ $is_windows == "1" ]]; then
 		PLATFORM=WINDOWS
 	else
         PLATFORM=APPLE
@@ -83,19 +85,17 @@ function await_database_connections() {
     if ! [ "$DOCKER_DB_NO_WAIT" ]; then
         echo "Waiting for databases to boot."
         for CONTAINER in $CONTAINERS; do
-            PORT_VAR="PORT_${CONTAINER//-/_}"
-            PORT=${!PORT_VAR}
-            
-            echo "Waiting for database connection at port $PORT..."
-            
+            DB_PORT_VAR="DB_PORT_${CONTAINER//-/_}"
+            DB_PORT=${!DB_PORT_VAR}
+                        
             if [ $PLATFORM == APPLE ]; then 
-                until nc -z -v -w30 localhost ${PORT}; do
-                    echo "Waiting for database connection at port $PORT..."
+                until nc -z -v -w30 localhost ${DB_PORT}; do
+                    echo "Waiting until database accepts connections at port $DB_PORT..."
                     sleep 2
                 done
             elif [ $PLATFORM == WINDOWS ]; then
-                until netstat -an | grep ${PORT} -o; do
-                    echo "Waiting for database connection at port $PORT..."
+                until netstat -an | grep ${DB_PORT} -o; do
+                    echo "Waiting until database accepts connections at port $DB_PORT..."
                     sleep 2
                 done
             fi
@@ -107,8 +107,12 @@ function install_wordpress() {
     for CONTAINER in $CONTAINERS; do
         echo "Checking if WordPress is installed in $CONTAINER..."
 
-        docker exec -ti "$CONTAINER" /bin/bash -c 'until [[ -f .htaccess ]]; do sleep 1; done'
-        docker exec -ti "$CONTAINER" /bin/bash -c 'wp --allow-root core is-installed 2>/dev/null'
+        if [[ PLATFORM == APPLE ]]; then
+            docker exec -ti "$CONTAINER" /bin/bash -c 'until [[ -f .htaccess ]]; do sleep 1; done'
+            docker exec -ti "$CONTAINER" /bin/bash -c 'wp --allow-root core is-installed 2>/dev/null'
+        else
+            docker exec -ti "$CONTAINER" `until [[ \`ls -a | grep ".htaccess" -c\` ==1]]; do sleep 1; done`
+        fi
         # $? is the exit code of the previous command.
         # We check if WP is installed, if it is not, it returns with exit code 1
         IS_INSTALLED=$?
@@ -122,7 +126,7 @@ function install_wordpress() {
             docker exec --user "$USER_ID" -ti "$CONTAINER" /seeds/"$CONTAINER"-seed.sh
         fi
 
-        echo WordPress is installed.
+        echo 'WordPress is installed.'
     done
 }
 
@@ -164,10 +168,26 @@ function start_docker_app() {
     fi
 }
 
+function synchronize_clocks() {
+	if [ $PLATFORM == APPLE ]; then
+
+		CLOCK_SOURCE=$(docker exec -ti nginx-router-wordpress /bin/bash -c 'cat /sys/devices/system/clocksource/clocksource0/current_clocksource' | tr -d '[:space:]')
+		if [[ "$CLOCK_SOURCE" != 'tsc' && "$STOPPING" != 'true' ]]; then
+			echo "Restarting docker now to fix out-of-sync hardware clock!"
+			docker ps -q | xargs -L1 docker stop
+			
+			quit_docker_app
+			start_docker_app
+
+			echo "Docker is up and running again! Booting containers!"
+			boot_containers
+		fi
+	fi
+}
+
 get_platform
 create_dockerfile
 build_containers
-run
 boot_containers
 await_database_connections
 install_wordpress
@@ -180,18 +200,8 @@ echo "Outputting logs now:"
 docker-compose logs -f &
 PROCESS=$!
 
-#watchdog
+#automatically fix clocks when 
 while [ "$STOPPING" != 'true' ]; do
-    CLOCK_SOURCE=$(docker exec -ti nginx-router-wordpress /bin/bash -c 'cat /sys/devices/system/clocksource/clocksource0/current_clocksource' | tr -d '[:space:]')
-    if [[ "$CLOCK_SOURCE" != 'tsc' && "$CLOCK_SOURCE" != 'hyperv_clocksource_tsc_page' && "$STOPPING" != 'true' ]]; then
-        echo "Restarting docker now to fix out-of-sync hardware clock!"
-        docker ps -q | xargs -L1 docker stop
-        
-        quit_docker_app
-        start_docker_app
-
-        echo "Docker is up and running again! Booting containers!"
-        boot_containers
-    fi
-    sleep 5
+	synchronize_clocks
+	sleep 5
 done
