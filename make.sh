@@ -13,30 +13,7 @@ chmod u+x config/config.sh
 hostfile = ''
 platform = APPLE
 
-kill_port_80_usage () {
-    # mac only currently
-    if [[ "$platform" != APPLE ]]; then
-        return;
-    fi
-
-    echo "Checking if port 80 is free to use"
-    if lsof -nP +c 15 | grep LISTEN | grep -s -E "[0-9]:80 "; then
-        select yn in "Stop apachectl to use docker" "Leave it (I will fix it myself!)"; do
-           case $yn in
-                "Stop apachectl so we can use docker" )  
-                    echo "Need sudo to STOP apachectl"
-                        sudo apachectl stop
-                    break
-                ;;
-                "Leave it (I will fix it myself!)" ) break;;
-            esac
-        done
-    else
-        echo "OK"
-    fi
-}
-
-find_hostfile () {
+function find_platform () {
     # try windows first, mac second; add future platforms here.
     # check the most unique identifier first to make sure there aren't any conflicts;
 	# e.g. windows git bash also has an /etc/hosts file, so the fact that file exists only means something if C:/Windows does NOT exist.
@@ -60,54 +37,10 @@ find_hostfile () {
     exit 1
 }
 
-change_hostfile () {
-    local URL=$1
-	echo -n "Checking hostfile entry for: ${URL}... "
+find_platform
 
-    if grep -q -E "^([0-9]{1,3}[\.]){3}[0-9]{1,3}[[:space:]]+$URL" $hostfile; then
-        if grep -q -E "^127\.0\.0\.1[[:space:]]+$URL" $hostfile; then
-            echo "OK"
-        else
-            echo "Found this entry:"
-            grep -E "^([0-9]{1,3}[\.]){3}[0-9]{1,3}[[:space:]]+$URL" $hostfile;
-            select yn in "Change it to use docker" "Leave it"; do
-                case $yn in
-                    "Change it to use docker" )
-                        echo "Need sudo to edit hostfile"
-                        check_hosts_newline
-                        grep -v -E "^([0-9]{1,3}[\.]){3}[0-9]{1,3}[[:space:]]+$URL" $hostfile | sudo tee $hostfile > /dev/null
-                        echo "127.0.0.1 $URL" | sudo tee -a $hostfile > /dev/null
-                        break
-                    ;;
-                    "Leave it" ) break;;
-                esac
-            done
-        fi
-    else
-        echo "Adding, need sudo"
-        check_hosts_newline
-        echo "127.0.0.1       $URL" | sudo tee -a $hostfile > /dev/null
-    fi
-}
-
-function check_hosts_newline () {
-    hosts_lastchar=$(tail -c 1 $hostfile)
-    [[ "$hosts_lastchar" != "" ]] && echo '' | sudo tee -a $hostfile
-}
-
-source ./config/config.sh
-
-find_hostfile
-
-change_hostfile ${BASIC_HOST:-basic.wordpress.test}
-change_hostfile ${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}
-change_hostfile ${MULTISITE_HOST:-multisite.wordpress.test}
-change_hostfile test.${MULTISITE_HOST:-multisite.wordpress.test}
-change_hostfile translate.${MULTISITE_HOST:-multisite.wordpress.test}
-change_hostfile ${STANDALONE_HOST:-standalone.wordpress.test}
-change_hostfile ${BASIC_DATABASE_HOST:-basic-database.wordpress.test}
-change_hostfile ${WOOCOMMERCE_DATABASE_HOST:-woocommerce-database.wordpress.test}
-change_hostfile ${MULTISITE_DATABASE_HOST:-multisite-database.wordpress.test}
-change_hostfile ${STANDALONE_DATABASE_HOST:-standalone-database.wordpress.test}
-
-kill_port_80_usage
+if [ "$platform" == APPLE ]; then 
+	source ./make_mac.sh
+elif [ "$platform" == WINDOWS ]; then 
+	source /.make_win.sh
+fi
