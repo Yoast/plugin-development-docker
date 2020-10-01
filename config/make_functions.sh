@@ -2,12 +2,9 @@
 
 function verify_hostfile () {
 	local hostfile=$1
-	if [ -f "$hostfile" ]; then
-		echo "Found host file at ${hosts_candidate}"            
-		return;
-	else
-		echo "host file not found!"
-	   exit 1
+	if [ ! -f "$hostfile" ]; then
+		echo "host file not found at ${hosts_candidate} - aborting..."            
+		exit 1
 	fi
 }
 
@@ -17,22 +14,23 @@ function check_hosts_newline () {
 }
 
 function change_hostfile () {
-    local URL=$1
-	echo "Checking hostfile entry for: ${URL}... "
+    local path_to_hostfile=$1
+	local URL=$2
+	echo -n "Checking hostfile entry for: ${URL}... "
 
-    if grep -q -E "^([0-9]{1,3}[\.]){3}[0-9]{1,3}[[:space:]]+$URL" $hostfile; then
-        if grep -q -E "^127\.0\.0\.1[[:space:]]+$URL" $hostfile; then
+    if grep -q -E "^([0-9]{1,3}[\.]){3}[0-9]{1,3}[[:space:]]+$URL" $path_to_hostfile; then
+        if grep -q -E "^127\.0\.0\.1[[:space:]]+$URL" $path_to_hostfile; then
             echo "OK"
         else
             echo "Found this entry:"
-            grep -E "^([0-9]{1,3}[\.]){3}[0-9]{1,3}[[:space:]]+$URL" $hostfile;
+            grep -E "^([0-9]{1,3}[\.]){3}[0-9]{1,3}[[:space:]]+$URL" $path_to_hostfile;
             select yn in "Change it to use docker" "Leave it"; do
                 case $yn in
                     "Change it to use docker" )
-                        echo "Need sudo to edit hostfile"
+                        echo "Need sudo to edit path_to_hostfile"
                         check_hosts_newline
-                        grep -v -E "^([0-9]{1,3}[\.]){3}[0-9]{1,3}[[:space:]]+$URL" $hostfile | sudo tee $hostfile > /dev/null
-                        echo "127.0.0.1 $URL" | sudo tee -a $hostfile > /dev/null
+                        grep -v -E "^([0-9]{1,3}[\.]){3}[0-9]{1,3}[[:space:]]+$URL" $path_to_hostfile | sudo tee $path_to_hostfile > /dev/null
+                        echo "127.0.0.1 $URL" | sudo tee -a $path_to_hostfile > /dev/null
                         break
                     ;;
                     "Leave it" ) break;;
@@ -42,6 +40,22 @@ function change_hostfile () {
     else
         echo "Adding, need sudo"
         check_hosts_newline
-        echo "127.0.0.1       $URL" | sudo tee -a $hostfile > /dev/null
+        echo "127.0.0.1       $URL" | sudo tee -a $path_to_hostfile > /dev/null
     fi
+}
+
+function platform_independent_make() {
+	path_to_hostfile=$1
+	verify_hostfile $hostfile
+
+	change_hostfile $hostfile ${BASIC_HOST:-basic.wordpress.test}
+	change_hostfile $hostfile ${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}
+	change_hostfile $hostfile ${MULTISITE_HOST:-multisite.wordpress.test}
+	change_hostfile $hostfile test.${MULTISITE_HOST:-multisite.wordpress.test}
+	change_hostfile $hostfile translate.${MULTISITE_HOST:-multisite.wordpress.test}
+	change_hostfile $hostfile ${STANDALONE_HOST:-standalone.wordpress.test}
+	change_hostfile $hostfile ${BASIC_DATABASE_HOST:-basic-database.wordpress.test}
+	change_hostfile $hostfile ${WOOCOMMERCE_DATABASE_HOST:-woocommerce-database.wordpress.test}
+	change_hostfile $hostfile ${MULTISITE_DATABASE_HOST:-multisite-database.wordpress.test}
+	change_hostfile $hostfile ${STANDALONE_DATABASE_HOST:-standalone-database.wordpress.test}
 }

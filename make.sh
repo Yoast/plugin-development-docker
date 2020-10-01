@@ -52,6 +52,6 @@ else
 	exit 1
 fi
 
-#defined in either make_win.sh or make_mac.sh
+#this function is defined in either make_win.sh or make_mac.sh
 echo "Running make script for ${platform}"
 platform_make
