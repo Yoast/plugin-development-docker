@@ -11,10 +11,6 @@ function prepare_files() {
 
 	cp  config/php.ini.default config/php.ini
 	cp  config/config.sh.default config/config.sh
-	chmod u+x config/config.sh
-	chmod u+x config/make_mac.sh
-	chmod u+x config/make_win.sh
-	chmod u+x config/make_functions.sh
 }
 
 function find_platform () {
@@ -43,13 +39,11 @@ function find_platform () {
 prepare_files
 find_platform
 
-if [ "$platform" == APPLE ]; then 
-	source config/make_mac.sh
-elif [ "$platform" == WINDOWS ]; then 
+if [ "$platform" == WINDOWS ]; then 
 	source config/make_win.sh
 else
-	echo "Could not determine the host platform - aborting."
-	exit 1
+	# supports mac and ubuntu
+	source config/make_mac.sh
 fi
 
 #this function is defined in either make_win.sh or make_mac.sh
