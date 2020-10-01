@@ -23,9 +23,9 @@ function await_database_connections() {
 
 function install_wordpress() {
     for CONTAINER in $CONTAINERS; do
-        echo "Checking if WordPress is installed in $CONTAINER..."
+        echo -n "Waiting for WordPress to start in container $CONTAINER..."
 
-		docker exec -ti "$CONTAINER" /bin/bash -c 'until [[ -f .htaccess ]]; do sleep 1; done'
+		docker exec -ti "$CONTAINER" /bin/bash -c 'until [[ -f .htaccess ]]; do echo -n "."; sleep 1; done'
 		docker exec -ti "$CONTAINER" /bin/bash -c 'wp --allow-root core is-installed 2>/dev/null'
 		
 		# $? is the exit code of the previous command.
@@ -33,11 +33,15 @@ function install_wordpress() {
         IS_INSTALLED=$?
 
         if [[ $IS_INSTALLED == 1 ]]; then
-            echo "Installing WordPress for $CONTAINER..."
+            echo "WordPress has NOT been configured.".			
+			echo "Installing WordPress in container $CONTAINER..."
 
             docker exec -ti "$CONTAINER" /bin/bash -c 'mkdir -p /var/www/.wp-cli/packages; chown -R www-data: /var/www/.wp-cli;'
             docker exec --user "$USER_ID" -ti "$CONTAINER" /bin/bash -c 'php -d memory_limit=512M "$(which wp)" package install git@github.com:Yoast/wp-cli-faker.git'
             docker cp ./seeds "$CONTAINER":/seeds
+
+			chown u+w wp-content
+
             docker exec --user "$USER_ID" -ti "$CONTAINER" /seeds/"$CONTAINER"-seed.sh
         fi
 

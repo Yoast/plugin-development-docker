@@ -5,7 +5,7 @@
 
 if ! [[ -f './config/php.ini' ]]; then
     echo '[!] Warning: config file(s) not found. Please run ./make.sh first.'
-	exit 1;
+	exit 1
 fi
 
 source ./config/config.sh
@@ -31,7 +31,6 @@ DB_PORT_multisitedomain_wordpress=1991
 
 USER_ID=`id -u`
 GROUP_ID=`id -g`
-#set defaults
 PLATFORM=APPLE
 STOPPING=false
 
