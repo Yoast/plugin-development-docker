@@ -10,7 +10,7 @@ function await_database_connections() {
             DB_PORT_VAR="DB_PORT_${CONTAINER//-/_}"
             DB_PORT=${!DB_PORT_VAR}
                         
-			until nc -z -v -w30 localhost ${DB_PORT} | grep ${DB_PORT}; do
+			until nc -z -v -w30 localhost ${DB_PORT} 2>&1 | grep -E "${DB_PORT}.+open$"; do
 				echo "Waiting until database accepts connections at port $DB_PORT..."
 				sleep 2
 			done
