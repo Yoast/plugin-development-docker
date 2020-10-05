@@ -3,9 +3,6 @@
 # Prevent script from running as root (root-related actions will prompt for the needed credentials)
 [[ $EUID -eq 0 ]] && echo "Do not run with sudo / as root." && exit 1
 
-#set defaults
-PLATFORM=APPLE
-
 function await_database_connections() {
     if ! [ "$DOCKER_DB_NO_WAIT" ]; then
         echo "Waiting for databases to boot."

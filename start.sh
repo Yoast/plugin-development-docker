@@ -8,6 +8,7 @@ if ! [[ -f './config/php.ini' ]]; then
 	exit 1
 fi
 
+source platform.sh
 source ./config/config.sh
 
 if [[ -z "$@" ]]; then
@@ -31,26 +32,15 @@ DB_PORT_multisitedomain_wordpress=1991
 
 USER_ID=`id -u`
 GROUP_ID=`id -g`
-PLATFORM=APPLE
 STOPPING=false
 
+trap stop_docker INT
 trap stop_docker INT
 function stop_docker {
     STOPPING=true
     docker-compose down
     wait $PROCESS
     exit
-}
-
-function get_platform {
-    local is_windows=`systeminfo | grep "Microsoft Windows" -o -c`
-    
-	if [[ $is_windows == "1" ]]; then
-		PLATFORM=WINDOWS
-	else
-        PLATFORM=APPLE
-    fi
-    echo "Platform = $PLATFORM"
 }
 
 function create_dockerfile {
@@ -100,9 +90,8 @@ function await_containers() {
     done
 }
 
+find_platform
 
-
-get_platform
 if [[ "$PLATFORM" == WINDOWS ]]; then
 	source config/start_win.sh
 else
