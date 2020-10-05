@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# You can overwrite the host names here. If you change them you will need to run ./clean.sh && ./make.sh && ./start.sh again.
+# You can overwrite the host names here. If you change them you will need to run ../clean.sh && ../make.sh && ./start.sh again.
 #export BASIC_HOST=basic.wordpress.test
 #export WOOCOMMERCE_HOST=woocommerce.wordpress.test
 #export MULTISITE_HOST=multisite.wordpress.test
