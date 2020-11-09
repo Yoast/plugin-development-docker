@@ -29,4 +29,5 @@ function kill_port_80_usage () {
 function platform_make() {	
 	platform_independent_make $hostfile
 	kill_port_80_usage
+    create_self_signed_cert
 }

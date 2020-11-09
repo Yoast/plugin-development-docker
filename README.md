@@ -23,15 +23,19 @@ Otherwise install:
 
 #### 1. run `./make.sh`
 This will configure your host-file and create the necessary config files first.
-You will likely need to enter your sudo password as this will add local.wordpress.test to your hosts file.
+You will likely need to enter your sudo password as this will add the needed wordpress.test domains to your hosts file.
 
 #### 2. run `./start.sh`
-This will create and start your containers. Your browser will automatically open with your WordPress environment.
+This will create and start your containers.
 
 #### Resetting everything
 You can always run `./clean.sh` to delete all persistent data of your WordPresss environment and start again from scratch.
+Run `./clean.sh --all` to also reset all configuration and certificate files.
 
 ## Maintenance and CLI commands
+
+#### Using HTTPS
+The websites will use a secure connection by default. To do this, the docker will utilize self-signed certificates. Your browser will not trust these by default. You will be prompted to accept the certificate(s) the first time you open the website. Any time you clear the certificates by running `./clean.sh --all`, removing the repo from your PC or manually, you will have to accept the newly generate certificates. Certificates are created by running the `./make.sh` script.
 
 #### Running alternate containers
 

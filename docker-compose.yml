@@ -7,9 +7,11 @@ services:
     image: jwilder/nginx-proxy
     ports:
       - "127.0.0.1:80:80"
+      - "127.0.0.1:443:443"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - "./config/yoastnginx.conf:/etc/nginx/conf.d/yoastnginx.conf:delegated"
+      - "./config/certs:/etc/nginx/certs"
   
   # Basic WordPress:
   basic-database:
@@ -35,13 +37,15 @@ services:
     restart: always
     expose:
       - 80
+      - 443
     environment:
       ADMIN_USERNAME: admin
       ADMIN_EMAIL: admin@example.com
       ADMIN_PASSWORD: admin
       SITE_TITLE: Basic
       SITE_URL: ${BASIC_HOST:-basic.wordpress.test}
-      VIRTUAL_HOST: ${BASIC_HOST:-basic.wordpress.test}
+      VIRTUAL_HOST: ${BASIC_HOST:-basic.wordpress.test},*.ngrok.io,wordpress.test,beta.wordpress.test
+      PHP_EXTRA_CONFIGURE_ARGS: --without-curl
     volumes:
       - "./plugins:/var/www/html/wp-content/plugins:delegated"
       - "./config/basic-wordpress-config.php:/var/www/html/wp-config.php:delegated"

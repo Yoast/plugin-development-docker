@@ -18,11 +18,11 @@ else
 fi
 
 #define constants
-URL_basic_wordpress="http://${BASIC_HOST:-basic.wordpress.test}"
-URL_woocommerce_wordpress="http://${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}"
-URL_multisite_wordpress="http://${MULTISITE_HOST:-multisite.wordpress.test}"
-URL_standalone_wordpress="http://${STANDALONE_HOST:-standalone.wordpress.test}"
-URL_multisitedomain_wordpress="http://${MULTISITE_HOST:-multisite.wordpress.test}"
+URL_basic_wordpress="https://${BASIC_HOST:-basic.wordpress.test}"
+URL_woocommerce_wordpress="https://${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}"
+URL_multisite_wordpress="https://${MULTISITE_HOST:-multisite.wordpress.test}"
+URL_standalone_wordpress="https://${STANDALONE_HOST:-standalone.wordpress.test}"
+URL_multisitedomain_wordpress="https://${MULTISITE_HOST:-multisite.wordpress.test}"
 
 DB_PORT_basic_wordpress=1987
 DB_PORT_woocommerce_wordpress=1988
@@ -78,7 +78,7 @@ function await_containers() {
         URL_VAR="URL_${CONTAINER//-/_}"
         URL=${!URL_VAR}
         while [ "$BOOTED" != "true"  ]; do
-            if curl -I "$URL" 2>/dev/null | grep -q -e "HTTP/1.1 200 OK" -e "HTTP/1.1 302 Found"; then
+            if curl -kI "$URL" 2>/dev/null | grep -q -E "HTTP/1.1 (200|301|302)"; then
                 BOOTED=true
             else
                 sleep 2
