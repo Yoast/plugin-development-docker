@@ -37,7 +37,6 @@ services:
     restart: always
     expose:
       - 80
-      - 443
     environment:
       ADMIN_USERNAME: admin
       ADMIN_EMAIL: admin@example.com
