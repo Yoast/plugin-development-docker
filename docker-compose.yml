@@ -44,8 +44,7 @@ services:
       ADMIN_PASSWORD: admin
       SITE_TITLE: Basic
       SITE_URL: ${BASIC_HOST:-basic.wordpress.test}
-      VIRTUAL_HOST: ${BASIC_HOST:-basic.wordpress.test},*.ngrok.io,wordpress.test,beta.wordpress.test
-      PHP_EXTRA_CONFIGURE_ARGS: --without-curl
+      VIRTUAL_HOST: ${BASIC_HOST:-basic.wordpress.test}
     volumes:
       - "./plugins:/var/www/html/wp-content/plugins:delegated"
       - "./config/basic-wordpress-config.php:/var/www/html/wp-config.php:delegated"
