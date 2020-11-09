@@ -37,6 +37,10 @@ Run `./clean.sh --all` to also reset all configuration and certificate files.
 #### Using HTTPS
 The websites will use a secure connection by default. To do this, the docker will utilize self-signed certificates. Your browser will not trust these by default. You will be prompted to accept the certificate(s) the first time you open the website. Any time you clear the certificates by running `./clean.sh --all`, removing the repo from your PC or manually, you will have to accept the newly generate certificates. Certificates are created by running the `./make.sh` script.
 
+In addition to your browser using https, your curl and other custom connections will also use HTTPS and not trust the certificate. Below are some popular options and workarounds:
+- curl: use the `-k` argument to skip certificate checking.
+- Postman: open up the preferences and on the general tab, disable the certificate validation checkbox.
+
 #### Running alternate containers
 
 By default `./start.sh` will start the basic wordpress container. Alternatively you can call `./start.sh $CONTAINER_NAMES` to start other containers.
