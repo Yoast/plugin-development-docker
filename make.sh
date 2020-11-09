@@ -9,8 +9,8 @@ function prepare_files() {
 	# Remove corrupt php.ini folder, if existing.
 	[[ -d './config/php.ini' ]] && rm -rf './config/php.ini'
 
-	cp  config/php.ini.default config/php.ini
-	cp  config/config.sh.default config/config.sh
+	cp -n config/php.ini.default config/php.ini
+	cp -n config/config.sh.default config/config.sh
 }
 
 prepare_files
