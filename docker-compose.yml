@@ -42,7 +42,7 @@ services:
       ADMIN_EMAIL: admin@example.com
       ADMIN_PASSWORD: admin
       SITE_TITLE: Basic
-      SITE_URL: ${BASIC_HOST:-basic.wordpress.test}
+      SITE_URL: https://${BASIC_HOST:-basic.wordpress.test}
       VIRTUAL_HOST: ${BASIC_HOST:-basic.wordpress.test}
     volumes:
       - "./plugins:/var/www/html/wp-content/plugins:delegated"
@@ -82,7 +82,7 @@ services:
       ADMIN_EMAIL: admin@example.com
       ADMIN_PASSWORD: admin
       SITE_TITLE: WooCommerce
-      SITE_URL: ${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}
+      SITE_URL: https://${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}
       VIRTUAL_HOST: ${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}
     volumes:
       - "./plugins:/var/www/html/wp-content/plugins:delegated"
@@ -122,7 +122,7 @@ services:
       ADMIN_EMAIL: admin@example.com
       ADMIN_PASSWORD: admin
       SITE_TITLE: multisite
-      SITE_URL: ${MULTISITE_HOST:-multisite.wordpress.test}
+      SITE_URL: https://${MULTISITE_HOST:-multisite.wordpress.test}
       VIRTUAL_HOST: ${MULTISITE_HOST:-multisite.wordpress.test},test.${MULTISITE_HOST:-multisite.wordpress.test},translate.${MULTISITE_HOST:-multisite.wordpress.test}
     volumes:
       - "./plugins:/var/www/html/wp-content/plugins:delegated"
@@ -163,7 +163,7 @@ services:
       ADMIN_EMAIL: admin@example.com
       ADMIN_PASSWORD: admin
       SITE_TITLE: multisite
-      SITE_URL: ${MULTISITE_HOST:-multisite.wordpress.test}
+      SITE_URL: https://${MULTISITE_HOST:-multisite.wordpress.test}
       VIRTUAL_HOST: ${MULTISITE_HOST:-multisite.wordpress.test},test.${MULTISITE_HOST:-multisite.wordpress.test},translate.${MULTISITE_HOST:-multisite.wordpress.test}
     volumes:
       - "./plugins:/var/www/html/wp-content/plugins:delegated"
@@ -204,7 +204,7 @@ services:
       ADMIN_EMAIL: admin@example.com
       ADMIN_PASSWORD: admin
       SITE_TITLE: Standalone
-      SITE_URL: ${STANDALONE_HOST:-standalone.wordpress.test}
+      SITE_URL: https://${STANDALONE_HOST:-standalone.wordpress.test}
       VIRTUAL_HOST: ${STANDALONE_HOST:-standalone.wordpress.test}
     volumes:
       - "./sa-plugins:/var/www/html/wp-content/plugins:delegated"
