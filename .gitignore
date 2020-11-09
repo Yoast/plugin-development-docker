@@ -13,3 +13,4 @@ containers/wordpress/Dockerfile
 .DS_Store
 data/.DS_Store
 config/certs/*
+!config/certs/.gitkeep
