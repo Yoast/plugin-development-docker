@@ -59,3 +59,15 @@ function platform_independent_make() {
 	change_hostfile $path_to_hostfile ${MULTISITE_DATABASE_HOST:-multisite-database.wordpress.test}
 	change_hostfile $path_to_hostfile ${STANDALONE_DATABASE_HOST:-standalone-database.wordpress.test}
 }
+
+function create_self_signed_cert() {
+    if [[ ! -f './config/certs/wordpress.test.key' ]]; then 
+        openssl req -newkey rsa:2048 -nodes -subj '/C=NL/ST=Gelderland/L=Wijchen/O=Yoast/OU=Development/CN=*.wordpress.test' -keyout ./config/certs/wordpress.test.key -x509 -days 730 -out ./config/certs/wordpress.test.crt
+    fi
+
+    for domain in ${BASIC_HOST} ${WOOCOMMERCE_HOST} ${MULTISITE_HOST} ${STANDALONE_HOST}; do
+        if [[ $domain != '' ]]; then
+            openssl req -newkey rsa:2048 -nodes -subj "/C=NL/ST=Gelderland/L=Wijchen/O=Yoast/OU=Development/CN=${domain}" -keyout ./config/certs/${domain}.key -x509 -days 730 -out ./config/certs/${domain}.crt
+        fi
+    done
+}

@@ -10,4 +10,5 @@ hostfile=C:/windows/system32/drivers/etc/hosts
 
 function platform_make() {
 	platform_independent_make $hostfile
+	create_self_signed_cert
 }
