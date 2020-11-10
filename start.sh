@@ -78,7 +78,7 @@ function await_containers() {
         URL_VAR="URL_${CONTAINER//-/_}"
         URL=${!URL_VAR}
         while [ "$BOOTED" != "true"  ]; do
-            if curl -kI "$URL" 2>/dev/null | grep -q -E "HTTP/1.1 (200|301|302)"; then
+            if curl -kI "$URL" 2>/dev/null | grep -q -E "HTTP/(1.1|2) (200|301|302)"; then
                 BOOTED=true
             else
                 sleep 2
