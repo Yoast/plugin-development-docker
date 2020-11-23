@@ -31,9 +31,11 @@ function install_wordpress() {
             echo "WordPress has NOT been configured.".
 			echo "Installing WordPress in container $CONTAINER..."
 
+            docker exec -ti "$CONTAINER" //bin/bash -c 'ln -sf /tmp/wp-config.php /var/www/html/wp-config.php'
+
             docker exec -i "$CONTAINER" //bin/bash -c 'mkdir -p /var/www/.wp-cli/packages; chown -R www-data: /var/www/.wp-cli;'
             docker exec -i "$CONTAINER" //bin/bash -c 'chown www-data: /var/www/html/wp-content'
-            docker exec --user "$USER_ID" -i "$CONTAINER" //bin/bash -c 'php -d memory_limit=512M "$(which wp)" package install git@github.com:Yoast/wp-cli-faker.git'
+            docker exec --user "$USER_ID" -i "$CONTAINER" //bin/bash -c 'php -d memory_limit=512M "$(which wp)" package install git@github.com:yoast/wp-cli-faker.git'
             
 			docker cp ./seeds "$CONTAINER":/seeds						       		
             docker exec --user "$USER_ID" -i "$CONTAINER" //seeds/"$CONTAINER"-seed.sh
