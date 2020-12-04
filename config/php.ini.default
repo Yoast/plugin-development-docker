@@ -1,3 +1,4 @@
+; XDEBUG 2.0 configuration:
 xdebug.remote_enable = On
 xdebug.remote_host   = host.docker.internal
 xdebug.remote_port   = 9000
@@ -12,6 +13,17 @@ xdebug.trace_output_name    = trace.%R.%p
 
 xdebug.remote_log = /var/xdebug/xdebug.log
 
+; XDEBUG 3.0 configuration:
+xdebug.mode = debug ; debug/trace/profile
+xdebug.client_host   = host.docker.internal
+xdebug.client_port   = 9000
+
+xdebug.start_with_request = trigger ;trigger/yes
+
+xdebug.output_dir     = /var/xdebug
+xdebug.log = /var/xdebug/xdebug.log
+
+; Default PHP.INI configuration:
 error_reporting        = E_ALL
 display_startup_errors = On
 display_errors         = On
