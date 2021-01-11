@@ -71,6 +71,12 @@ You can run `./wp.sh` to run WP CLI commands. By default this will execute the c
 
 For example: `./wp.sh shell` will run `wp shell` in the first active WordPress installation. `./wp.sh woocommerce-wordpress cache flush` will run `wp cache flush` in the woocommerce-wordpresss installation.
 
+#### Mails and mailhog
+
+Mailhog is a local catch-all for mails that are sent from local environments. To use it, use WordPress like you would normally. For example, create a new user and have the installation send an e-mail to the user. This will deliver the mail to your local Mailhog instance. To see this mail, open a new browsertab and navigate to http://localhost:8025/ . Here you will find all mails that are sent by the application.
+
+Remember that Mailhogs' memory is non-persistent. Closing down the container will wipe all stored e-mails.
+
 #### Updating your local WordPress installation
 
 The local WordPress site won't be updated automatically. You have a few options to update your installation, with some pros and cons.

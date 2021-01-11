@@ -10,6 +10,15 @@ services:
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - "./config/yoastnginx.conf:/etc/nginx/conf.d/yoastnginx.conf"
+
+  # Mailhog:
+  mailhog:
+    container_name: "mailhog-wordpress"
+    image: mailhog/mailhog
+    logging:
+      driver: 'none'  # disable saving logs to prevent bloat
+    ports:
+      - 127.0.0.1:8025:8025 # web ui
   
   # Basic WordPress:
   basic-database:
@@ -30,6 +39,7 @@ services:
     container_name: "basic-wordpress"
     depends_on:
       - nginx
+      - mailhog
       - basic-database
     build: "./containers/wordpress"
     restart: always
@@ -70,6 +80,7 @@ services:
     container_name: "woocommerce-wordpress"
     depends_on:
       - nginx
+      - mailhog
       - woocommerce-database
     build: "./containers/wordpress"
     restart: always
@@ -110,6 +121,7 @@ services:
     container_name: "multisite-wordpress"
     depends_on:
       - nginx
+      - mailhog
       - multisite-database
     build: "./containers/wordpress"
     restart: always
@@ -151,6 +163,7 @@ services:
     container_name: "multisitedomain-wordpress"
     depends_on:
       - nginx
+      - mailhog
       - multisitedomain-database
     build: "./containers/wordpress"
     restart: always
@@ -192,6 +205,7 @@ services:
     container_name: "standalone-wordpress"
     depends_on:
       - nginx
+      - mailhog
       - standalone-database
     build: "./containers/wordpress"
     restart: always
