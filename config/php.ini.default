@@ -33,3 +33,5 @@ post_max_size = 100M
 
 max_execution_time = 3600
 request_terminate_timeout = 3600
+
+sendmail_path = "/usr/local/bin/mhsendmail --smtp-addr=mailhog:1025"
