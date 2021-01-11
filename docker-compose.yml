@@ -19,7 +19,7 @@ services:
       driver: 'none'  # disable saving logs to prevent bloat
     ports:
       - 1025:1025 # smtp server
-      - 8025:8025 # web ui
+      - 127.0.0.1:8025:8025 # web ui
   
   # Basic WordPress:
   basic-database:
