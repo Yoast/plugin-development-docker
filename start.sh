@@ -35,7 +35,6 @@ GROUP_ID=`id -g`
 STOPPING=false
 
 trap stop_docker INT
-trap stop_docker INT
 function stop_docker {
     STOPPING=true
     docker-compose down
