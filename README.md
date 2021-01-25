@@ -26,10 +26,10 @@ This will configure your host-file and create the necessary config files first.
 You will likely need to enter your sudo password as this will add local.wordpress.test to your hosts file.
 
 #### 2. run `./start.sh`
-This will create and start your containers. Your browser will automatically open with your WordPress environment.
+This will create and start your containers. You can visit your environment by visiting `http://basic.wordpress.test`. Note that starting other containers, like woocommerce or multisite, will have different domains associated.
 
 #### Resetting everything
-You can always run `./clean.sh` to delete all persistent data of your WordPresss environment and start again from scratch.
+You can always run `./clean.sh` to delete all persistent data of your WordPresss environment and start again from scratch. If you run `./clean.sh --all` you will also remove configuration files. 
 
 ## Maintenance and CLI commands
 
