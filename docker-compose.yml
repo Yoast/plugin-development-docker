@@ -61,6 +61,47 @@ services:
     labels:
       - com.yoast.plugin-development-docker.mainwpinstance
 
+  # Local WordPress:
+    local-database:
+      container_name: "wordpress-local-database"
+      image: "mysql:5.7"
+      ports:
+        - "1992:3306"
+      restart: always
+      environment:
+        VIRTUAL_HOST: ${LOCAL_DATABASE_HOST:-local-database.wordpress.test}
+        MYSQL_ROOT_PASSWORD: rootpassword
+        MYSQL_DATABASE: wordpress
+        MYSQL_USER: wordpress
+        MYSQL_PASSWORD: wordpress
+      volumes:
+        - "local-database-data:/var/lib/mysql"
+    local-wordpress:
+      container_name: "local-wordpress"
+      depends_on:
+        - nginx
+        - mailhog
+        - local-database
+      build: "./containers/wordpress"
+      restart: always
+      expose:
+        - 80
+      environment:
+        ADMIN_USERNAME: admin
+        ADMIN_EMAIL: admin@example.com
+        ADMIN_PASSWORD: admin
+        SITE_TITLE: Local
+        SITE_URL: ${LOCAL_HOST:-local.wordpress.test}
+        VIRTUAL_HOST: ${LOCAL_HOST:-local.wordpress.test}
+      volumes:
+        - "./wordpress:/var/www/html:cached"
+        - "./plugins:/var/www/html/wp-content/plugins:cached"
+        - "./config/local-wordpress-config.php:/tmp/wp-config.php:ro"
+        - "./xdebug:/var/xdebug:cached"
+        - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
+      labels:
+        - com.yoast.plugin-development-docker.mainwpinstance
+
   # WooCommerce WordPress:
   woocommerce-database:
     container_name: "wordpress-woocommerce-database"
@@ -227,6 +268,7 @@ services:
 
 volumes:
   basic-database-data:
+  local-database-data:
   woocommerce-database-data:
   multisite-database-data:
   multisitedomain-database-data: 
