@@ -49,12 +49,14 @@ function platform_independent_make() {
 	verify_hostfile $path_to_hostfile
 
 	change_hostfile $path_to_hostfile ${BASIC_HOST:-basic.wordpress.test}
+    change_hostfile $path_to_hostfile ${LOCAL_HOST:-local.wordpress.test}
 	change_hostfile $path_to_hostfile ${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}
 	change_hostfile $path_to_hostfile ${MULTISITE_HOST:-multisite.wordpress.test}
 	change_hostfile $path_to_hostfile test.${MULTISITE_HOST:-multisite.wordpress.test}
 	change_hostfile $path_to_hostfile translate.${MULTISITE_HOST:-multisite.wordpress.test}
 	change_hostfile $path_to_hostfile ${STANDALONE_HOST:-standalone.wordpress.test}
 	change_hostfile $path_to_hostfile ${BASIC_DATABASE_HOST:-basic-database.wordpress.test}
+    change_hostfile $path_to_hostfile ${LOCAL_DATABASE_HOST:-local-database.wordpress.test}
 	change_hostfile $path_to_hostfile ${WOOCOMMERCE_DATABASE_HOST:-woocommerce-database.wordpress.test}
 	change_hostfile $path_to_hostfile ${MULTISITE_DATABASE_HOST:-multisite-database.wordpress.test}
 	change_hostfile $path_to_hostfile ${STANDALONE_DATABASE_HOST:-standalone-database.wordpress.test}
