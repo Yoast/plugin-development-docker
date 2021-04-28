@@ -1,0 +1,92 @@
+version: "3.3"
+services:
+    # NginX reverse proxy:
+    nginx:
+        container_name: "nginx-router-wordpress"
+        image: jwilder/nginx-proxy
+        ports:
+        - "127.0.0.1:80:80"
+        volumes:
+        - /var/run/docker.sock:/tmp/docker.sock:ro
+        - "./config/yoastnginx.conf:/etc/nginx/conf.d/yoastnginx.conf"
+
+    basic-database:
+        container_name: "wordpress-basic-database"
+        image: "mysql:5.7"
+        ports:
+        - "1987:3306"
+        restart: always
+        environment:
+            VIRTUAL_HOST: basic-database.wordpress.test
+            MYSQL_ROOT_PASSWORD: rootpassword
+            MYSQL_DATABASE: wordpress
+            MYSQL_USER: wordpress
+            MYSQL_PASSWORD: wordpress
+        volumes:
+        - "basic-database-data:/var/lib/mysql"
+
+    basic-wordpress:
+        container_name: "basic-wordpress"
+        depends_on:
+            - nginx
+            - basic-database
+        build: "./containers/wordpress"
+        restart: always
+        expose:
+            - 80
+        environment:
+            WORDPRESS_DB_HOST: basic-database
+            WORDPRESS_DB_USER: wordpress
+            WORDPRESS_DB_PASSWORD: wordpress
+            WORDPRESS_DB_NAME: wordpress
+            SITE_TITLE: Basic
+            SITE_URL: http://basic.wordpress.test
+            VIRTUAL_HOST: basic.wordpress.test
+        volumes:
+            - "./wordpress-basic:/var/www/html:cached"
+            - "./plugins-basic:/var/www/html/wp-content/plugins:cached"
+            - "./config/basic-wordpress-config.php:/tmp/wp-config.php:ro"
+            - "./xdebug:/var/xdebug:cached"
+            - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
+
+    local-database:
+        container_name: "wordpress-local-database"
+        image: "mysql:5.7"
+        ports:
+        - "1988:3306"
+        restart: always
+        environment:
+            VIRTUAL_HOST: local-database.wordpress.test
+            MYSQL_ROOT_PASSWORD: rootpassword
+            MYSQL_DATABASE: wordpress
+            MYSQL_USER: wordpress
+            MYSQL_PASSWORD: wordpress
+        volumes:
+        - "local-database-data:/var/lib/mysql"
+
+    local-wordpress:
+        container_name: "local-wordpress"
+        depends_on:
+            - nginx
+            - local-database
+        build: "./containers/wordpress"
+        restart: always
+        expose:
+            - 80
+        environment:
+            WORDPRESS_DB_HOST: local-database
+            WORDPRESS_DB_USER: wordpress
+            WORDPRESS_DB_PASSWORD: wordpress
+            WORDPRESS_DB_NAME: wordpress
+            SITE_TITLE: Local
+            SITE_URL: http://local.wordpress.test
+            VIRTUAL_HOST: local.wordpress.test
+        volumes:
+            - "./wordpress-local:/var/www/html:cached"
+            - "./plugins-local:/var/www/html/wp-content/plugins:cached"
+            - "./config/local-wordpress-config.php:/tmp/wp-config.php:ro"
+            - "./xdebug:/var/xdebug:cached"
+            - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
+volumes:
+    basic-database-data:
+    local-database-data:
