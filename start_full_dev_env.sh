@@ -15,4 +15,4 @@ else
     CONTAINERS="$@"
 fi
 
-bash ./scripts/start-with-config.sh docker-compose-full-development-environment.yml $CONTAINERS
+bash ./scripts/start_with_config.sh docker-compose-full-development-environment.yml $CONTAINERS

@@ -74,6 +74,5 @@ function synchronize_clocks() {
 }
 
 function platform_tasks() {
-  #	synchronize_clocks
-  echo "skipping sync clocks"
+  synchronize_clocks
 }

@@ -6,4 +6,4 @@ else
     CONTAINERS="$@"
 fi
 
-bash ./scripts/start-with-config.sh docker-compose.yml $CONTAINERS
+bash ./scripts/start_with_config.sh docker-compose.yml $CONTAINERS
