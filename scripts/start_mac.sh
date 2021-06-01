@@ -9,7 +9,7 @@ function await_database_connections() {
         for CONTAINER in $CONTAINERS; do
             DB_PORT_VAR="DB_PORT_${CONTAINER//-/_}"
             DB_PORT=${!DB_PORT_VAR}
-                        
+
 			until nc -z -v -w30 localhost ${DB_PORT} 2>&1 | grep -E "${DB_PORT}.+(open|succeeded!)$"; do
 				echo "Waiting until database accepts connections at port $DB_PORT..."
 				sleep 2
@@ -24,13 +24,13 @@ function install_wordpress() {
 
 		docker exec -ti "$CONTAINER" /bin/bash -c 'until [[ -f .htaccess ]]; do echo -n "."; sleep 1; done'
 		docker exec -ti "$CONTAINER" /bin/bash -c 'wp --allow-root core is-installed 2>/dev/null'
-		
+
 		# $? is the exit code of the previous command.
         # We check if WP is installed, if it is not, it returns with exit code 1
         IS_INSTALLED=$?
 
         if [[ $IS_INSTALLED == 1 ]]; then
-            echo "WordPress has NOT been configured.".			
+            echo "WordPress has NOT been configured.".
 			echo "Installing WordPress in container $CONTAINER..."
 
 			docker exec -ti "$CONTAINER" /bin/bash -c 'ln -sf /tmp/wp-config.php /var/www/html/wp-config.php'
@@ -64,7 +64,7 @@ function synchronize_clocks() {
 	if [[ "$CLOCK_SOURCE" != 'tsc' && "$STOPPING" != 'true' ]]; then
 		echo "Restarting docker now to fix out-of-sync hardware clock!"
 		docker ps -q | xargs -L1 docker stop
-		
+
 		quit_docker_app
 		start_docker_app
 
@@ -74,5 +74,6 @@ function synchronize_clocks() {
 }
 
 function platform_tasks() {
-	synchronize_clocks
+  #	synchronize_clocks
+  echo "skipping sync clocks"
 }
