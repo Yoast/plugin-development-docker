@@ -1,8 +1,7 @@
 #!/bin/bash
-
 # Prevent script from running as root (root-related actions will prompt for the needed credentials)
 [[ $EUID -eq 0 ]] && echo "Do not run with sudo / as root." && exit 1
-
+set -x
 function await_database_connections() {
     if ! [ "$DOCKER_DB_NO_WAIT" ]; then
         echo "Waiting for databases to boot."
@@ -21,24 +20,25 @@ function await_database_connections() {
 function install_wordpress() {
     for CONTAINER in $CONTAINERS; do
         echo -n "Waiting for WordPress to start in container $CONTAINER..."
-		docker exec -i "$CONTAINER" //bin/bash -c 'until [[ -f .htaccess ]]; do echo -n "."; sleep 1; done'
+		docker exec -i "$CONTAINER" bash -c 'until [[ -f .htaccess ]]; do echo -n "."; sleep 1; done'
 		echo "OK"
-		
+
 		#-Xallow-non-tty tells winpty to route output of non-tty ming64 bash to stdout so we can read it
-		local IS_INSTALLED=$(winpty -Xallow-non-tty docker exec -i basic-wordpress //bin/bash -c 'wp --allow-root core' | grep "is not installed" -o)
-        
-		if [[ $IS_INSTALLED == 'is not installed' ]]; then
-            echo "WordPress has NOT been configured.".
+        docker exec --user "$USER_ID" "$CONTAINER" bash -c 'ln -sf /tmp/wp-config.php /var/www/html/wp-config.php'
+		IS_INSTALLED=$(docker exec basic-wordpress wp core is-installed --allow-root --path='/var/www/html' 2>&1)
+
+		if [[ $IS_INSTALLED == *"This does not seem to be a WordPress installation"* ]]; then
+            echo "WordPress has NOT been configured."
 			echo "Installing WordPress in container $CONTAINER..."
 
-            docker exec -ti "$CONTAINER" //bin/bash -c 'ln -sf /tmp/wp-config.php /var/www/html/wp-config.php'
-
-            docker exec -i "$CONTAINER" //bin/bash -c 'mkdir -p /var/www/.wp-cli/packages; chown -R www-data: /var/www/.wp-cli;'
-            docker exec -i "$CONTAINER" //bin/bash -c 'chown www-data: /var/www/html/wp-content'
-            docker exec --user "$USER_ID" -i "$CONTAINER" //bin/bash -c 'php -d memory_limit=512M "$(which wp)" package install git@github.com:yoast/wp-cli-faker.git'
+            docker exec "$CONTAINER" bash -c 'mkdir -p /var/www/.wp-cli/packages; chown -R www-data: /var/www/.wp-cli;'
+            docker exec "$CONTAINER" bash -c 'chown www-data: /var/www/html/wp-content'
+            docker exec "$CONTAINER" bash -c 'chown www-data: /var/www/html/wp-includes'
+            docker exec --user "$USER_ID" "$CONTAINER" bash -c 'php -d memory_limit=512M "$(which wp)" package install git@github.com:yoast/wp-cli-faker.git'
             
 			docker cp ./seeds "$CONTAINER":/seeds						       		
-            docker exec --user "$USER_ID" -i "$CONTAINER" //seeds/"$CONTAINER"-seed.sh
+            docker exec --user "$USER_ID" "$CONTAINER" bash -c "ls -al && source /seeds/core-install.sh"
+            sleep 10000
 		fi
 
         echo 'WordPress is installed.'
