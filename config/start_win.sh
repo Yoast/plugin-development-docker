@@ -20,7 +20,7 @@ function await_database_connections() {
 function install_wordpress() {
     for CONTAINER in $CONTAINERS; do
         echo -n "Waiting for WordPress to start in container $CONTAINER..."
-		docker exec -i "$CONTAINER" bash -c 'until [[ -f .htaccess ]]; do echo -n "."; sleep 1; done'
+		docker exec -i "$CONTAINER" bash -c 'until [[ -f .htaccess ]]; do echo -n "."; sleep 10; done'
 		echo "OK"
 
 		#-Xallow-non-tty tells winpty to route output of non-tty ming64 bash to stdout so we can read it
@@ -30,15 +30,14 @@ function install_wordpress() {
 		if [[ $IS_INSTALLED == *"This does not seem to be a WordPress installation"* ]]; then
             echo "WordPress has NOT been configured."
 			echo "Installing WordPress in container $CONTAINER..."
-
+    	    docker exec --user "$USER_ID" "$CONTAINER" bash -c "wp core download --path=/var/www/html --force"
             docker exec "$CONTAINER" bash -c 'mkdir -p /var/www/.wp-cli/packages; chown -R www-data: /var/www/.wp-cli;'
             docker exec "$CONTAINER" bash -c 'chown www-data: /var/www/html/wp-content'
             docker exec "$CONTAINER" bash -c 'chown www-data: /var/www/html/wp-includes'
             docker exec --user "$USER_ID" "$CONTAINER" bash -c 'php -d memory_limit=512M "$(which wp)" package install git@github.com:yoast/wp-cli-faker.git'
             
 			docker cp ./seeds "$CONTAINER":/seeds						       		
-            docker exec --user "$USER_ID" "$CONTAINER" bash -c "ls -al && source /seeds/core-install.sh"
-            sleep 10000
+            docker exec --user "$USER_ID" "$CONTAINER" bash -c "source /seeds/core-install.sh"
 		fi
 
         echo 'WordPress is installed.'
