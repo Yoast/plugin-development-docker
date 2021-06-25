@@ -53,7 +53,6 @@ services:
       SITE_URL: ${BASIC_HOST:-basic.wordpress.test}
       VIRTUAL_HOST: ${BASIC_HOST:-basic.wordpress.test}
     volumes:
-      - "./wordpress:/var/www/html:cached"
       - "./plugins:/var/www/html/wp-content/plugins:cached"
       - "./config/basic-wordpress-config.php:/tmp/wp-config.php:ro"
       - "./xdebug:/var/xdebug:cached"
@@ -94,7 +93,6 @@ services:
       SITE_URL: ${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}
       VIRTUAL_HOST: ${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}
     volumes:
-      - "./wordpress:/var/www/html:cached"
       - "./plugins:/var/www/html/wp-content/plugins:cached"
       - "./config/woocommerce-wordpress-config.php:/tmp/wp-config.php:ro"
       - "./data/xdebug:/var/xdebug:cached"
@@ -135,7 +133,6 @@ services:
       SITE_URL: ${MULTISITE_HOST:-multisite.wordpress.test}
       VIRTUAL_HOST: ${MULTISITE_HOST:-multisite.wordpress.test},test.${MULTISITE_HOST:-multisite.wordpress.test},translate.${MULTISITE_HOST:-multisite.wordpress.test}
     volumes:
-      - "./wordpress:/var/www/html:cached"
       - "./plugins:/var/www/html/wp-content/plugins:cached"
       - "./config/multisite-wordpress-config.php:/tmp/wp-config.php:ro"
       - "./config/multisite.htaccess:/var/www/html/.htaccess:cached"
@@ -177,7 +174,6 @@ services:
       SITE_URL: ${MULTISITE_HOST:-multisite.wordpress.test}
       VIRTUAL_HOST: ${MULTISITE_HOST:-multisite.wordpress.test},test.${MULTISITE_HOST:-multisite.wordpress.test},translate.${MULTISITE_HOST:-multisite.wordpress.test}
     volumes:
-      - "./wordpress:/var/www/html:cached"
       - "./plugins:/var/www/html/wp-content/plugins:cached"
       - "./config/multisitedomain-wordpress-config.php:/tmp/wp-config.php:ro"
       - "./config/multisite.htaccess:/var/www/html/.htaccess:cached"
@@ -219,7 +215,6 @@ services:
       SITE_URL: ${STANDALONE_HOST:-standalone.wordpress.test}
       VIRTUAL_HOST: ${STANDALONE_HOST:-standalone.wordpress.test}
     volumes:
-      - "./wordpress:/var/www/html:cached"
       - "./sa-plugins:/var/www/html/wp-content/plugins:cached"
       - "./config/standalone-wordpress-config.php:/tmp/wp-config.php:ro"
       - "./xdebug:/var/xdebug:cached"
