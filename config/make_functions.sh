@@ -1,5 +1,14 @@
 #!/bin/bash
 
+#######################################
+# Check if Hostfile is present 
+# Globals:
+#   None
+# Arguments:
+#   Path to Hostfile
+# Outputs:
+#   None
+#######################################
 function verify_hostfile () {
 	local hostfile=$1
 	if [ ! -f "$hostfile" ]; then
@@ -8,11 +17,30 @@ function verify_hostfile () {
 	fi
 }
 
+#######################################
+# If the hostfile does not have a empty line create one 
+# Globals:
+#   None
+# Arguments:
+#   None
+# Outputs:
+#   None
+#######################################
 function check_hosts_newline () {
     hosts_lastchar=$(tail -c 1 $hostfile)
     [[ "$hosts_lastchar" != "" ]] && echo '' | sudo tee -a $hostfile
 }
 
+#######################################
+# Add entry to hostfile
+# Globals:
+#   None
+# Arguments:
+#   path_to_hostfile
+#   URL
+# Outputs:
+#   None
+#######################################
 function change_hostfile () {
     local path_to_hostfile=$1
 	local URL=$2
@@ -44,6 +72,15 @@ function change_hostfile () {
     fi
 }
 
+#######################################
+# Regardless of platform, prepare the hostfile
+# Globals:
+#   None
+# Arguments:
+#   path_to_hostfile
+# Outputs:
+#   None
+#######################################
 function platform_independent_make() {
 	local path_to_hostfile=$1
 	verify_hostfile $path_to_hostfile

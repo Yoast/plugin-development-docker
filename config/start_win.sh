@@ -1,6 +1,17 @@
 #!/bin/bash
 # Prevent script from running as root (root-related actions will prompt for the needed credentials)
 [[ $EUID -eq 0 ]] && echo "Do not run with sudo / as root." && exit 1
+
+#######################################
+# Wait until DB is ready to accept connections
+# Globals:
+#   DOCKER_DB_NO_WAIT
+#   CONTAINERS
+# Arguments:
+#   None
+# Outputs:
+#   None
+#######################################
 function await_database_connections() {
     if ! [ "$DOCKER_DB_NO_WAIT" ]; then
         echo "Waiting for databases to boot."
@@ -16,6 +27,15 @@ function await_database_connections() {
     fi
 }
 
+#######################################
+# Install WordPress if not present
+# Globals:
+#   CONTAINERS
+# Arguments:
+#   None
+# Outputs:
+#   None
+#######################################
 function install_wordpress() {
     for CONTAINER in $CONTAINERS; do
         echo -n "Waiting for WordPress to start in container $CONTAINER..."
@@ -44,6 +64,15 @@ function install_wordpress() {
     done
 }
 
+#######################################
+# Function that groups tasks depending on platform
+# Globals:
+#   None
+# Arguments:
+#   None
+# Outputs:
+#   None
+#######################################
 function platform_tasks() {
 	# add repetitive platform maintenance here
 	:
