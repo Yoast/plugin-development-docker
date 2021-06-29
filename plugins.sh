@@ -3,7 +3,16 @@
 # List the plugins that should be installed:
 declare -a PluginList=("query-monitor" "user-switching" "https://github.com/Yoast/yoast-test-helper" "https://github.com/Yoast/wordpress-seo")
 
+
+#######################################
 # Activate the plugin for all running containers.
+# Globals:
+#   None
+# Arguments:
+#   slug
+# Outputs:
+#   None
+#######################################
 function activate_plugin {
   # Get all the running containers and store the amount
   running_containers=$(docker ps --filter "ancestor=wordpress" --filter "label=com.yoast.plugin-development-docker.mainwpinstance" --format "{{.Names}}")
@@ -13,7 +22,16 @@ function activate_plugin {
   done
 }
 
+
+#######################################
 # Install a plugin from a Github repository.
+# Globals:
+#   None
+# Arguments:
+#   plugin
+# Outputs:
+#   None
+#######################################
 function install_github_plugin {
   plugin=$1
   slug=${plugin##*/}
