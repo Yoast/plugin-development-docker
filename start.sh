@@ -36,6 +36,16 @@ STOPPING=false
 
 trap stop_docker INT
 trap stop_docker INT
+
+#######################################
+# Stop containers in the docker-compose file
+# Globals:
+#   None
+# Arguments:
+#   None
+# Outputs:
+#   None
+#######################################
 function stop_docker {
     STOPPING=true
     docker-compose down
@@ -43,6 +53,16 @@ function stop_docker {
     exit
 }
 
+#######################################
+# Create Dockerfile from template
+# Globals:
+#   USER_ID
+#   GROUP_ID
+# Arguments:
+#   None
+# Outputs:
+#   None
+#######################################
 function create_dockerfile {
     DOCKERTEMPLATE='./containers/wordpress/Dockerfile.template'
     DOCKERFILE='./containers/wordpress/Dockerfile'
@@ -59,17 +79,43 @@ function create_dockerfile {
         echo "  - $CONTAINER"
     done
 }
-
+#######################################
+# Build all images from compose file
+# Globals:
+#   None
+# Arguments:
+#   None
+# Outputs:
+#   None
+#######################################
 function build_containers() {
     echo "Ensuring all containers are built."
     docker-compose build --pull --parallel $CONTAINERS
 }
 
+#######################################
+# Bring up containers from compose file
+# Globals:
+#   None
+# Arguments:
+#   None
+# Outputs:
+#   None
+#######################################
 function boot_containers() {
     echo "Booting containers."
     docker-compose up --detach $CONTAINERS
 }
 
+#######################################
+# Wait untill containers have booted
+# Globals:
+#   None
+# Arguments:
+#   None
+# Outputs:
+#   None
+#######################################
 function await_containers() {
     echo "Waiting for containers to boot..."
     local BOOTED=false
