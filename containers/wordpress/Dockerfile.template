@@ -4,7 +4,7 @@ RUN pecl install xdebug && docker-php-ext-enable xdebug
 RUN docker-php-ext-install pdo_mysql
 
 RUN apt-get update \
-    && apt-get -y install default-mysql-client
+    && apt-get -y install default-mysql-client less
 
 RUN curl -sO https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     && chmod +x wp-cli.phar \
