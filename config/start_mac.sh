@@ -56,7 +56,7 @@ function install_wordpress() {
 			echo "Installing WordPress in container $CONTAINER..."
 
 			docker exec -ti "$CONTAINER" /bin/bash -c 'cp /tmp/wp-config.php /var/www/html/wp-config.php; chown www-data: /var/www/html/wp-config.php; chmod +w /var/www/html/wp-config.php'
-			# change the wordpress table_prefix to 5 random characters
+			# Change the wordpress table_prefix to 5 random characters
 			RANDOM_DBTABLE_PREFIX=$(LC_CTYPE=C tr -dc a-z < /dev/urandom | head -c 5)
 			docker exec -ti "$CONTAINER" /bin/bash -c "sed -i \"s#table_prefix = 'wp_'#table_prefix = '"$RANDOM_DBTABLE_PREFIX"_'#\" /var/www/html/wp-config.php"
 
@@ -134,5 +134,9 @@ function synchronize_clocks() {
 #   None
 #######################################
 function platform_tasks() {
-	synchronize_clocks
+	if [[ "$OSTYPE" == linux-gnu ]]; then
+		:
+	else
+		synchronize_clocks
+	fi
 }
