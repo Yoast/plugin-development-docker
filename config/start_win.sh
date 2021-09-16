@@ -43,7 +43,7 @@ function install_wordpress() {
 		echo "OK"
 
 		#-Xallow-non-tty tells winpty to route output of non-tty ming64 bash to stdout so we can read it
-        docker exec --user "$USER_ID" "$CONTAINER" bash -c 'ln -sf /tmp/wp-config.php /var/www/html/wp-config.php'
+        docker exec "$CONTAINER" bash -c 'cp /tmp/wp-config.php /var/www/html/wp-config.php; chown www-data: /var/www/html/wp-config.php; chmod +w /var/www/html/wp-config.php'
         docker exec "$CONTAINER" bash -c 'mkdir -p /var/www/.wp-cli/packages; chown -R www-data: /var/www/.wp-cli;'
 		IS_INSTALLED=$(docker exec "$CONTAINER" wp core is-installed --allow-root --path='/var/www/html' 2>&1)
 
@@ -51,7 +51,10 @@ function install_wordpress() {
             echo "WordPress has NOT been configured."
             sleep 20
 			echo "Installing WordPress in container $CONTAINER..."
-
+            # Change the wordpress table_prefix to 5 random characters
+            RANDOM_DBTABLE_PREFIX=$(LC_CTYPE=C tr -dc a-z < /dev/urandom | head -c 5)
+			docker exec "$CONTAINER" bash -c "sed -i \"s#table_prefix = 'wp_'#table_prefix = '"$RANDOM_DBTABLE_PREFIX"_'#\" /var/www/html/wp-config.php"
+            
             docker exec "$CONTAINER" bash -c 'chown www-data: /var/www/html/wp-content'
             docker exec "$CONTAINER" bash -c 'chown www-data: /var/www/html/wp-includes'
             docker exec --user "$USER_ID" "$CONTAINER" bash -c 'php -d memory_limit=512M "$(which wp)" package install git@github.com:yoast/wp-cli-faker.git'
