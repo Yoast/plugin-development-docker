@@ -61,6 +61,32 @@ services:
     labels:
       - com.yoast.plugin-development-docker.mainwpinstance
 
+  php80:
+    container_name: "php80"
+    depends_on:
+      - mailhog
+      - basic-database
+    build: "./containers/php8.0"
+    restart: "no"
+    expose:
+      - 80
+    environment:
+      ADMIN_USERNAME: admin
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_PASSWORD: admin
+      SITE_TITLE: PHP8.0
+      SITE_URL: ${BASIC_HOST:-php80.wordpress.test}
+      VIRTUAL_HOST: ${BASIC_HOST:-php80.wordpress.test}
+    volumes:
+      - "./wordpress:/var/www/html"
+      - "./config/docker:/var/scripts"
+      - "./plugins:/var/www/html/wp-content/plugins:cached"
+      - "./config/basic-wordpress-config.php:/tmp/wp-config.php:ro"
+      - "./xdebug:/var/xdebug:cached"
+      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
+    labels:
+      - com.yoast.plugin-development-docker.mainwpinstance
+
   # WooCommerce WordPress:
   woocommerce-database:
     container_name: "wordpress-woocommerce-database"
@@ -229,5 +255,5 @@ volumes:
   basic-database-data:
   woocommerce-database-data:
   multisite-database-data:
-  multisitedomain-database-data: 
+  multisitedomain-database-data:
   standalone-database-data:
