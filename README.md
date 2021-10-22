@@ -42,6 +42,8 @@ The following are available:
 - woocommerce-wordpress: A WooCommerce installation. Can be accessed via woocommerce.wordpress.test.
 - multisite-wordpress: A multisite installation using subdirectories. Can be accessed via multisite.wordpress.test. 
 - multisitedomain-wordpress: A multisite installation using subdomains. Can be accessed via multisite.wordpress.test.
+- nightly-wordpress: A nightly installation using subdomains. Can be accessed via nightly.wordpress.test.
+
 
 For example, calling `./start.sh woocommerce-wordpress` will start only the WooCommerce container. Calling `./start.sh basic-wordpress multisite-wordpress` will start both the basic WordPress and multisite containers.
 
@@ -169,6 +171,7 @@ The port differs based on the installation you're running.
 | multisite-wordpress       | 1989 |
 | standalone-wordpress      | 1990 |
 | multisitedomain-wordpress | 1991 |
+| nightly-wordpress         | 1992 |
 
 ## Troubleshooting
 

@@ -225,9 +225,51 @@ services:
       - "./xdebug:/var/xdebug:cached"
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
 
+# Nightly WordPress:
+  nightly-database:
+    container_name: "wordpress-nightly-database"
+    image: "mysql:5.7"
+    ports:
+      - "1992:3306"
+    restart: always
+    environment:
+      VIRTUAL_HOST: ${NIGHTLY_DATABASE_HOST:-nightly-database.wordpress.test}
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    volumes:
+      - "nightly-database-data:/var/lib/mysql"
+  nightly-wordpress:
+    container_name: "nightly-wordpress"
+    depends_on:
+      - nginx
+      - mailhog
+      - nightly-database
+    build: "./containers/wordpress"
+    restart: always
+    expose:
+      - 80
+    environment:
+      ADMIN_USERNAME: admin
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_PASSWORD: admin
+      SITE_TITLE: nightly
+      SITE_URL: ${NIGHTLY_HOST:-nightly.wordpress.test}
+      VIRTUAL_HOST: ${NIGHTLY_HOST:-nightly.wordpress.test}
+    volumes:
+      - "./wordpress:/var/www/html"
+      - "./plugins:/var/www/html/wp-content/plugins:cached"
+      - "./config/nightly-wordpress-config.php:/tmp/wp-config.php:ro"
+      - "./xdebug:/var/xdebug:cached"
+      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
+    labels:
+      - com.yoast.plugin-development-docker.mainwpinstance
+
 volumes:
   basic-database-data:
   woocommerce-database-data:
   multisite-database-data:
   multisitedomain-database-data: 
   standalone-database-data:
+  nightly-database-data:
