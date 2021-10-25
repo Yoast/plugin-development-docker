@@ -12,10 +12,23 @@ PLATFORM='UNKNOWN'
 #   None
 #######################################
 function find_platform {
-	if [[ "$OSTYPE" =~ (msys|cygwin) ]]; then 
-		PLATFORM=WINDOWS 
-	else
-		PLATFORM=APPLE
-	fi
-    echo "Platform = $PLATFORM"
+    case ${OSTYPE} in
+        msys|cywgin)
+            PLATFORM=WINDOWS
+            ;;
+        linux-gnu) 
+            PLATFORM=LINUX
+            ;;
+        darwin*)
+            if [ "$(uname -m)" = "x86_64" ] 
+            then
+                PLATFORM=APPLE
+            else
+                PLATFORM=APPLE_M1
+            fi
+            ;;
+        *) 
+            PLATFORM=APPLE
+            ;;
+    esac
 }
