@@ -23,12 +23,14 @@ URL_woocommerce_wordpress="http://${WOOCOMMERCE_HOST:-woocommerce.wordpress.test
 URL_multisite_wordpress="http://${MULTISITE_HOST:-multisite.wordpress.test}"
 URL_standalone_wordpress="http://${STANDALONE_HOST:-standalone.wordpress.test}"
 URL_multisitedomain_wordpress="http://${MULTISITE_HOST:-multisite.wordpress.test}"
+URL_nightly_wordpress="http://${NIGHTLY_HOST:-nightly.wordpress.test}"
 
 DB_PORT_basic_wordpress=1987
 DB_PORT_woocommerce_wordpress=1988
 DB_PORT_multisite_wordpress=1989
 DB_PORT_standalone_wordpress=1990
 DB_PORT_multisitedomain_wordpress=1991
+DB_PORT_nightly_wordpress=1992
 
 USER_ID=`id -u`
 GROUP_ID=`id -g`
