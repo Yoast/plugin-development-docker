@@ -19,7 +19,7 @@ services:
       driver: 'none'  # disable saving logs to prevent bloat
     ports:
       - 127.0.0.1:8025:8025 # web ui
-  
+
   # Basic WordPress:
   basic-database:
     container_name: "wordpress-basic-database"
@@ -64,6 +64,7 @@ services:
   php80:
     container_name: "php80"
     depends_on:
+      - nginx
       - mailhog
       - basic-database
     build: "./containers/php8.0"
