@@ -5,8 +5,7 @@ RUN docker-php-ext-enable xdebug
 RUN docker-php-ext-install pdo_mysql
 
 RUN apt update
-RUN apt install rsync -y
-RUN apt install git -y
+RUN apt install rsync git gnupg wget ca-certificates zip -y
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
@@ -26,3 +25,10 @@ RUN curl -sO https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cl
 RUN curl -sLO https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64 \
     && chmod +x mhsendmail_linux_amd64 \
     && mv mhsendmail_linux_amd64 /usr/local/bin/mhsendmail
+
+RUN wget -O phive.phar https://phar.io/releases/phive.phar
+    && wget -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
+    && gpg --keyserver hkps://keys.openpgp.org --recv-keys 0x9D8A98B29B2D5D79 \
+    && gpg --verify phive.phar.asc phive.phar
+    && chmod +x phive.phar \
+    && mv phive.phar /usr/local/bin/phive
