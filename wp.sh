@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Get all the running containers and store the amount
-running_containers=$(docker ps --filter "ancestor=wordpress" --filter "label="com.yoast.plugin-development-docker.mainwpinstance"" --format "{{.Names}}")
+running_containers=$(docker ps --filter "label="com.yoast.plugin-development-docker.mainwpinstance"" --format "{{.Names}}")
 count_containers=$(echo "$running_containers" | wc -l)
 
 # Check if the first argument is a docker container...
