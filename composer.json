@@ -1,0 +1,13 @@
+{
+  "name": "yoast/plugin-development-docker",
+  "type": "project",
+  "require": {},
+  "scripts": {
+    "run-tests-php80": [
+      "docker-compose exec php80 php /var/scripts/run-tests.php"
+    ],
+    "run-tests-php81": [
+      "docker-compose exec php81 php /var/scripts/run-tests.php"
+    ]
+  }
+}
