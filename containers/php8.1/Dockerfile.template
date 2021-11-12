@@ -1,4 +1,4 @@
-FROM wordpress:5.8.1-php8.0-apache
+FROM php:8.1.0RC6-zts-buster
 
 RUN pecl install xdebug
 RUN docker-php-ext-enable xdebug
@@ -24,9 +24,10 @@ RUN curl -sLO https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhs
     && chmod +x mhsendmail_linux_amd64 \
     && mv mhsendmail_linux_amd64 /usr/local/bin/mhsendmail
 
-RUN wget -O phive.phar https://phar.io/releases/phive.phar
+RUN wget -O phive.phar https://phar.io/releases/phive.phar \
     && wget -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
     && gpg --keyserver hkps://keys.openpgp.org --recv-keys 0x9D8A98B29B2D5D79 \
-    && gpg --verify phive.phar.asc phive.phar
+    && gpg --verify phive.phar.asc phive.phar \
     && chmod +x phive.phar \
     && mv phive.phar /usr/local/bin/phive
+

@@ -8,6 +8,8 @@ sa-plugins/*
 wordpress/*
 !wordpress/.gitkeep
 containers/wordpress/Dockerfile
+containers/php8.0/Dockerfile
+containers/php8.1/Dockerfile
 .idea/
 .vscode/
 .DS_Store

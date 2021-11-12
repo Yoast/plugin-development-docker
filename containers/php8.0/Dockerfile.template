@@ -1,21 +1,20 @@
-FROM php:8.0-alpine
+FROM wordpress:5.8.1-php8.0-apache
 
-RUN pecl install xdebug && docker-php-ext-enable xdebug
+RUN pecl install xdebug
+RUN docker-php-ext-enable xdebug
 RUN docker-php-ext-install pdo_mysql
 
-RUN curl -s http://api.wordpress.org/core/version-check/1.7/ > /tmp/wp-latest.json
-ENV WP_VERSION=$(grep -o '"version":"[^"]*' /tmp/wp-latest.json | sed 's/"version":"//')
+RUN apt update
+RUN apt install rsync git gnupg wget ca-certificates zip default-mysql-client less -y
 
-ENV WP_DEVELOP_DIR=/tmp/wordpress/
-RUN git clone --depth=1 --branch="$WP_VERSION" git://develop.git.wordpress.org/ $WP_DEVELOP_DIR
-RUN cd /tmp/wordpress/
-RUN cp wp-tests-config-sample.php wp-tests-config.php
-RUN sed -i "s/youremptytestdbnamehere/wordpress_tests/" wp-tests-config.php
-RUN sed -i "s/yourusernamehere/wordpress/" wp-tests-config.php
-RUN sed -i "s/yourpasswordhere/wordpress/" wp-tests-config.php
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
-RUN apt-get update \
-    && apt-get -y install default-mysql-client less
+RUN git clone --depth=1 --branch="5.8.1" git://develop.git.wordpress.org/ /tmp/wordpress
+
+RUN cp /tmp/wordpress/wp-tests-config-sample.php /tmp/wordpress/wp-tests-config.php
+RUN sed -i "s/youremptytestdbnamehere/wordpress_tests/" /tmp/wordpress/wp-tests-config.php
+RUN sed -i "s/yourusernamehere/wordpress/" /tmp/wordpress/wp-tests-config.php
+RUN sed -i "s/yourpasswordhere/wordpress/" /tmp/wordpress/wp-tests-config.php
 
 RUN curl -sO https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     && chmod +x wp-cli.phar \
@@ -25,5 +24,9 @@ RUN curl -sLO https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhs
     && chmod +x mhsendmail_linux_amd64 \
     && mv mhsendmail_linux_amd64 /usr/local/bin/mhsendmail
 
-RUN usermod -u $UID www-data
-RUN groupmod -o -g $GID www-data
+RUN wget -O phive.phar https://phar.io/releases/phive.phar
+    && wget -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
+    && gpg --keyserver hkps://keys.openpgp.org --recv-keys 0x9D8A98B29B2D5D79 \
+    && gpg --verify phive.phar.asc phive.phar
+    && chmod +x phive.phar \
+    && mv phive.phar /usr/local/bin/phive
