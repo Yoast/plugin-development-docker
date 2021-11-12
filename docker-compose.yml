@@ -86,7 +86,34 @@ services:
       - "./xdebug:/var/xdebug:cached"
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
     labels:
-      - com.yoast.plugin-development-docker.mainwpinstance
+      - com.yoast.plugin-development-docker.unittestinstance
+
+  php81:
+    container_name: "php81"
+    depends_on:
+      - nginx
+      - mailhog
+      - basic-database
+    build: "./containers/php8.1"
+    restart: "no"
+    expose:
+      - 80
+    environment:
+      ADMIN_USERNAME: admin
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_PASSWORD: admin
+      SITE_TITLE: PHP8.1
+      SITE_URL: ${BASIC_HOST:-php81.wordpress.test}
+      VIRTUAL_HOST: ${BASIC_HOST:-php81.wordpress.test}
+    volumes:
+      - "./wordpress:/var/www/html"
+      - "./config/docker:/var/scripts"
+      - "./plugins:/var/www/html/wp-content/plugins:cached"
+      - "./config/basic-wordpress-config.php:/tmp/wp-config.php:ro"
+      - "./xdebug:/var/xdebug:cached"
+      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
+    labels:
+      - com.yoast.plugin-development-docker.unittestinstance
 
   # WooCommerce WordPress:
   woocommerce-database:
