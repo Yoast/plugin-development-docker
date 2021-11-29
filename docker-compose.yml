@@ -52,6 +52,7 @@ services:
       SITE_TITLE: Basic
       SITE_URL: ${BASIC_HOST:-basic.wordpress.test}
       VIRTUAL_HOST: ${BASIC_HOST:-basic.wordpress.test}
+      WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX}
     volumes:
       - "./wordpress:/var/www/html"
       - "./plugins:/var/www/html/wp-content/plugins:cached"
