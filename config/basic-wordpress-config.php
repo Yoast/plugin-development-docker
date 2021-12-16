@@ -18,6 +18,21 @@
  * @package WordPress
  */
 
+if (!function_exists('getenv_docker')) {
+	// https://github.com/docker-library/wordpress/issues/588 (WP-CLI will load this file 2x)
+	function getenv_docker($env, $default) {
+		if ($fileEnv = getenv($env . '_FILE')) {
+			return rtrim(file_get_contents($fileEnv), "\r\n");
+		}
+		else if (($val = getenv($env)) !== false) {
+			return $val;
+		}
+		else {
+			return $default;
+		}
+	}
+}
+
 // ** MySQL settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
 define( 'DB_NAME', 'wordpress');
@@ -65,7 +80,7 @@ define( 'FS_METHOD', 'direct' );
  * You can have multiple installations in one database if you give each
  * a unique prefix. Only numbers, letters, and underscores please!
  */
-$table_prefix = 'wp_';
+$table_prefix = getenv_docker('WORDPRESS_TABLE_PREFIX', 'wp_');
 
 /**
  * For developers: WordPress debugging mode.
