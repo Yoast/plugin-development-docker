@@ -134,7 +134,7 @@ function synchronize_clocks() {
 #   None
 #######################################
 function platform_tasks() {
-	if [[ "$PLATFORM" == APPLE ]]; then
+	if [[ "$PLATFORM" == APPLE && "$CLOCK_SYNC" == true ]]; then
 		synchronize_clocks
 	fi
 }
