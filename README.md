@@ -47,7 +47,7 @@ For example, calling `./start.sh woocommerce-wordpress` will start only the WooC
 
 #### Disable synchronize clock on Mac Books. 
 
-By default Docker will be restarted to fix out-of-sync hardware clock on Macs. Sometimes this can cause problems. You can disable the clock sync with this optional paramater `--dissable_clock_sync`.
+By default Docker will be restarted to fix out-of-sync hardware clock on Macs. Sometimes this can cause problems. You can disable the clock sync with this optional paramater `--disable_clock_sync`.
 
 For example: `./start.sh --disable_clock_sync`
 
