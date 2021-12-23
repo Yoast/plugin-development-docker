@@ -14,29 +14,11 @@ source ./config/config.sh
 # Set some default values:
 CLOCK_SYNC=true
 
-usage()
-{
-  echo "Usage: start [ -d | --disable_clock_sync ] [ container ]"
-  exit 2
-}
-
-PARSED_ARGUMENTS=$(getopt -q -n start -o d --long disable_clock_sync -- "$@")
-VALID_ARGUMENTS=$?
-if [ "$VALID_ARGUMENTS" != "0" ]; then
-  usage
-fi
-
-eval set -- "$PARSED_ARGUMENTS"
-while :
-do
+while true; do
   case "$1" in
-    -d | --disable_clock_sync)   CLOCK_SYNC="false"   ; shift 1 ;;
-    # -- means the end of the arguments; drop this, and break out of the while loop
-    --) shift; break ;;
-    # If invalid options were passed, then getopt should have reported an error,
-    # which we checked as VALID_ARGUMENTS when getopt was called...
-    *) echo "Unexpected option: $1 - this should not happen."
-       usage ;;
+    -d | --disable_clock_sync ) CLOCK_SYNC=false; shift ;;
+    -- ) shift; break ;;
+    * ) break ;;
   esac
 done
 
