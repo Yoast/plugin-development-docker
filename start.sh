@@ -32,8 +32,9 @@ DB_PORT_standalone_wordpress=1990
 DB_PORT_multisitedomain_wordpress=1991
 DB_PORT_nightly_wordpress=1992
 
-#set environment variable for the Wordpress DB Table Prefix
-export WORDPRESS_TABLE_PREFIX="$(LC_ALL=C tr -dc a-z < /dev/urandom | head -c 5 | xargs)_"
+# Get environment variable for the Wordpress DB Table Prefix
+export WORDPRESS_TABLE_PREFIX="$(cat ./config/wp-table-prefix)"
+echo "WP table prefix: $WORDPRESS_TABLE_PREFIX"
 
 USER_ID=`id -u`
 GROUP_ID=`id -g`

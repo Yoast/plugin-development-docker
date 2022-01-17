@@ -2,6 +2,7 @@ xdebug/*
 !xdebug/.gitkeep
 config/php.ini
 config/config.sh
+config/wp-table-prefix
 plugins/*
 !plugins/.gitkeep
 sa-plugins/*
