@@ -5,6 +5,14 @@
 
 source platform.sh
 
+# Set environment variable for the Wordpress DB Table Prefix.
+# Save this in a file so it is not random every boot (clean.sh removes this file).
+if [ ! -f ./config/wp-table-prefix ]; then
+  WORDPRESS_TABLE_PREFIX="$(LC_ALL=C tr -dc a-z < /dev/urandom | head -c 5 | xargs)_"
+  echo $WORDPRESS_TABLE_PREFIX > ./config/wp-table-prefix
+  echo "WP table prefix: $WORDPRESS_TABLE_PREFIX"
+fi
+
 function prepare_files() {
 	# Remove corrupt php.ini folder, if existing.
 	[[ -d './config/php.ini' ]] && rm -rf './config/php.ini'

@@ -9,6 +9,9 @@ docker-compose rm -fv
 rm -rf wordpress
 git checkout -- wordpress/.gitkeep
 
+# Remove our saved WordPress table prefix.
+rm -f ./config/wp-table-prefix
+
 case $1 in
     -a|--all)
         echo "Option '--all' defined. Removing non-default config files."
