@@ -174,6 +174,6 @@ PROCESS=$!
 
 #run platform specific maintenance tasks every 5 seconds 
 while [ "$STOPPING" != 'true' ]; do
-	platform_tasks
+	#platform_tasks
 	sleep 5
 done
