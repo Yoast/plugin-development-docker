@@ -15,8 +15,8 @@ services:
   mailhog:
     container_name: "mailhog-wordpress"
     image: mailhog/mailhog
-    logging:
-      driver: 'none'  # disable saving logs to prevent bloat
+    # logging:
+    #   driver: none  # disable saving logs to prevent bloat
     ports:
       - 127.0.0.1:8025:8025 # web ui
   
@@ -61,6 +61,8 @@ services:
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
     labels:
       - com.yoast.plugin-development-docker.mainwpinstance
+    extra_hosts:
+      - "host.docker.internal:${DOCKER_NETWORK_HOST}"
 
   # WooCommerce WordPress:
   woocommerce-database:
@@ -102,6 +104,8 @@ services:
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
     labels:
       - com.yoast.plugin-development-docker.mainwpinstance
+    extra_hosts:
+      - "host.docker.internal:${DOCKER_NETWORK_HOST}"
 
   # Multisite WordPress:
   multisite-database:
@@ -144,6 +148,8 @@ services:
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
     labels:
       - com.yoast.plugin-development-docker.mainwpinstance
+    extra_hosts:
+      - "host.docker.internal:${DOCKER_NETWORK_HOST}"
 
   # Multisite WordPress using Subdomains:
   multisitedomain-database:
@@ -186,6 +192,8 @@ services:
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
     labels:
       - com.yoast.plugin-development-docker.mainwpinstance
+    extra_hosts:
+      - "host.docker.internal:${DOCKER_NETWORK_HOST}"
 
   # Standalone WordPress:
   standalone-database:
@@ -225,6 +233,8 @@ services:
       - "./config/standalone-wordpress-config.php:/tmp/wp-config.php:ro"
       - "./xdebug:/var/xdebug:cached"
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
+    extra_hosts:
+      - "host.docker.internal:${DOCKER_NETWORK_HOST}"
 
 # Nightly WordPress:
   nightly-database:
@@ -266,6 +276,8 @@ services:
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
     labels:
       - com.yoast.plugin-development-docker.mainwpinstance
+    extra_hosts:
+      - "host.docker.internal:${DOCKER_NETWORK_HOST}"
 
 volumes:
   basic-database-data:

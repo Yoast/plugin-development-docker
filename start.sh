@@ -149,6 +149,8 @@ if [[ "$PLATFORM" == WINDOWS ]]; then
 else
 	# supports mac and linux
 	source config/start_mac.sh
+    export DOCKER_NETWORK_HOST=$(ipconfig getifaddr en0)
+    check_lima_node
 fi
 
 create_dockerfile
