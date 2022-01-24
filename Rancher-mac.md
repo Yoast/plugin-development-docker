@@ -15,7 +15,12 @@ cd ~
 
 ## Installing Rancher Desktop
 
-- Download [Rancher Desktop](https://github.com/rancher-sandbox/rancher-desktop/releases)
+- Download Rancher Desktop
+  - Rancher Desktop is still in beta at the moment of writing, to make sure that you are on the same version please use the following links to download:
+    - [macOS Intel (Most Common)](https://github.com/rancher-sandbox/rancher-desktop/releases/download/v1.0.0-beta.1/Rancher.Desktop-1.0.0-beta.1.x86_64.dmg)
+    - [macOS M1](https://github.com/rancher-sandbox/rancher-desktop/releases/download/v1.0.0-beta.1/Rancher.Desktop-1.0.0-beta.1.aarch64.dmg)
+    - [Windows](https://github.com/rancher-sandbox/rancher-desktop/releases/download/v1.0.0-beta.1/Rancher.Desktop.Setup.1.0.0-beta.1.exe)
+
 - In the `General` tab disable: `Allow Collection of Anonymous statistics`
 - In the `Kubernetes` tab change container runtime to: `dockerd (Moby)` 
 - In the `Kubernetes` tab change memory and CPU to half of your system resources.
