@@ -7,10 +7,6 @@
 source config/config.sh
 source config/make_functions.sh
 
-# Current Workaround to disable Kubernetes in Rancher Desktop
-kubectl config use-context rancher-desktop
-kubectl delete node lima-rancher-desktop
-
 # Set path to hostfile
 hostfile=/etc/hosts
 

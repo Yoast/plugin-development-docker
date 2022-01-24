@@ -138,3 +138,24 @@ function platform_tasks() {
 		synchronize_clocks
 	fi
 }
+
+#######################################
+# Check if Kubernetes is running
+# Globals:
+#   None
+# Arguments:
+#   None
+# Outputs:
+#   None
+#######################################
+function check_lima_node() {
+	# Current Workaround to disable Kubernetes in Rancher Desktop
+	kubectl config use-context rancher-desktop
+	NODES=$(kubectl get nodes | grep -o "lima-rancher-desktop")
+	if [[ "$NODES" == 'lima-rancher-desktop' ]]; then
+		echo "Lima node is running, shutting it down..."
+		kubectl delete node lima-rancher-desktop
+	else
+		echo "Lima node is not running, continuing..."
+	fi
+}
