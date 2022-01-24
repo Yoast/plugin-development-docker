@@ -7,7 +7,7 @@
 
 ```bash
 cd /usr/local/bin
-rm docker docker-compose-v1 docker-credential-desktop docker-credential-ecr-login docker-credential-osxkeychain com.docker.cli
+rm docker docker-compose docker-compose-v1 docker-credential-desktop docker-credential-ecr-login docker-credential-osxkeychain com.docker.cli
 cd ~
 ```
 
