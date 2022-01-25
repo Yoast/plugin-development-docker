@@ -151,7 +151,7 @@ function platform_tasks() {
 function check_lima_node() {
 	# Current Workaround to disable Kubernetes in Rancher Desktop
 	kubectl config use-context rancher-desktop
-	NODES=$(kubectl get nodes | grep -o "lima-rancher-desktop")
+	NODES=$(kubectl get nodes | grep -o "lima-rancher-desktop" || true)
 	if [[ "$NODES" == 'lima-rancher-desktop' ]]; then
 		echo "Lima node is running, shutting it down..."
 		kubectl delete node lima-rancher-desktop
