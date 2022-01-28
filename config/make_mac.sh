@@ -38,6 +38,30 @@ function kill_port_80_usage () {
 }
 
 #######################################
+# Function set up nsf for usage #/System/Volumes/Data -alldirs -mapall=501:20 localhost
+# Globals:
+#   None
+# Arguments:
+#   None
+# Outputs:
+#   None
+#######################################
+function setup_NFS(){
+    if [ -z "$(sudo cat /etc/exports | grep '/System/Volumes/Data ')" ]; then
+        echo update exports
+        echo "/System/Volumes/Data -alldirs -mapall=$UID:20 localhost" | sudo tee -a /etc/exports
+        sudo nfsd restart
+    fi
+    if [ -z "$(sudo cat /etc/nfs.conf | grep -e '^nfs.server.mount.require_resv_port = 0$')" ]; then
+        echo update exports
+        echo "nfs.server.mount.require_resv_port = 0" | sudo tee -a /etc/nfs.conf
+        sudo nfsd restart
+    fi
+
+}
+
+
+#######################################
 # Function that groups make tasks
 # Globals:
 #   None
@@ -47,6 +71,7 @@ function kill_port_80_usage () {
 #   None
 #######################################
 function platform_make() {	
-	platform_independent_make $hostfile
+	setup_NFS
+    platform_independent_make $hostfile
 	kill_port_80_usage
 }
