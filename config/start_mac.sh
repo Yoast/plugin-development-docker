@@ -130,9 +130,7 @@ function synchronize_clocks() {
 #   None
 #######################################
 function platform_tasks() {
-	if [[ "$OSTYPE" == linux-gnu ]]; then
-		:
-	else
+	if [[ "$PLATFORM" == APPLE && "$CLOCK_SYNC" == true ]]; then
 		synchronize_clocks
 	fi
 }

@@ -47,6 +47,15 @@ The following are available:
 
 For example, calling `./start.sh woocommerce-wordpress` will start only the WooCommerce container. Calling `./start.sh basic-wordpress multisite-wordpress` will start both the basic WordPress and multisite containers.
 
+#### Disable synchronize clock on Mac Books. 
+
+By default Docker will be restarted to fix out-of-sync hardware clock on Macs. Sometimes this can cause problems. You can disable the clock sync with this optional paramater `--disable_clock_sync`.
+
+For example: `./start.sh --disable_clock_sync`
+
+When you want to run one of the alternate containers you can use it like this `./start.sh --disable_clock_sync basic-wordpress multisite-wordpress`
+
+
 #### Running WordPress trunk, beta or RC
 
 If you need WordPress trunk, a beta or a release candidate, there are two ways of going about that:

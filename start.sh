@@ -11,11 +11,24 @@ fi
 source platform.sh
 source ./config/config.sh
 
+# Set some default values:
+CLOCK_SYNC=true
+
+while true; do
+  case "$1" in
+    -d | --disable_clock_sync ) CLOCK_SYNC=false; shift ;;
+    -- ) shift; break ;;
+    * ) break ;;
+  esac
+done
+
 if [[ -z "$@" ]]; then
     CONTAINERS=basic-wordpress
 else
     CONTAINERS="$@"
 fi
+echo "Synchronize clock : $CLOCK_SYNC"
+echo "Building containers: $CONTAINERS"
 
 #define constants
 URL_basic_wordpress="http://${BASIC_HOST:-basic.wordpress.test}"
