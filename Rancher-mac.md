@@ -31,3 +31,15 @@ brew install docker-compose
 ```
 
 You can now use plugin-development-docker as you would normally would :)
+
+## Troubleshooting
+
+### Rancher not starting
+
+- Rancher Desktop does not support macOS <10.15 please update to the latest macOS
+
+### Stale NFS mount
+
+macOs TCC polcies do not allow nfs mounting in the document folder.
+
+- Move the repository files to ~/Projects/plugin-development-docker
