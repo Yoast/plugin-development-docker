@@ -5,7 +5,7 @@ This is a fairly simple docker container to facilitate development of WordPress 
 ### Prerequisites
 
 Mac users:
-- [Docker Desktop](https://docs.docker.com/docker-for-mac/install/) includes everything you need.
+- [Rancher Desktop](https://rancherdesktop.io/) see the [Rancher-mac.md](./Rancher-mac.md) guide on how to switch .
 
 Windows
 - [Docker Desktop](https://docs.docker.com/docker-for-windows/install/) includes most things you need.
