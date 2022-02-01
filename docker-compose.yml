@@ -15,11 +15,11 @@ services:
   mailhog:
     container_name: "mailhog-wordpress"
     image: mailhog/mailhog
-    logging:
-      driver: 'none'  # disable saving logs to prevent bloat
+    # logging:
+    #   driver: none  # disable saving logs to prevent bloat
     ports:
       - 127.0.0.1:8025:8025 # web ui
-  
+
   # Basic WordPress:
   basic-database:
     container_name: "wordpress-basic-database"
@@ -54,13 +54,15 @@ services:
       VIRTUAL_HOST: ${BASIC_HOST:-basic.wordpress.test}
       WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX}
     volumes:
-      - "./wordpress:/var/www/html"
-      - "./plugins:/var/www/html/wp-content/plugins:cached"
+      - "nfsmount_WP:/var/www/html"
+      - "nfsmount_plugins:/var/www/html/wp-content/plugins:cached"
       - "./config/basic-wordpress-config.php:/tmp/wp-config.php:ro"
-      - "./xdebug:/var/xdebug:cached"
+      - "nfsmount_xdebug:/var/xdebug:cached"
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
     labels:
       - com.yoast.plugin-development-docker.mainwpinstance
+    extra_hosts:
+      - "host.docker.internal:${DOCKER_NETWORK_HOST}"
 
   # WooCommerce WordPress:
   woocommerce-database:
@@ -95,13 +97,15 @@ services:
       SITE_URL: ${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}
       VIRTUAL_HOST: ${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}
     volumes:
-      - "./wordpress:/var/www/html"
-      - "./plugins:/var/www/html/wp-content/plugins:cached"
+      - "nfsmount_WP:/var/www/html"
+      - "nfsmount_plugins:/var/www/html/wp-content/plugins:cached"
       - "./config/woocommerce-wordpress-config.php:/tmp/wp-config.php:ro"
       - "./data/xdebug:/var/xdebug:cached"
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
     labels:
       - com.yoast.plugin-development-docker.mainwpinstance
+    extra_hosts:
+      - "host.docker.internal:${DOCKER_NETWORK_HOST}"
 
   # Multisite WordPress:
   multisite-database:
@@ -136,14 +140,16 @@ services:
       SITE_URL: ${MULTISITE_HOST:-multisite.wordpress.test}
       VIRTUAL_HOST: ${MULTISITE_HOST:-multisite.wordpress.test},test.${MULTISITE_HOST:-multisite.wordpress.test},translate.${MULTISITE_HOST:-multisite.wordpress.test}
     volumes:
-      - "./wordpress:/var/www/html"
-      - "./plugins:/var/www/html/wp-content/plugins:cached"
+      - "nfsmount_WP:/var/www/html"
+      - "nfsmount_plugins:/var/www/html/wp-content/plugins:cached"
       - "./config/multisite-wordpress-config.php:/tmp/wp-config.php:ro"
       - "./config/multisite.htaccess:/var/www/html/.htaccess:cached"
       - "./data/xdebug:/var/xdebug:cached"
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
     labels:
       - com.yoast.plugin-development-docker.mainwpinstance
+    extra_hosts:
+      - "host.docker.internal:${DOCKER_NETWORK_HOST}"
 
   # Multisite WordPress using Subdomains:
   multisitedomain-database:
@@ -178,14 +184,16 @@ services:
       SITE_URL: ${MULTISITE_HOST:-multisite.wordpress.test}
       VIRTUAL_HOST: ${MULTISITE_HOST:-multisite.wordpress.test},test.${MULTISITE_HOST:-multisite.wordpress.test},translate.${MULTISITE_HOST:-multisite.wordpress.test}
     volumes:
-      - "./wordpress:/var/www/html"
-      - "./plugins:/var/www/html/wp-content/plugins:cached"
+      - "nfsmount_WP:/var/www/html"
+      - "nfsmount_plugins:/var/www/html/wp-content/plugins:cached"
       - "./config/multisitedomain-wordpress-config.php:/tmp/wp-config.php:ro"
       - "./config/multisite.htaccess:/var/www/html/.htaccess:cached"
       - "./data/xdebug:/var/xdebug:cached"
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
     labels:
       - com.yoast.plugin-development-docker.mainwpinstance
+    extra_hosts:
+      - "host.docker.internal:${DOCKER_NETWORK_HOST}"
 
   # Standalone WordPress:
   standalone-database:
@@ -220,13 +228,15 @@ services:
       SITE_URL: ${STANDALONE_HOST:-standalone.wordpress.test}
       VIRTUAL_HOST: ${STANDALONE_HOST:-standalone.wordpress.test}
     volumes:
-      - "./wordpress:/var/www/html"
+      - "nfsmount_WP:/var/www/html"
       - "./sa-plugins:/var/www/html/wp-content/plugins:cached"
       - "./config/standalone-wordpress-config.php:/tmp/wp-config.php:ro"
-      - "./xdebug:/var/xdebug:cached"
+      - "nfsmount_xdebug:/var/xdebug:cached"
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
+    extra_hosts:
+      - "host.docker.internal:${DOCKER_NETWORK_HOST}"
 
-# Nightly WordPress:
+  # Nightly WordPress:
   nightly-database:
     container_name: "wordpress-nightly-database"
     image: "mysql:5.7"
@@ -259,18 +269,38 @@ services:
       SITE_URL: ${NIGHTLY_HOST:-nightly.wordpress.test}
       VIRTUAL_HOST: ${NIGHTLY_HOST:-nightly.wordpress.test}
     volumes:
-      - "./wordpress:/var/www/html"
-      - "./plugins:/var/www/html/wp-content/plugins:cached"
+      - "nfsmount_WP:/var/www/html"
+      - "nfsmount_plugins:/var/www/html/wp-content/plugins:cached"
       - "./config/nightly-wordpress-config.php:/tmp/wp-config.php:ro"
-      - "./xdebug:/var/xdebug:cached"
+      - "nfsmount_xdebug:/var/xdebug:cached"
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
     labels:
       - com.yoast.plugin-development-docker.mainwpinstance
+    extra_hosts:
+      - "host.docker.internal:${DOCKER_NETWORK_HOST}"
 
 volumes:
   basic-database-data:
   woocommerce-database-data:
   multisite-database-data:
-  multisitedomain-database-data: 
+  multisitedomain-database-data:
   standalone-database-data:
   nightly-database-data:
+  nfsmount_WP:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=host.docker.internal,rw,nolock,hard,nointr,nfsvers=3
+      device: ":${PWD}/wordpress"
+  nfsmount_plugins:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=host.docker.internal,rw,nolock,hard,nointr,nfsvers=3
+      device: ":${PWD}/plugins"
+  nfsmount_xdebug:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=host.docker.internal,rw,nolock,hard,nointr,nfsvers=3
+      device: ":${PWD}/xdebug"
