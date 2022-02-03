@@ -1,0 +1,277 @@
+---
+version: "3.3"
+services:
+  # NginX reverse proxy:
+  nginx:
+    container_name: "nginx-router-wordpress"
+    image: jwilder/nginx-proxy
+    ports:
+      - "127.0.0.1:80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - "./config/yoastnginx.conf:/etc/nginx/conf.d/yoastnginx.conf"
+
+  # Mailhog:
+  mailhog:
+    container_name: "mailhog-wordpress"
+    image: mailhog/mailhog
+    # logging:
+    #   driver: none  # disable saving logs to prevent bloat
+    ports:
+      - 127.0.0.1:8025:8025 # web ui
+
+  # Basic WordPress:
+  basic-database:
+    container_name: "wordpress-basic-database"
+    image: "mysql:5.7"
+    ports:
+      - "1987:3306"
+    restart: always
+    environment:
+      VIRTUAL_HOST: ${BASIC_DATABASE_HOST:-basic-database.wordpress.test}
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    volumes:
+      - "basic-database-data:/var/lib/mysql"
+  basic-wordpress:
+    container_name: "basic-wordpress"
+    depends_on:
+      - nginx
+      - mailhog
+      - basic-database
+    build: "./containers/wordpress"
+    restart: always
+    expose:
+      - 80
+    environment:
+      ADMIN_USERNAME: admin
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_PASSWORD: admin
+      SITE_TITLE: Basic
+      SITE_URL: ${BASIC_HOST:-basic.wordpress.test}
+      VIRTUAL_HOST: ${BASIC_HOST:-basic.wordpress.test}
+      WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX}
+    volumes:
+      - "./wordpress:/var/www/html"
+      - "./plugins:/var/www/html/wp-content/plugins:cached"
+      - "./config/basic-wordpress-config.php:/tmp/wp-config.php:ro"
+      - "./xdebug:/var/xdebug:cached"
+      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
+    labels:
+      - com.yoast.plugin-development-docker.mainwpinstance
+
+  # WooCommerce WordPress:
+  woocommerce-database:
+    container_name: "wordpress-woocommerce-database"
+    image: "mysql:5.7"
+    ports:
+      - "1988:3306"
+    restart: always
+    environment:
+      VIRTUAL_HOST: ${WOOCOMMERCE_DATABASE_HOST:-woocommerce-database.wordpress.test}
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    volumes:
+      - "woocommerce-database-data:/var/lib/mysql"
+  woocommerce-wordpress:
+    container_name: "woocommerce-wordpress"
+    depends_on:
+      - nginx
+      - mailhog
+      - woocommerce-database
+    build: "./containers/wordpress"
+    restart: always
+    expose:
+      - 80
+    environment:
+      ADMIN_USERNAME: admin
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_PASSWORD: admin
+      SITE_TITLE: WooCommerce
+      SITE_URL: ${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}
+      VIRTUAL_HOST: ${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}
+    volumes:
+      - "./wordpress:/var/www/html"
+      - "./plugins:/var/www/html/wp-content/plugins:cached"
+      - "./config/woocommerce-wordpress-config.php:/tmp/wp-config.php:ro"
+      - "./data/xdebug:/var/xdebug:cached"
+      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
+    labels:
+      - com.yoast.plugin-development-docker.mainwpinstance
+
+  # Multisite WordPress:
+  multisite-database:
+    container_name: "wordpress-multisite-database"
+    image: "mysql:5.7"
+    ports:
+      - "1989:3306"
+    restart: always
+    environment:
+      VIRTUAL_HOST: ${MULTISITE_DATABASE_HOST:-multisite-database.wordpress.test}
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    volumes:
+      - "multisite-database-data:/var/lib/mysql"
+  multisite-wordpress:
+    container_name: "multisite-wordpress"
+    depends_on:
+      - nginx
+      - mailhog
+      - multisite-database
+    build: "./containers/wordpress"
+    restart: always
+    expose:
+      - 80
+    environment:
+      ADMIN_USERNAME: admin
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_PASSWORD: admin
+      SITE_TITLE: multisite
+      SITE_URL: ${MULTISITE_HOST:-multisite.wordpress.test}
+      VIRTUAL_HOST: ${MULTISITE_HOST:-multisite.wordpress.test},test.${MULTISITE_HOST:-multisite.wordpress.test},translate.${MULTISITE_HOST:-multisite.wordpress.test}
+    volumes:
+      - "./wordpress:/var/www/html"
+      - "./plugins:/var/www/html/wp-content/plugins:cached"
+      - "./config/multisite-wordpress-config.php:/tmp/wp-config.php:ro"
+      - "./config/multisite.htaccess:/var/www/html/.htaccess:cached"
+      - "./data/xdebug:/var/xdebug:cached"
+      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
+    labels:
+      - com.yoast.plugin-development-docker.mainwpinstance
+
+  # Multisite WordPress using Subdomains:
+  multisitedomain-database:
+    container_name: "wordpress-multisitedomain-database"
+    image: "mysql:5.7"
+    ports:
+      - "1991:3306"
+    restart: always
+    environment:
+      VIRTUAL_HOST: ${MULTISITE_DATABASE_HOST:-multisite-database.wordpress.test}
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    volumes:
+      - "multisitedomain-database-data:/var/lib/mysql"
+  multisitedomain-wordpress:
+    container_name: "multisitedomain-wordpress"
+    depends_on:
+      - nginx
+      - mailhog
+      - multisitedomain-database
+    build: "./containers/wordpress"
+    restart: always
+    expose:
+      - 80
+    environment:
+      ADMIN_USERNAME: admin
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_PASSWORD: admin
+      SITE_TITLE: multisite
+      SITE_URL: ${MULTISITE_HOST:-multisite.wordpress.test}
+      VIRTUAL_HOST: ${MULTISITE_HOST:-multisite.wordpress.test},test.${MULTISITE_HOST:-multisite.wordpress.test},translate.${MULTISITE_HOST:-multisite.wordpress.test}
+    volumes:
+      - "./wordpress:/var/www/html"
+      - "./plugins:/var/www/html/wp-content/plugins:cached"
+      - "./config/multisitedomain-wordpress-config.php:/tmp/wp-config.php:ro"
+      - "./config/multisite.htaccess:/var/www/html/.htaccess:cached"
+      - "./data/xdebug:/var/xdebug:cached"
+      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
+    labels:
+      - com.yoast.plugin-development-docker.mainwpinstance
+
+  # Standalone WordPress:
+  standalone-database:
+    container_name: "wordpress-standalone-database"
+    image: "mysql:5.7"
+    ports:
+      - "1990:3306"
+    restart: always
+    environment:
+      VIRTUAL_HOST: ${STANDALONE_DATABASE_HOST:-standalone-database.wordpress.test}
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    volumes:
+      - "standalone-database-data:/var/lib/mysql"
+  standalone-wordpress:
+    container_name: "standalone-wordpress"
+    depends_on:
+      - nginx
+      - mailhog
+      - standalone-database
+    build: "./containers/wordpress"
+    restart: always
+    expose:
+      - 80
+    environment:
+      ADMIN_USERNAME: admin
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_PASSWORD: admin
+      SITE_TITLE: Standalone
+      SITE_URL: ${STANDALONE_HOST:-standalone.wordpress.test}
+      VIRTUAL_HOST: ${STANDALONE_HOST:-standalone.wordpress.test}
+    volumes:
+      - "./wordpress:/var/www/html"
+      - "./sa-plugins:/var/www/html/wp-content/plugins:cached"
+      - "./config/standalone-wordpress-config.php:/tmp/wp-config.php:ro"
+      - "./xdebug:/var/xdebug:cached"
+      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
+
+  # Nightly WordPress:
+  nightly-database:
+    container_name: "wordpress-nightly-database"
+    image: "mysql:5.7"
+    ports:
+      - "1992:3306"
+    restart: always
+    environment:
+      VIRTUAL_HOST: ${NIGHTLY_DATABASE_HOST:-nightly-database.wordpress.test}
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    volumes:
+      - "nightly-database-data:/var/lib/mysql"
+  nightly-wordpress:
+    container_name: "nightly-wordpress"
+    depends_on:
+      - nginx
+      - mailhog
+      - nightly-database
+    build: "./containers/wordpress"
+    restart: always
+    expose:
+      - 80
+    environment:
+      ADMIN_USERNAME: admin
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_PASSWORD: admin
+      SITE_TITLE: nightly
+      SITE_URL: ${NIGHTLY_HOST:-nightly.wordpress.test}
+      VIRTUAL_HOST: ${NIGHTLY_HOST:-nightly.wordpress.test}
+    volumes:
+      - "./wordpress:/var/www/html"
+      - "./plugins:/var/www/html/wp-content/plugins:cached"
+      - "./config/nightly-wordpress-config.php:/tmp/wp-config.php:ro"
+      - "./xdebug:/var/xdebug:cached"
+      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
+    labels:
+      - com.yoast.plugin-development-docker.mainwpinstance
+
+volumes:
+  basic-database-data:
+  woocommerce-database-data:
+  multisite-database-data:
+  multisitedomain-database-data:
+  standalone-database-data:
+  nightly-database-data:
+

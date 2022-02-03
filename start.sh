@@ -49,8 +49,8 @@ DB_PORT_nightly_wordpress=1992
 export WORDPRESS_TABLE_PREFIX="$(cat ./config/wp-table-prefix)"
 echo "WP table prefix: $WORDPRESS_TABLE_PREFIX"
 
-USER_ID=`id -u`
-GROUP_ID=`id -g`
+USER_ID=$(id -u)
+GROUP_ID=$(id -g)
 STOPPING=false
 
 trap stop_docker INT
@@ -159,6 +159,8 @@ find_platform
 
 if [[ "$PLATFORM" == WINDOWS ]]; then
 	source config/start_win.sh
+    export COMPOSE_FILE=./docker-compose-windows.yml
+    check_kubernetes_node
 else
 	# supports mac and linux
 	source config/start_mac.sh
