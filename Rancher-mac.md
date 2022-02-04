@@ -49,3 +49,10 @@ You can now start plugin-development-docker using `./start.sh`
 macOs TCC polcies do not allow nfs mounting in the document folder.
 
 - Move the repository files to ~/Projects/plugin-development-docker
+
+### Macos Apache Keeps restarting
+If you get "It Works!" in your browser while expecting to see a wordpress installation run the following command:
+
+```bash
+sudo launchctl unload -w /System/Library/LaunchDaemons/org.apache.httpd.plist
+```
