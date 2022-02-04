@@ -30,7 +30,13 @@ cd ~
 brew install docker-compose
 ```
 
-You can now use plugin-development-docker as you would normally would :)
+## Setting up NFS
+
+Run the following commands:
+
+- `./clean.sh` && `./make.sh`
+
+You can now start plugin-development-docker using `./start.sh`
 
 ## Troubleshooting
 
