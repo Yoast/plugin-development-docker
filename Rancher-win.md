@@ -10,6 +10,7 @@
 
 - In the `General` tab disable: `Allow Collection of Anonymous statistics`
 - In the `Kubernetes` tab change container runtime to: `dockerd (Moby)` 
+- In the `WSL Integration` tab check the checkbox next the `ubuntu` WSL.
 
 ## Installing Chocolatey
 
