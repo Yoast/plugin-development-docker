@@ -18,7 +18,8 @@ cd ~
 - Download [Rancher Desktop](https://rancherdesktop.io/)
 
 - In the `General` tab disable: `Allow Collection of Anonymous statistics`
-- In the `Kubernetes` tab change container runtime to: `dockerd (Moby)` 
+- In the `Kubernetes` tab change container runtime to: `dockerd (Moby)`
+- In the `Kubernetes` uncheck the `enable kubernetes` box.
 - In the `Kubernetes` tab change memory and CPU to half of your system resources.
 - In the `Supporting Utilities` tab enable all symbolic links
 

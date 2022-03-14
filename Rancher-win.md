@@ -6,10 +6,11 @@
 
 ## Installing Rancher Desktop
 
-- Download [Rancher Desktop >= 1.0.1](https://github.com/rancher-sandbox/rancher-desktop/releases/download/v1.0.1/Rancher.Desktop.Setup.1.0.1.exe)
+- Download [Rancher Desktop >= 1.1.1](https://rancherdesktop.io/)
 
 - In the `General` tab disable: `Allow Collection of Anonymous statistics`
-- In the `Kubernetes` tab change container runtime to: `dockerd (Moby)` 
+- In the `Kubernetes` tab change container runtime to: `dockerd (Moby)`
+- In the `Kubernetes` uncheck the `enable kubernetes` box
 - In the `WSL Integration` tab check the checkbox next the `ubuntu` WSL.
 
 ## Installing Chocolatey
