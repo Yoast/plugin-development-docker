@@ -23,7 +23,7 @@ services:
   # Basic WordPress:
   basic-database:
     container_name: "wordpress-basic-database"
-    image: "mysql:5.7"
+    image: "mariadb:10.5.15"
     ports:
       - "1987:3306"
     restart: always
