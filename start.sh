@@ -204,7 +204,7 @@ if [[ "$PLATFORM" == WINDOWS ]]; then
 else
     # Default rancher location, it may be different depending on the user deciding to install the app somewhere else.
     default_rancher_loc='/Applications/Rancher Desktop.app/Contents/Resources/resources/linux/rancher-desktop.appdata.xml'
-    rancher_desktop_version=$(grep -P "release version=\".+?\"" "${default_rancher_loc}" | cut -d '"' -f 2)
+    rancher_desktop_version=$(grep -E "release version=\".+?\"" "${default_rancher_loc}" | cut -d '"' -f 2)
     rancher_should_be="1.1.1"
 
     # Compare the versions and exit if the used version is too old.
