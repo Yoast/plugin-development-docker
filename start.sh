@@ -155,6 +155,46 @@ function await_containers() {
     done
 }
 
+#######################################
+# Compare 2 semver variables
+# Globals:
+#   None
+# Arguments:
+#   version 1, version 2
+# Outputs:
+#   0 for equal, 1 for >, 2 for <
+#######################################
+function compare_ver(){
+    if [[ $1 == $2 ]]
+    then
+        return 0
+    fi
+    local IFS=.
+    local i ver1=($1) ver2=($2)
+    # fill empty fields in ver1 with zeros
+    for ((i=${#ver1[@]}; i<${#ver2[@]}; i++))
+    do
+        ver1[i]=0
+    done
+    for ((i=0; i<${#ver1[@]}; i++))
+    do
+        if [[ -z ${ver2[i]} ]]
+        then
+            # fill empty fields in ver2 with zeros
+            ver2[i]=0
+        fi
+        if ((10#${ver1[i]} > 10#${ver2[i]}))
+        then
+            return 1
+        fi
+        if ((10#${ver1[i]} < 10#${ver2[i]}))
+        then
+            return 2
+        fi
+    done
+    return 0
+}
+
 find_platform
 
 if [[ "$PLATFORM" == WINDOWS ]]; then
@@ -162,10 +202,20 @@ if [[ "$PLATFORM" == WINDOWS ]]; then
     export COMPOSE_FILE=./docker-compose-windows.yml
     check_kubernetes_node
 else
+    # Default rancher location, it may be different depending on the user deciding to install the app somewhere else.
+    default_rancher_loc='/Applications/Rancher Desktop.app/Contents/Resources/resources/linux/rancher-desktop.appdata.xml'
+    rancher_desktop_version=$(grep -P "release version=\".+?\"" "${default_rancher_loc}" | cut -d '"' -f 2)
+    rancher_should_be="1.1.1"
+
+    # Compare the versions and exit if the used version is too old.
+    compare_ver $rancher_desktop_version $rancher_should_be
+    if [[ $? = 2 ]]; then
+        echo "Your Rancher Desktop version is outdated (${rancher_desktop_version}). Please update to at least ${rancher_should_be}"
+        exit 1
+    fi
+    
 	# supports mac and linux
 	source config/start_mac.sh
-    export DOCKER_NETWORK_HOST=$(ipconfig getifaddr en0)
-    check_lima_node
 fi
 
 create_dockerfile
