@@ -100,29 +100,6 @@ function start_docker_app() {
 }
 
 #######################################
-# Synchronizes Docker & Mac Clock to prevent issues
-# Globals:
-#   None
-# Arguments:
-#   None
-# Outputs:
-#   None
-#######################################
-function synchronize_clocks() {
-	CLOCK_SOURCE=$(docker exec -ti nginx-router-wordpress /bin/bash -c 'cat /sys/devices/system/clocksource/clocksource0/current_clocksource' | tr -d '[:space:]')
-	if [[ "$CLOCK_SOURCE" != 'tsc' && "$STOPPING" != 'true' ]]; then
-		echo "Restarting docker now to fix out-of-sync hardware clock!"
-		docker ps -q | xargs -L1 docker stop
-		
-		quit_docker_app
-		start_docker_app
-
-		echo "Docker is up and running again! Booting containers!"
-		boot_containers
-	fi
-}
-
-#######################################
 # Function that groups tasks depending on platform
 # Globals:
 #   None
@@ -132,9 +109,7 @@ function synchronize_clocks() {
 #   None
 #######################################
 function platform_tasks() {
-	if [[ "$PLATFORM" == APPLE && "$CLOCK_SYNC" == true ]]; then
-		synchronize_clocks
-	fi
+	:
 }
 
 #######################################
