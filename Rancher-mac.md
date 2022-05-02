@@ -23,6 +23,16 @@ cd ~
 - In the `Kubernetes` tab change memory and CPU to half of your system resources.
 - In the `Supporting Utilities` tab enable all symbolic links
 
+If you can't create the symbolic links because you get an error that says:
+
+> Insufficient permission to manipulate /usr/local/bin
+This is probably because you're on an M1 Mac and this directory doesn't exist. To fix that:
+
+```bash
+sudo mkdir -p /usr/local/bin
+sudo chown $USER /usr/local/bin
+```
+
 ## Installing docker-compose
 
 - Install docker-compose:
