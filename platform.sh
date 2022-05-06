@@ -20,7 +20,7 @@ function find_platform {
             PLATFORM=LINUX
             ;;
         darwin*)
-            if [ "$(uname -m)" = "x86_64" ] 
+            if [[ "$(sysctl -n machdep.cpu.brand_string | grep Intel)" ]] 
             then
                 PLATFORM=APPLE
             else
