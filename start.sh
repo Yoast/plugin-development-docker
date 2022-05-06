@@ -215,6 +215,10 @@ else
     fi
     
 	# supports mac and linux
+    if [[ "$PLATFORM" == APPLE_M1 ]]; then
+        export COMPOSE_FILE=./docker-compose-m1.yml
+    fi
+
 	source config/start_mac.sh
 fi
 
