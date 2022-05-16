@@ -84,6 +84,15 @@ Note that you'll have to repeat this daily if you want to be on the latest night
 Run `./plugins.sh` - this will install default plugins to your container for easier debugging and developing.
 Simply clone, extract or download any plugins you want available in your environment into the `plugins` directory. They will be immediately visible inside your WordPress installation. Don't forget to activate them!
 
+#### Testing multiple versions of the plugin
+
+To test two environments in parallel, run `./start.sh basic-wordpress standalone-wordpress` in the folder in which `plugin-development-docker` is located. Your test environments will be available through the next URLs:
+
+```bash
+http://basic.wordpress.test/
+http://standalone.wordpress.test/
+```
+
 #### Running WP CLI commands
 
 You can run `./wp.sh` to run WP CLI commands. By default this will execute the command in the first running WordPress container ( created from this project ). However if the first argument is the name of a container it will specifically run in that container.
