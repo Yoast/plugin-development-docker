@@ -44,12 +44,12 @@ By default `./start.sh` will start the basic wordpress container. Alternatively 
 
 The following are available:
 
-- basic-wordpress: The basic image that's started by default. Can be accessed via basic.wordpress.test.
-- standalone-wordpress: The basic image without anything installed. Has a separate plugins folder named `sa-plugins` in order to not interfere with other containers. Useful for testing a second version of a plugin.
-- woocommerce-wordpress: A WooCommerce installation. Can be accessed via woocommerce.wordpress.test.
-- multisite-wordpress: A multisite installation using subdirectories. Can be accessed via multisite.wordpress.test.
-- multisitedomain-wordpress: A multisite installation using subdomains. Can be accessed via multisite.wordpress.test.
-- nightly-wordpress: A nightly installation using subdomains. Can be accessed via nightly.wordpress.test.
+- **basic-wordpress**: The basic image that's started by default. Can be accessed via basic.wordpress.test.
+- **standalone-wordpress**: The basic image without anything installed. Has a separate plugins folder named `sa-plugins` in order to not interfere with other containers. Useful for testing a second version of a plugin.
+- **woocommerce-wordpress**: A WooCommerce installation. Can be accessed via woocommerce.wordpress.test.
+- **multisite-wordpress**: A multisite installation using subdirectories. Can be accessed via multisite.wordpress.test.
+- **multisitedomain-wordpress**: A multisite installation using subdomains. Can be accessed via multisite.wordpress.test.
+- **nightly-wordpress**: A nightly installation using subdomains. Can be accessed via nightly.wordpress.test.
 
 For example, calling `./start.sh woocommerce-wordpress` will start only the WooCommerce container. Calling `./start.sh basic-wordpress multisite-wordpress` will start both the basic WordPress and multisite containers.
 
