@@ -1,0 +1,3 @@
+openssl x509 -req -in wordpress.test.csr -signkey wordpress.test.key -out wordpress.test.crt -days 3650 -sha256 -extfile v3.ext
+
+openssl req -utf8 -nodes -sha256 -newkey rsa:2048 -keyout wordpress.test.key -out wordpress.test.csr

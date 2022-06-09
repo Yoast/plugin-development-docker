@@ -31,12 +31,12 @@ echo "Synchronize clock : $CLOCK_SYNC"
 echo "Building containers: $CONTAINERS"
 
 #define constants
-URL_basic_wordpress="http://${BASIC_HOST:-basic.wordpress.test}"
-URL_woocommerce_wordpress="http://${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}"
-URL_multisite_wordpress="http://${MULTISITE_HOST:-multisite.wordpress.test}"
-URL_standalone_wordpress="http://${STANDALONE_HOST:-standalone.wordpress.test}"
-URL_multisitedomain_wordpress="http://${MULTISITE_HOST:-multisite.wordpress.test}"
-URL_nightly_wordpress="http://${NIGHTLY_HOST:-nightly.wordpress.test}"
+URL_basic_wordpress="https://${BASIC_HOST:-basic.wordpress.test}"
+URL_woocommerce_wordpress="https://${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}"
+URL_multisite_wordpress="https://${MULTISITE_HOST:-multisite.wordpress.test}"
+URL_standalone_wordpress="https://${STANDALONE_HOST:-standalone.wordpress.test}"
+URL_multisitedomain_wordpress="https://${MULTISITE_HOST:-multisite.wordpress.test}"
+URL_nightly_wordpress="https://${NIGHTLY_HOST:-nightly.wordpress.test}"
 
 DB_PORT_basic_wordpress=1987
 DB_PORT_woocommerce_wordpress=1988
@@ -88,7 +88,7 @@ function create_dockerfile {
     if [ ! -f "$DOCKERFILE" ]; then
         echo -n "Creating Dockerfile from template. $DOCKERTEMPLATE => $DOCKERFILE"
         cp "$DOCKERTEMPLATE" "$DOCKERFILE"
-        
+
         sed -i -e "s/\$UID/${USER_ID}/g" "$DOCKERFILE"
         sed -i -e "s/\$GID/${GROUP_ID}/g" "$DOCKERFILE"
     fi
@@ -143,7 +143,7 @@ function await_containers() {
         URL_VAR="URL_${CONTAINER//-/_}"
         URL=${!URL_VAR}
         while [ "$BOOTED" != "true"  ]; do
-            if curl -I "$URL" 2>/dev/null | grep -q -e "HTTP/1.1 200 OK" -e "HTTP/1.1 302 Found"; then
+            if curl -I "$URL" 2>/dev/null | grep -q -e "HTTP/2 200" -e "HTTP/1.1 200 OK" -e "HTTP/1.1 302 Found"; then
                 BOOTED=true
             else
                 sleep 2
@@ -213,7 +213,7 @@ else
         echo "Your Rancher Desktop version is outdated (${rancher_desktop_version}). Please update to at least ${rancher_should_be}"
         exit 1
     fi
-    
+
 	# supports mac and linux
     if [[ "$PLATFORM" == APPLE_M1 ]]; then
         export COMPOSE_FILE=./docker-compose-m1.yml
@@ -243,7 +243,7 @@ echo "Outputting logs now:"
 docker-compose logs -f &
 PROCESS=$!
 
-#run platform specific maintenance tasks every 5 seconds 
+#run platform specific maintenance tasks every 5 seconds
 while [ "$STOPPING" != 'true' ]; do
 	#platform_tasks
 	sleep 5
