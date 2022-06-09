@@ -21,6 +21,21 @@ Otherwise install:
 - make sure your platform understands the sudo command
 - friendly dns names (e.g. basic.wordpress.test) will not work out of the box
 
+## Installing the SSL cert
+
+Before you can run the local enviroment you need to install the SSL certificate.
+
+### Installing on MacOS
+Whenever needed fill in your password when prompted.
+
+1. Browse to `/config/certs` in this project in the finder.
+2. Double-click on the file `wordpress.test.crt`. This will open Keychain Access tool.
+3. Locate the entry `*.wordpress.test` in the system keychains in the system directory.
+4. Double-click on the entry and open the trust dialog.
+5. Select "Always Trust" for the "When using this certificate" option.
+6. Close the screen and fill in your password when prompted.
+7. You might need to restart your browser before the certificate is accepted.
+
 ## Setting up the container
 
 ### 1. run `./make.sh`
@@ -30,7 +45,7 @@ You will likely need to enter your sudo password as this will add local.wordpres
 
 ### 2. run `./start.sh`
 
-This will create and start your containers. You can visit your environment by visiting `http://basic.wordpress.test`. Note that starting other containers, like woocommerce or multisite, will have different domains associated.
+This will create and start your containers. You can visit your environment by visiting `https://basic.wordpress.test`. Note that starting other containers, like woocommerce or multisite, will have different domains associated.
 
 ### Resetting everything
 
@@ -132,7 +147,7 @@ If you are using PHPStorm follow these instructions:
 1. Host: `<domain name here>` (default for this docker: `basic.wordpress.test`)
 1. Port: 80
 1. File/Directory `plugins/<your-plugin-name>` maps to the absoulte path `/var/www/html/wp-content/plugins/<your-plugin-name>`.
-1. File/Directory `wordpress` maps to the absoulte path `/var/www/html`.
+1. File/Directory `wordpress` maps to the absolute path `/var/www/html`.
 1. Apply
 
 In PHPStorm you can also add the `wordpress` directory to provide full WordPress indexation.
