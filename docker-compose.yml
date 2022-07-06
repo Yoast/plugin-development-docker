@@ -41,7 +41,11 @@ services:
       - nginx
       - mailhog
       - basic-database
-    build: "./containers/wordpress"
+    build:
+      context: "./containers/wordpress"
+      args:
+        - GID=${GID:-1000}
+        - UID=${UID:-1000}
     restart: always
     expose:
       - 80
@@ -83,7 +87,11 @@ services:
       - nginx
       - mailhog
       - woocommerce-database
-    build: "./containers/wordpress"
+    build:
+      context: "./containers/wordpress"
+      args:
+        - GID=${GID:-1000}
+        - UID=${UID:-1000}
     restart: always
     expose:
       - 80
@@ -124,7 +132,11 @@ services:
       - nginx
       - mailhog
       - multisite-database
-    build: "./containers/wordpress"
+    build:
+      context: "./containers/wordpress"
+      args:
+        - GID=${GID:-1000}
+        - UID=${UID:-1000}
     restart: always
     expose:
       - 80
@@ -166,7 +178,11 @@ services:
       - nginx
       - mailhog
       - multisitedomain-database
-    build: "./containers/wordpress"
+    build:
+      context: "./containers/wordpress"
+      args:
+        - GID=${GID:-1000}
+        - UID=${UID:-1000}
     restart: always
     expose:
       - 80
@@ -208,7 +224,11 @@ services:
       - nginx
       - mailhog
       - standalone-database
-    build: "./containers/wordpress"
+    build:
+      context: "./containers/wordpress"
+      args:
+        - GID=${GID:-1000}
+        - UID=${UID:-1000}
     restart: always
     expose:
       - 80
@@ -247,7 +267,11 @@ services:
       - nginx
       - mailhog
       - nightly-database
-    build: "./containers/wordpress"
+    build:
+      context: "./containers/wordpress"
+      args:
+        - GID=${GID:-1000}
+        - UID=${UID:-1000}
     restart: always
     expose:
       - 80
