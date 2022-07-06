@@ -74,25 +74,13 @@ function stop_docker {
 
 #######################################
 # Create Dockerfile from template
-# Globals:
-#   USER_ID
-#   GROUP_ID
+# echo starting contianers...
 # Arguments:
 #   None
 # Outputs:
 #   None
 #######################################
 function create_dockerfile {
-    DOCKERTEMPLATE='./containers/wordpress/Dockerfile.template'
-    DOCKERFILE='./containers/wordpress/Dockerfile'
-    if [ ! -f "$DOCKERFILE" ]; then
-        echo -n "Creating Dockerfile from template. $DOCKERTEMPLATE => $DOCKERFILE"
-        cp "$DOCKERTEMPLATE" "$DOCKERFILE"
-        
-        sed -i -e "s/\$UID/${USER_ID}/g" "$DOCKERFILE"
-        sed -i -e "s/\$GID/${GROUP_ID}/g" "$DOCKERFILE"
-    fi
-
     echo "Starting containers:"
     for CONTAINER in $CONTAINERS; do
         echo "  - $CONTAINER"
@@ -216,7 +204,8 @@ else
     
 	# supports mac and linux
     if [[ "$PLATFORM" == APPLE_M1 ]]; then
-        export COMPOSE_FILE=./docker-compose-m1.yml
+        echo mac M1
+        #export COMPOSE_FILE=./docker-compose-m1.yml
     fi
 
 	source config/start_mac.sh

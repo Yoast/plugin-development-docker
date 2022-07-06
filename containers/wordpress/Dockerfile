@@ -1,4 +1,6 @@
 FROM wordpress:latest
+ARG UID=1000
+ARG GID=1000
 
 RUN pecl install xdebug && docker-php-ext-enable xdebug
 RUN docker-php-ext-install pdo_mysql
