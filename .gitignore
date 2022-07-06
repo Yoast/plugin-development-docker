@@ -13,3 +13,4 @@ wordpress/*
 .DS_Store
 data/.DS_Store
 .env
+/docker-compose.override.yml
