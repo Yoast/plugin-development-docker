@@ -23,7 +23,7 @@ services:
   # Basic WordPress:
   basic-database:
     container_name: "wordpress-basic-database"
-    image: "mysql:5.7"
+    image: ${LOCAL_DB_TYPE-mysql}:${LOCAL_DB_VERSION-5.7.25}
     ports:
       - "1987:3306"
     restart: always
@@ -69,7 +69,7 @@ services:
   # WooCommerce WordPress:
   woocommerce-database:
     container_name: "wordpress-woocommerce-database"
-    image: "mysql:5.7"
+    image: ${LOCAL_DB_TYPE-mysql}:${LOCAL_DB_VERSION-5.7.25}
     ports:
       - "1988:3306"
     restart: always
@@ -114,7 +114,7 @@ services:
   # Multisite WordPress:
   multisite-database:
     container_name: "wordpress-multisite-database"
-    image: "mysql:5.7"
+    image: ${LOCAL_DB_TYPE-mysql}:${LOCAL_DB_VERSION-5.7.25}
     ports:
       - "1989:3306"
     restart: always
@@ -160,7 +160,7 @@ services:
   # Multisite WordPress using Subdomains:
   multisitedomain-database:
     container_name: "wordpress-multisitedomain-database"
-    image: "mysql:5.7"
+    image: ${LOCAL_DB_TYPE-mysql}:${LOCAL_DB_VERSION-5.7.25}
     ports:
       - "1991:3306"
     restart: always
@@ -206,7 +206,7 @@ services:
   # Standalone WordPress:
   standalone-database:
     container_name: "wordpress-standalone-database"
-    image: "mysql:5.7"
+    image: ${LOCAL_DB_TYPE-mysql}:${LOCAL_DB_VERSION-5.7.25}
     ports:
       - "1990:3306"
     restart: always
@@ -249,7 +249,7 @@ services:
   # Nightly WordPress:
   nightly-database:
     container_name: "wordpress-nightly-database"
-    image: "mysql:5.7"
+    image: ${LOCAL_DB_TYPE-mysql}:${LOCAL_DB_VERSION-5.7.25}
     ports:
       - "1992:3306"
     restart: always
