@@ -33,14 +33,28 @@ services:
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
       MYSQL_PASSWORD: wordpress
+    healthcheck:
+      # needs to work for both MySQL and mariaDB
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin -u $$MYSQL_USER -p$$MYSQL_PASSWORD  ping -P 3306 -h $$(hostname) | grep -q 'mysqld is alive'"
+        ]
+      interval: 1s
+      timeout: 10s
+      retries: 1200
     volumes:
       - "basic-database-data:/var/lib/mysql"
+
   basic-wordpress:
     container_name: "basic-wordpress"
     depends_on:
-      - nginx
-      - mailhog
-      - basic-database
+      nginx:
+        condition: service_started
+      mailhog:
+        condition: service_started
+      basic-database:
+        condition: service_healthy
     build:
       context: "./containers/wordpress"
       args:
@@ -79,14 +93,28 @@ services:
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
       MYSQL_PASSWORD: wordpress
+    healthcheck:
+      # needs to work for both MySQL and mariaDB
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin -u $$MYSQL_USER -p$$MYSQL_PASSWORD  ping -P 3306 -h $$(hostname) | grep -q 'mysqld is alive'"
+        ]
+      interval: 1s
+      timeout: 10s
+      retries: 1200
     volumes:
       - "woocommerce-database-data:/var/lib/mysql"
+
   woocommerce-wordpress:
     container_name: "woocommerce-wordpress"
     depends_on:
-      - nginx
-      - mailhog
-      - woocommerce-database
+      nginx:
+        condition: service_started
+      mailhog:
+        condition: service_started
+      woocommerce-database:
+        condition: service_healthy
     build:
       context: "./containers/wordpress"
       args:
@@ -124,14 +152,28 @@ services:
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
       MYSQL_PASSWORD: wordpress
+    healthcheck:
+      # needs to work for both MySQL and mariaDB
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin -u $$MYSQL_USER -p$$MYSQL_PASSWORD  ping -P 3306 -h $$(hostname) | grep -q 'mysqld is alive'"
+        ]
+      interval: 1s
+      timeout: 10s
+      retries: 1200
     volumes:
       - "multisite-database-data:/var/lib/mysql"
+
   multisite-wordpress:
     container_name: "multisite-wordpress"
     depends_on:
-      - nginx
-      - mailhog
-      - multisite-database
+      nginx:
+        condition: service_started
+      mailhog:
+        condition: service_started
+      multisite-database:
+        condition: service_healthy
     build:
       context: "./containers/wordpress"
       args:
@@ -170,14 +212,28 @@ services:
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
       MYSQL_PASSWORD: wordpress
+    healthcheck:
+      # needs to work for both MySQL and mariaDB
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin -u $$MYSQL_USER -p$$MYSQL_PASSWORD  ping -P 3306 -h $$(hostname) | grep -q 'mysqld is alive'"
+        ]
+      interval: 1s
+      timeout: 10s
+      retries: 1200
     volumes:
       - "multisitedomain-database-data:/var/lib/mysql"
+
   multisitedomain-wordpress:
     container_name: "multisitedomain-wordpress"
     depends_on:
-      - nginx
-      - mailhog
-      - multisitedomain-database
+      nginx:
+        condition: service_started
+      mailhog:
+        condition: service_started
+      multisitedomain-database:
+        condition: service_healthy
     build:
       context: "./containers/wordpress"
       args:
@@ -216,14 +272,28 @@ services:
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
       MYSQL_PASSWORD: wordpress
+    healthcheck:
+      # needs to work for both MySQL and mariaDB
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin -u $$MYSQL_USER -p$$MYSQL_PASSWORD  ping -P 3306 -h $$(hostname) | grep -q 'mysqld is alive'"
+        ]
+      interval: 1s
+      timeout: 10s
+      retries: 1200
     volumes:
       - "standalone-database-data:/var/lib/mysql"
+
   standalone-wordpress:
     container_name: "standalone-wordpress"
     depends_on:
-      - nginx
-      - mailhog
-      - standalone-database
+      nginx:
+        condition: service_started
+      mailhog:
+        condition: service_started
+      standalone-database:
+        condition: service_healthy
     build:
       context: "./containers/wordpress"
       args:
@@ -259,14 +329,28 @@ services:
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
       MYSQL_PASSWORD: wordpress
+    healthcheck:
+      # needs to work for both MySQL and mariaDB
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin -u $$MYSQL_USER -p$$MYSQL_PASSWORD  ping -P 3306 -h $$(hostname) | grep -q 'mysqld is alive'"
+        ]
+      interval: 1s
+      timeout: 10s
+      retries: 1200
     volumes:
       - "nightly-database-data:/var/lib/mysql"
+
   nightly-wordpress:
     container_name: "nightly-wordpress"
     depends_on:
-      - nginx
-      - mailhog
-      - nightly-database
+      nginx:
+        condition: service_started
+      mailhog:
+        condition: service_started
+      nightly-database:
+        condition: service_healthy
     build:
       context: "./containers/wordpress"
       args:

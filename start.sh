@@ -11,23 +11,13 @@ fi
 source platform.sh
 source ./config/config.sh
 
-# Set some default values:
-CLOCK_SYNC=true
-
-while true; do
-  case "$1" in
-    -d | --disable_clock_sync ) CLOCK_SYNC=false; shift ;;
-    -- ) shift; break ;;
-    * ) break ;;
-  esac
-done
 
 if [[ -z "$@" ]]; then
     CONTAINERS=basic-wordpress
 else
     CONTAINERS="$@"
 fi
-echo "Synchronize clock : $CLOCK_SYNC"
+
 echo "Building containers: $CONTAINERS"
 
 #define constants
@@ -46,8 +36,6 @@ DB_PORT_multisitedomain_wordpress=1991
 DB_PORT_nightly_wordpress=1992
 
 # Get environment variable for the Wordpress DB Table Prefix
-export WORDPRESS_TABLE_PREFIX="$(cat ./config/wp-table-prefix)"
-echo "WP table prefix: $WORDPRESS_TABLE_PREFIX"
 
 STOPPING=false
 
@@ -205,9 +193,6 @@ fi
 build_containers
 
 boot_containers
-
-#platform specific
-await_database_connections
 
 #platform specific
 install_wordpress

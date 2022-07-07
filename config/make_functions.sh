@@ -97,4 +97,6 @@ function platform_independent_make() {
 	change_hostfile "$path_to_hostfile" "${MULTISITE_DATABASE_HOST:-multisite-database.wordpress.test}"
 	change_hostfile "$path_to_hostfile" "${STANDALONE_DATABASE_HOST:-standalone-database.wordpress.test}"
     change_hostfile "$path_to_hostfile" "${NIGHTLY_DATABASE_HOST:-nightly-database.wordpress.test}"
+
+    
 }

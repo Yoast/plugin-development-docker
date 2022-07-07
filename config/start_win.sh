@@ -3,30 +3,6 @@
 # Prevent script from running as root (root-related actions will prompt for the needed credentials)
 [[ $EUID -eq 0 ]] && echo "Do not run with sudo / as root." && exit 1
 
-#######################################
-# Wait until DB is ready to accept connections
-# Globals:
-#   DOCKER_DB_NO_WAIT
-#   CONTAINERS
-# Arguments:
-#   None
-# Outputs:
-#   None
-#######################################
-function await_database_connections() {
-    if ! [ "$DOCKER_DB_NO_WAIT" ]; then
-        echo "Waiting for databases to boot."
-        for CONTAINER in $CONTAINERS; do
-            DB_PORT_VAR="DB_PORT_${CONTAINER//-/_}"
-            DB_PORT=${!DB_PORT_VAR}
-                        
-            until netstat -an | grep ${DB_PORT}; do
-				echo "Waiting until database accepts connections at port $DB_PORT..."
-				sleep 2
-			done
-        done
-    fi
-}
 
 #######################################
 # Install WordPress if not present

@@ -74,4 +74,6 @@ function platform_make() {
 	setup_NFS
     platform_independent_make $hostfile
 	kill_port_80_usage
+    cp -n ./config/macOS/docker-compose.override.yml ./docker-compose.override.yml
+	
 }

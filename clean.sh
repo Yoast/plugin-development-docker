@@ -10,13 +10,12 @@ rm -rf wordpress
 git checkout -- wordpress/.gitkeep
 
 # Remove our saved WordPress table prefix.
-rm -f ./config/wp-table-prefix
+rm -f .env
 
 case $1 in
     -a|--all)
         echo "Option '--all' defined. Removing non-default config files."
         rm -f ./config/config.sh
         rm -f ./config/php.ini
-        rm -f ./containers/wordpress/Dockerfile
         ;;
 esac

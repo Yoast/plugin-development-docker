@@ -16,5 +16,7 @@ RUN curl -sLO https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhs
     && chmod +x mhsendmail_linux_amd64 \
     && mv mhsendmail_linux_amd64 /usr/local/bin/mhsendmail
 
-RUN usermod -u $UID www-data
-RUN groupmod -o -g $GID www-data
+# setup for correct user id and group id use same as user on local system in the container 
+RUN usermod -u $UID www-data && groupmod -o -g $GID www-data && chown -R www-data:www-data /var/www 
+
+USER www-data
