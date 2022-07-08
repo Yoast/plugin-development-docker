@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "$(source "${BASH_SOURCE%/*}/core-install.sh")"
+echo "$(source "/usr/local/bin/core-install.sh")"
 echo "$(wp plugin install woocommerce --activate)"
 echo "$(wp plugin install woocommerce-admin --activate)"
 echo "$(wp plugin install perfect-woocommerce-brands --activate)"

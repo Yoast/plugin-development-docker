@@ -47,12 +47,12 @@ function kill_port_80_usage () {
 #   None
 #######################################
 function setup_NFS(){
-    if [ -z "$(sudo cat /etc/exports | grep '/System/Volumes/Data ')" ]; then
+    if [ -z "$(cat /etc/exports | grep '/System/Volumes/Data ')" ]; then
         echo update exports
         echo "/System/Volumes/Data -alldirs -mapall=$UID:20 localhost" | sudo tee -a /etc/exports
         sudo nfsd restart
     fi
-    if [ -z "$(sudo cat /etc/nfs.conf | grep -e '^nfs.server.mount.require_resv_port = 0$')" ]; then
+    if [ -z "$(cat /etc/nfs.conf | grep -e '^nfs.server.mount.require_resv_port = 0$')" ]; then
         echo update exports
         echo "nfs.server.mount.require_resv_port = 0" | sudo tee -a /etc/nfs.conf
         sudo nfsd restart
@@ -75,5 +75,4 @@ function platform_make() {
     platform_independent_make $hostfile
 	kill_port_80_usage
     cp -n ./config/macOS/docker-compose.override.yml ./docker-compose.override.yml
-	
 }
