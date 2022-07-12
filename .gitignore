@@ -6,7 +6,8 @@ config/wp-table-prefix
 plugins/*
 !plugins/.gitkeep
 sa-plugins/*
-wordpress/*
+/wordpress/*
+/wordpress-nightly/*
 !wordpress/.gitkeep
 .idea/
 .vscode/

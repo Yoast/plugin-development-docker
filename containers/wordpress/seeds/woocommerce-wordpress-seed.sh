@@ -40,4 +40,4 @@ echo "$(wp post update 1 --post_type=page --post_title=Homepage --comment-status
 <!-- wp:woocommerce/product-best-sellers {"columns":4} /-->')"
 wp option update show_on_front page
 wp option update page_on_front 1
-wp faker woocommerce products
+wp faker woocommerce products || true

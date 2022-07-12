@@ -68,7 +68,7 @@ if [[ "$1" == apache2* ]] || [ "$1" = 'php-fpm' ]; then
 	fi
 
 	wpEnvs=( "${!WORDPRESS_@}" )
-	if [ ! -s wp-config.php ] && [ "${#wpEnvs[@]}" -gt 0 ]; then
+	if [ ! -s /tmp/wp-config.php ] && [ "${#wpEnvs[@]}" -gt 0 ]; then
 		
 		for wpConfigDocker in \
 			wp-config-docker.php \
@@ -98,7 +98,7 @@ if [[ "$1" == apache2* ]] || [ "$1" = 'php-fpm' ]; then
 		
 		php -d memory_limit=512M "$(which wp)" package install git@github.com:yoast/wp-cli-faker.git || true
 		source /usr/local/bin/wordpress-seed.sh
-		touch done
+		touch /tmp/done
 	fi
 fi
 

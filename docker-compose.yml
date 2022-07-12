@@ -1,5 +1,5 @@
 ---
-version: "3.3"
+version: "3.6"
 services:
   # NginX reverse proxy:
   nginx:
@@ -77,11 +77,11 @@ services:
       WORDPRESS_DB_NAME: wordpress
       WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX}
     volumes:
+      - ~/.composer/auth.json:/var/www/.composer/auth.json:ro
       - "./wordpress:/var/www/html"
       - "./plugins:/var/www/html/wp-content/plugins"
-      # - "./config/basic-wordpress-config.php:/tmp/wp-config.php:ro"
-      - "./xdebug:/var/xdebug:cached"
-      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
+      - "./xdebug:/var/xdebug"
+      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"
     labels:
       - com.yoast.plugin-development-docker.mainwpinstance
 
@@ -109,6 +109,10 @@ services:
       timeout: 10s
       retries: 1200
     volumes:
+      # - type: tmpfs
+      #   target: /var/lib/mysql:rw,noexec,nosuid
+      #   tmpfs:
+      #     size: 50m
       - "woocommerce-database-data:/var/lib/mysql"
 
   woocommerce-wordpress:
@@ -142,9 +146,10 @@ services:
       WORDPRESS_DB_NAME: wordpress
       WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX}
     volumes:
+      - ~/.composer/auth.json:/var/www/.composer/auth.json:ro
       - "./wordpress:/var/www/html"
       - "./plugins:/var/www/html/wp-content/plugins"
-      - "./data/xdebug:/var/xdebug:cached"
+      - "./data/xdebug:/var/xdebug"
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"
     labels:
       - com.yoast.plugin-development-docker.mainwpinstance
@@ -206,10 +211,11 @@ services:
       WORDPRESS_DB_NAME: wordpress
       WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX}
     volumes:
+      - ~/.composer/auth.json:/var/www/.composer/auth.json:ro
       - "./wordpress:/var/www/html"
       - "./plugins:/var/www/html/wp-content/plugins"
       - "./config/multisite.htaccess:/var/www/html/.htaccess"
-      - "./data/xdebug:/var/xdebug:cached"
+      - "./data/xdebug:/var/xdebug"
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"
     labels:
       - com.yoast.plugin-development-docker.mainwpinstance
@@ -271,10 +277,11 @@ services:
       WORDPRESS_DB_NAME: wordpress
       WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX}
     volumes:
+      - ~/.composer/auth.json:/var/www/.composer/auth.json:ro
       - "./wordpress:/var/www/html"
       - "./plugins:/var/www/html/wp-content/plugins"
       - "./config/multisite.htaccess:/var/www/html/.htaccess"
-      - "./data/xdebug:/var/xdebug"
+      - "./xdebug:/var/xdebug"
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"
     labels:
       - com.yoast.plugin-development-docker.mainwpinstance
@@ -330,12 +337,13 @@ services:
       SITE_TITLE: Standalone
       SITE_URL: ${STANDALONE_HOST:-standalone.wordpress.test}
       VIRTUAL_HOST: ${STANDALONE_HOST:-standalone.wordpress.test}
-      WORDPRESS_DB_HOST: wordpress-multisitedomain-database
+      WORDPRESS_DB_HOST: wordpress-standalone-database
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: wordpress
       WORDPRESS_DB_NAME: wordpress
       WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX}
     volumes:
+      - ~/.composer/auth.json:/var/www/.composer/auth.json:ro
       - "./wordpress:/var/www/html"
       - "./sa-plugins:/var/www/html/wp-content/plugins"
       - "./xdebug:/var/xdebug"
@@ -392,8 +400,14 @@ services:
       SITE_TITLE: nightly
       SITE_URL: ${NIGHTLY_HOST:-nightly.wordpress.test}
       VIRTUAL_HOST: ${NIGHTLY_HOST:-nightly.wordpress.test}
+      WORDPRESS_DB_HOST: wordpress-nightly-database
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX}
     volumes:
-      - "./wordpress:/var/www/html"
+      - ~/.composer/auth.json:/var/www/.composer/auth.json:ro
+      - "./wordpress-nightly:/var/www/html"
       - "./plugins:/var/www/html/wp-content/plugins"
       - "./xdebug:/var/xdebug"
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"

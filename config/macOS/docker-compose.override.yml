@@ -36,7 +36,7 @@ services:
   # Nightly WordPress:
   nightly-wordpress:
     volumes:
-      - "nfsmount_WP:/var/www/html"
+      - "nfsmount_WP_nightly:/var/www/html"
       - "nfsmount_plugins:/var/www/html/wp-content/plugins"
       - "nfsmount_xdebug:/var/xdebug"
 
@@ -47,6 +47,12 @@ volumes:
       type: nfs
       o: addr=host.docker.internal,rw,nolock,hard,nointr,nfsvers=3
       device: ":${PWD}/wordpress"
+  nfsmount_WP_nightly:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=host.docker.internal,rw,nolock,hard,nointr,nfsvers=3
+      device: ":${PWD}/wordpress-nightly"
   nfsmount_plugins:
     driver: local
     driver_opts:
