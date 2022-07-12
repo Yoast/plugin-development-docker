@@ -149,7 +149,7 @@ services:
       - ~/.composer/auth.json:/var/www/.composer/auth.json:ro
       - "./wordpress:/var/www/html"
       - "./plugins:/var/www/html/wp-content/plugins"
-      - "./data/xdebug:/var/xdebug"
+      - "./xdebug:/var/xdebug"
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"
     labels:
       - com.yoast.plugin-development-docker.mainwpinstance
@@ -215,7 +215,7 @@ services:
       - "./wordpress:/var/www/html"
       - "./plugins:/var/www/html/wp-content/plugins"
       - "./config/multisite.htaccess:/var/www/html/.htaccess"
-      - "./data/xdebug:/var/xdebug"
+      - "./xdebug:/var/xdebug"
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"
     labels:
       - com.yoast.plugin-development-docker.mainwpinstance
