@@ -40,6 +40,40 @@ services:
       timeout: 10s
       retries: 1200
 
+  # base wordpress
+  base-wordpress:
+    depends_on:
+      nginx:
+        condition: service_started
+      mailhog:
+        condition: service_started
+      basic-database:
+        condition: service_healthy
+    build:
+      context: "./containers/wordpress"
+      args:
+        - GID=${GID:-1000}
+        - UID=${UID:-1000}
+    restart: always
+    expose:
+      - 80
+    environment:
+      ADMIN_USERNAME: admin
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_PASSWORD: admin
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX}
+    volumes:
+      - ~/.composer/auth.json:/var/www/.composer/auth.json:ro
+      - "./wordpress:/var/www/html"
+      - "./plugins:/var/www/html/wp-content/plugins"
+      - "./xdebug:/var/xdebug"
+      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"
+    labels:
+      - com.yoast.plugin-development-docker.mainwpinstance
+
   # Basic WordPress:
   basic-database:
     extends:
@@ -53,43 +87,17 @@ services:
       - "basic-database-data:/var/lib/mysql"
 
   basic-wordpress:
+    extends:
+      service: base-wordpress
     container_name: "basic-wordpress"
-    depends_on:
-      nginx:
-        condition: service_started
-      mailhog:
-        condition: service_started
-      basic-database:
-        condition: service_healthy
     build:
-      context: "./containers/wordpress"
       args:
-        - GID=${GID:-1000}
-        - UID=${UID:-1000}
         - SEED_FILE=basic-wordpress-seed.sh
-    restart: always
-    expose:
-      - 80
     environment:
-      ADMIN_USERNAME: admin
-      ADMIN_EMAIL: admin@example.com
-      ADMIN_PASSWORD: admin
       SITE_TITLE: Basic
       SITE_URL: ${BASIC_HOST:-basic.wordpress.test}
       VIRTUAL_HOST: ${BASIC_HOST:-basic.wordpress.test}
       WORDPRESS_DB_HOST: wordpress-basic-database
-      WORDPRESS_DB_USER: wordpress
-      WORDPRESS_DB_PASSWORD: wordpress
-      WORDPRESS_DB_NAME: wordpress
-      WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX}
-    volumes:
-      - ~/.composer/auth.json:/var/www/.composer/auth.json:ro
-      - "./wordpress:/var/www/html"
-      - "./plugins:/var/www/html/wp-content/plugins"
-      - "./xdebug:/var/xdebug"
-      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"
-    labels:
-      - com.yoast.plugin-development-docker.mainwpinstance
 
   # WooCommerce WordPress:
   woocommerce-database:
@@ -104,43 +112,17 @@ services:
       - "woocommerce-database-data:/var/lib/mysql"
 
   woocommerce-wordpress:
+    extends:
+      service: base-wordpress
     container_name: "woocommerce-wordpress"
-    depends_on:
-      nginx:
-        condition: service_started
-      mailhog:
-        condition: service_started
-      woocommerce-database:
-        condition: service_healthy
     build:
-      context: "./containers/wordpress"
       args:
-        - GID=${GID:-1000}
-        - UID=${UID:-1000}
         - SEED_FILE=woocommerce-wordpress-seed.sh
-    restart: always
-    expose:
-      - 80
     environment:
-      ADMIN_USERNAME: admin
-      ADMIN_EMAIL: admin@example.com
-      ADMIN_PASSWORD: admin
       SITE_TITLE: WooCommerce
       SITE_URL: ${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}
       VIRTUAL_HOST: ${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}
       WORDPRESS_DB_HOST: wordpress-woocommerce-database
-      WORDPRESS_DB_USER: wordpress
-      WORDPRESS_DB_PASSWORD: wordpress
-      WORDPRESS_DB_NAME: wordpress
-      WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX}
-    volumes:
-      - ~/.composer/auth.json:/var/www/.composer/auth.json:ro
-      - "./wordpress:/var/www/html"
-      - "./plugins:/var/www/html/wp-content/plugins"
-      - "./xdebug:/var/xdebug"
-      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"
-    labels:
-      - com.yoast.plugin-development-docker.mainwpinstance
 
   # Multisite WordPress:
   multisite-database:
@@ -155,44 +137,19 @@ services:
       - "multisite-database-data:/var/lib/mysql"
 
   multisite-wordpress:
+    extends:
+      service: base-wordpress
     container_name: "multisite-wordpress"
-    depends_on:
-      nginx:
-        condition: service_started
-      mailhog:
-        condition: service_started
-      multisite-database:
-        condition: service_healthy
     build:
-      context: "./containers/wordpress"
       args:
-        - GID=${GID:-1000}
-        - UID=${UID:-1000}
         - SEED_FILE=multisite-wordpress-seed.sh
-    restart: always
-    expose:
-      - 80
     environment:
-      ADMIN_USERNAME: admin
-      ADMIN_EMAIL: admin@example.com
-      ADMIN_PASSWORD: admin
       SITE_TITLE: multisite
       SITE_URL: ${MULTISITE_HOST:-multisite.wordpress.test}
       VIRTUAL_HOST: ${MULTISITE_HOST:-multisite.wordpress.test},test.${MULTISITE_HOST:-multisite.wordpress.test},translate.${MULTISITE_HOST:-multisite.wordpress.test}
       WORDPRESS_DB_HOST: wordpress-multisite-database
-      WORDPRESS_DB_USER: wordpress
-      WORDPRESS_DB_PASSWORD: wordpress
-      WORDPRESS_DB_NAME: wordpress
-      WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX}
     volumes:
-      - ~/.composer/auth.json:/var/www/.composer/auth.json:ro
-      - "./wordpress:/var/www/html"
-      - "./plugins:/var/www/html/wp-content/plugins"
       - "./config/multisite.htaccess:/var/www/html/.htaccess"
-      - "./xdebug:/var/xdebug"
-      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"
-    labels:
-      - com.yoast.plugin-development-docker.mainwpinstance
 
   # Multisite WordPress using Subdomains:
   multisitedomain-database:
@@ -207,44 +164,19 @@ services:
       - "multisitedomain-database-data:/var/lib/mysql"
 
   multisitedomain-wordpress:
+    extends:
+      service: base-wordpress
     container_name: "multisitedomain-wordpress"
-    depends_on:
-      nginx:
-        condition: service_started
-      mailhog:
-        condition: service_started
-      multisitedomain-database:
-        condition: service_healthy
     build:
-      context: "./containers/wordpress"
       args:
-        - GID=${GID:-1000}
-        - UID=${UID:-1000}
         - SEED_FILE=multisitedomain-wordpress-seed.sh
-    restart: always
-    expose:
-      - 80
     environment:
-      ADMIN_USERNAME: admin
-      ADMIN_EMAIL: admin@example.com
-      ADMIN_PASSWORD: admin
       SITE_TITLE: multisite
       SITE_URL: ${MULTISITE_HOST:-multisite.wordpress.test}
       VIRTUAL_HOST: ${MULTISITE_HOST:-multisite.wordpress.test},test.${MULTISITE_HOST:-multisite.wordpress.test},translate.${MULTISITE_HOST:-multisite.wordpress.test}
       WORDPRESS_DB_HOST: wordpress-multisitedomain-database
-      WORDPRESS_DB_USER: wordpress
-      WORDPRESS_DB_PASSWORD: wordpress
-      WORDPRESS_DB_NAME: wordpress
-      WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX}
     volumes:
-      - ~/.composer/auth.json:/var/www/.composer/auth.json:ro
-      - "./wordpress:/var/www/html"
-      - "./plugins:/var/www/html/wp-content/plugins"
       - "./config/multisite.htaccess:/var/www/html/.htaccess"
-      - "./xdebug:/var/xdebug"
-      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"
-    labels:
-      - com.yoast.plugin-development-docker.mainwpinstance
 
   # Standalone WordPress:
   standalone-database:
@@ -259,41 +191,20 @@ services:
       - "standalone-database-data:/var/lib/mysql"
 
   standalone-wordpress:
+    extends:
+      service: base-wordpress
     container_name: "standalone-wordpress"
-    depends_on:
-      nginx:
-        condition: service_started
-      mailhog:
-        condition: service_started
-      standalone-database:
-        condition: service_healthy
     build:
-      context: "./containers/wordpress"
       args:
-        - GID=${GID:-1000}
-        - UID=${UID:-1000}
         - SEED_FILE=standalone-wordpress-seed.sh
-    restart: always
-    expose:
-      - 80
     environment:
-      ADMIN_USERNAME: admin
-      ADMIN_EMAIL: admin@example.com
-      ADMIN_PASSWORD: admin
+
       SITE_TITLE: Standalone
       SITE_URL: ${STANDALONE_HOST:-standalone.wordpress.test}
       VIRTUAL_HOST: ${STANDALONE_HOST:-standalone.wordpress.test}
       WORDPRESS_DB_HOST: wordpress-standalone-database
-      WORDPRESS_DB_USER: wordpress
-      WORDPRESS_DB_PASSWORD: wordpress
-      WORDPRESS_DB_NAME: wordpress
-      WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX}
     volumes:
-      - ~/.composer/auth.json:/var/www/.composer/auth.json:ro
-      - "./wordpress:/var/www/html"
       - "./sa-plugins:/var/www/html/wp-content/plugins"
-      - "./xdebug:/var/xdebug"
-      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"
 
   # Nightly WordPress:
   nightly-database:
@@ -308,43 +219,21 @@ services:
       - "nightly-database-data:/var/lib/mysql"
 
   nightly-wordpress:
+    extends:
+      service: base-wordpress
     container_name: "nightly-wordpress"
-    depends_on:
-      nginx:
-        condition: service_started
-      mailhog:
-        condition: service_started
-      nightly-database:
-        condition: service_healthy
     build:
-      context: "./containers/wordpress"
       args:
-        - GID=${GID:-1000}
-        - UID=${UID:-1000}
         - SEED_FILE=nightly-wordpress-seed.sh
-    restart: always
-    expose:
-      - 80
     environment:
-      ADMIN_USERNAME: admin
-      ADMIN_EMAIL: admin@example.com
-      ADMIN_PASSWORD: admin
+
       SITE_TITLE: nightly
       SITE_URL: ${NIGHTLY_HOST:-nightly.wordpress.test}
       VIRTUAL_HOST: ${NIGHTLY_HOST:-nightly.wordpress.test}
       WORDPRESS_DB_HOST: wordpress-nightly-database
-      WORDPRESS_DB_USER: wordpress
-      WORDPRESS_DB_PASSWORD: wordpress
-      WORDPRESS_DB_NAME: wordpress
-      WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX}
+
     volumes:
-      - ~/.composer/auth.json:/var/www/.composer/auth.json:ro
       - "./wordpress-nightly:/var/www/html"
-      - "./plugins:/var/www/html/wp-content/plugins"
-      - "./xdebug:/var/xdebug"
-      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"
-    labels:
-      - com.yoast.plugin-development-docker.mainwpinstance
 
 volumes:
   basic-database-data:
