@@ -47,8 +47,6 @@ services:
         condition: service_started
       mailhog:
         condition: service_started
-      basic-database:
-        condition: service_healthy
     build:
       context: "./containers/wordpress"
       args:
@@ -81,7 +79,6 @@ services:
     container_name: "wordpress-basic-database"
     ports:
       - "1987:3306"
-
     volumes:
       - "basic-database-data:/var/lib/mysql"
 
@@ -89,6 +86,9 @@ services:
     extends:
       service: base-wordpress
     container_name: "basic-wordpress"
+    depends_on:
+      basic-database:
+        condition: service_healthy
     build:
       args:
         - SEED_FILE=basic-wordpress-seed.sh
@@ -105,7 +105,6 @@ services:
     container_name: "wordpress-woocommerce-database"
     ports:
       - "1988:3306"
-
     volumes:
       - "woocommerce-database-data:/var/lib/mysql"
 
@@ -113,6 +112,9 @@ services:
     extends:
       service: base-wordpress
     container_name: "woocommerce-wordpress"
+    depends_on:
+      woocommerce-database:
+        condition: service_healthy
     build:
       args:
         - SEED_FILE=woocommerce-wordpress-seed.sh
@@ -129,7 +131,6 @@ services:
     container_name: "wordpress-multisite-database"
     ports:
       - "1989:3306"
-
     volumes:
       - "multisite-database-data:/var/lib/mysql"
 
@@ -137,6 +138,9 @@ services:
     extends:
       service: base-wordpress
     container_name: "multisite-wordpress"
+    depends_on:
+      multisite-database:
+        condition: service_healthy
     build:
       args:
         - SEED_FILE=multisite-wordpress-seed.sh
@@ -155,7 +159,6 @@ services:
     container_name: "wordpress-multisitedomain-database"
     ports:
       - "1991:3306"
-
     volumes:
       - "multisitedomain-database-data:/var/lib/mysql"
 
@@ -163,6 +166,9 @@ services:
     extends:
       service: base-wordpress
     container_name: "multisitedomain-wordpress"
+    depends_on:
+      multisitedomain-database:
+        condition: service_healthy
     build:
       args:
         - SEED_FILE=multisitedomain-wordpress-seed.sh
@@ -181,7 +187,6 @@ services:
     container_name: "wordpress-standalone-database"
     ports:
       - "1990:3306"
-
     volumes:
       - "standalone-database-data:/var/lib/mysql"
 
@@ -189,6 +194,9 @@ services:
     extends:
       service: base-wordpress
     container_name: "standalone-wordpress"
+    depends_on:
+      standalone-database:
+        condition: service_healthy
     build:
       args:
         - SEED_FILE=standalone-wordpress-seed.sh
@@ -215,6 +223,9 @@ services:
     extends:
       service: base-wordpress
     container_name: "nightly-wordpress"
+    depends_on:
+      nightly-database:
+        condition: service_healthy
     build:
       args:
         - SEED_FILE=nightly-wordpress-seed.sh
