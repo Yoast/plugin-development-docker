@@ -1,0 +1,6 @@
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid:always,issuer:always
+basicConstraints       = CA:FALSE
+keyUsage               = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment, keyAgreement
+subjectAltName         = DNS:wordpress.test, DNS:*.wordpress.test, DNS:basic.wordpress.test
+issuerAltName          = issuer:copy

@@ -7,9 +7,11 @@ services:
     image: jwilder/nginx-proxy
     ports:
       - "127.0.0.1:80:80"
+      - "127.0.0.1:443:443"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - "./config/yoastnginx.conf:/etc/nginx/conf.d/yoastnginx.conf"
+      - "./config/certs:/etc/nginx/certs"
 
   # Mailhog:
   mailhog:

@@ -23,12 +23,12 @@ check_if_container_is_known
 echo "Building containers: $CONTAINERS"
 
 #define constants
-URL_basic_wordpress="http://${BASIC_HOST:-basic.wordpress.test}"
-URL_woocommerce_wordpress="http://${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}"
-URL_multisite_wordpress="http://${MULTISITE_HOST:-multisite.wordpress.test}"
-URL_standalone_wordpress="http://${STANDALONE_HOST:-standalone.wordpress.test}"
-URL_multisitedomain_wordpress="http://${MULTISITEDOMIAN_HOST:-multisitedomain.wordpress.test}"
-URL_nightly_wordpress="http://${NIGHTLY_HOST:-nightly.wordpress.test}"
+URL_basic_wordpress="https://${BASIC_HOST:-basic.wordpress.test}"
+URL_woocommerce_wordpress="https://${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}"
+URL_multisite_wordpress="https://${MULTISITE_HOST:-multisite.wordpress.test}"
+URL_standalone_wordpress="https://${STANDALONE_HOST:-standalone.wordpress.test}"
+URL_multisitedomain_wordpress="https://${MULTISITEDOMIAN_HOST:-multisitedomain.wordpress.test}"
+URL_nightly_wordpress="https://${NIGHTLY_HOST:-nightly.wordpress.test}"
 
 # Get environment variable for the Wordpress DB Table Prefix
 
@@ -48,7 +48,7 @@ trap stop_docker INT
 #######################################
 function stop_docker {
     STOPPING=true
-    docker-compose down
+    docker compose down
     wait $PROCESS
     exit
 }
@@ -78,7 +78,7 @@ function create_dockerfile {
 #######################################
 function build_containers() {
     echo "Ensuring all containers are built."
-    docker-compose build --pull --parallel $CONTAINERS
+    docker compose build --pull --parallel $CONTAINERS
 }
 
 #######################################
@@ -92,37 +92,9 @@ function build_containers() {
 #######################################
 function boot_containers() {
     echo "Booting containers."
-    docker-compose up --detach $CONTAINERS
+    docker compose up --detach $CONTAINERS
 }
 
-#######################################
-# Wait untill containers have booted
-# Globals:
-#   None
-# Arguments:
-#   None
-# Outputs:
-#   None
-#######################################
-function await_containers() {
-    echo "Waiting for containers to boot..."
-    local BOOTED=false
-
-    for CONTAINER in $CONTAINERS; do
-        URL_VAR="URL_${CONTAINER//-/_}"
-        URL=${!URL_VAR}
-        while [ "$BOOTED" != "true"  ]; do
-            if curl -I "$URL" 2>/dev/null | grep -q -e "HTTP/1.1 200 OK" -e "HTTP/1.1 302 Found"; then
-                BOOTED=true
-            else
-                sleep 2
-                echo "Waiting for $CONTAINER to boot... Checking $URL"
-            fi
-        done
-        #Reset for next container
-        BOOTED=false
-    done
-}
 
 #######################################
 # Compare 2 semver variables
@@ -179,7 +151,6 @@ build_containers
 
 boot_containers
 
-#platform specific
 install_wordpress
 
 await_containers
@@ -188,7 +159,7 @@ echo "Containers have booted! Happy developing!"
 sleep 2
 
 echo "Outputting logs now:"
-docker-compose logs -f &
+docker compose logs -f &
 PROCESS=$!
 
 #run platform specific maintenance tasks every 5 seconds 

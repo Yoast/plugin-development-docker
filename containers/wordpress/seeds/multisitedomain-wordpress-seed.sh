@@ -7,6 +7,6 @@ echo "$(wp plugin install query-monitor --activate)"
 wp super-admin add admin
 echo "$(wp site create --slug=test)"
 echo "$(wp site create --slug=translate)"
-wp faker core content
+echo "$(wp faker core content)"
 echo "$(wp faker core content --url=test.${SITE_URL})"
 echo "$(wp faker core content --url=translate.${SITE_URL})"

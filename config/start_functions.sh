@@ -15,9 +15,9 @@
 #######################################
 function install_wordpress() {
     for CONTAINER in $CONTAINERS; do
-        echo -n "Waiting for WordPress and setup to finish in container $CONTAINER..."
+        echo -n "Waiting for WordPress install and setup to finish in container $CONTAINER..."
 		docker exec -ti "$CONTAINER" /bin/bash -c 'until [[ -f /tmp/done ]]; do echo -n "."; sleep 1; done'
-        echo 'WordPress is installed.'
+        echo 'WordPress is setup.'
     done
 }
 
@@ -42,4 +42,35 @@ function check_if_container_is_known() {
         esac
     done
 
+}
+
+#######################################
+# Wait untill containers have booted
+# Globals:
+#   None
+# Arguments:
+#   None
+# Outputs:
+#   None
+#######################################
+function await_containers() {
+    echo "Waiting for containers to respond to http requests..."
+    local BOOTED=false
+
+    for CONTAINER in $CONTAINERS; do
+        URL_VAR="URL_${CONTAINER//-/_}"
+        URL=${!URL_VAR}
+        echo -n "Waiting for $URL .."
+        while [ "$BOOTED" != "true"  ]; do
+            if curl -kI "$URL" 2>/dev/null | grep -q -e "HTTP/1.1 200 OK" -e "HTTP/1.1 302 Found" -e "HTTP/2 200" -e "HTTP/1.1 301 Moved Permanently"; then
+                BOOTED=true
+            else
+                sleep 1
+                echo -n "."
+            fi
+        done
+        echo "$URL is responding"
+        #Reset for next container
+        BOOTED=false
+    done
 }
