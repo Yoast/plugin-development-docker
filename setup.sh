@@ -10,7 +10,9 @@ source platform.sh
 
 
 prepare_files
+source .env
 find_platform
+
 
 if [ "$PLATFORM" == WINDOWS ]; then 
 	source config/setup_win.sh

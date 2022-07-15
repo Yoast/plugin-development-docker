@@ -8,7 +8,9 @@ if ! [[ -f './config/php.ini' ]]; then
 	exit 1
 fi
 
+source .env
 source platform.sh
+source ./config/start_functions.sh
 
 if [[ -z "$@" ]]; then
     CONTAINERS=basic-wordpress
@@ -23,7 +25,7 @@ URL_basic_wordpress="http://${BASIC_HOST:-basic.wordpress.test}"
 URL_woocommerce_wordpress="http://${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}"
 URL_multisite_wordpress="http://${MULTISITE_HOST:-multisite.wordpress.test}"
 URL_standalone_wordpress="http://${STANDALONE_HOST:-standalone.wordpress.test}"
-URL_multisitedomain_wordpress="http://${MULTISITE_HOST:-multisite.wordpress.test}"
+URL_multisitedomain_wordpress="http://${MULTISITEDOMIAN_HOST:-multisitedomain.wordpress.test}"
 URL_nightly_wordpress="http://${NIGHTLY_HOST:-nightly.wordpress.test}"
 
 # Get environment variable for the Wordpress DB Table Prefix
@@ -164,22 +166,12 @@ find_platform
 
 if [[ "$PLATFORM" == WINDOWS ]]; then
 	source config/start_win.sh
-    check_kubernetes_node
+   
 else
-    # Default rancher location, it may be different depending on the user deciding to install the app somewhere else.
-    default_rancher_loc='/Applications/Rancher Desktop.app/Contents/Resources/resources/linux/rancher-desktop.appdata.xml'
-    rancher_desktop_version=$(grep -E "release version=\".+?\"" "${default_rancher_loc}" | cut -d '"' -f 2)
-    rancher_should_be="1.1.1"
-
-    # Compare the versions and exit if the used version is too old.
-    compare_ver $rancher_desktop_version $rancher_should_be
-    if [[ $? = 2 ]]; then
-        echo "Your Rancher Desktop version is outdated (${rancher_desktop_version}). Please update to at least ${rancher_should_be}"
-        exit 1
-    fi
-
 	source config/start_mac.sh
 fi
+
+platform_tasks
 
 build_containers
 
@@ -199,6 +191,6 @@ PROCESS=$!
 
 #run platform specific maintenance tasks every 5 seconds 
 while [ "$STOPPING" != 'true' ]; do
-	#platform_tasks
+	
 	sleep 5
 done

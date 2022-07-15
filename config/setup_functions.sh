@@ -92,7 +92,9 @@ function platform_independent_make() {
 	change_hostfile "$path_to_hostfile" "translate.${MULTISITE_HOST:-multisite.wordpress.test}"
 	change_hostfile "$path_to_hostfile" "${STANDALONE_HOST:-standalone.wordpress.test}"
     change_hostfile "$path_to_hostfile" "${NIGHTLY_HOST:-nightly.wordpress.test}"
-	
+	change_hostfile "$path_to_hostfile" "${MULTISITEDOMAIN_HOST:-multisitedomain.wordpress.test}"
+	change_hostfile "$path_to_hostfile" "test.${MULTISITEDOMAIN_HOST:-multisitedomain.wordpress.test}"
+	change_hostfile "$path_to_hostfile" "translate.${MULTISITEDOMAIN_HOST:-multisitedomain.wordpress.test}"
 
     
 }
@@ -145,3 +147,19 @@ function prepare_files() {
     done
 }
 
+#######################################
+# Install WordPress if not present
+# Globals:
+#   CONTAINERS
+# Arguments:
+#   None
+# Outputs:
+#   None
+#######################################
+function install_wordpress() {
+    for CONTAINER in $CONTAINERS; do
+        echo -n "Waiting for WordPress and setup to finish in container $CONTAINER..."
+		docker exec -ti "$CONTAINER" /bin/bash -c 'until [[ -f /tmp/done ]]; do echo -n "."; sleep 1; done'
+        echo 'WordPress is installed.'
+    done
+}
