@@ -81,8 +81,7 @@ services:
     container_name: "wordpress-basic-database"
     ports:
       - "1987:3306"
-    environment:
-      VIRTUAL_HOST: ${BASIC_DATABASE_HOST:-basic-database.wordpress.test}
+
     volumes:
       - "basic-database-data:/var/lib/mysql"
 
@@ -106,8 +105,7 @@ services:
     container_name: "wordpress-woocommerce-database"
     ports:
       - "1988:3306"
-    environment:
-      VIRTUAL_HOST: ${WOOCOMMERCE_DATABASE_HOST:-woocommerce-database.wordpress.test}
+
     volumes:
       - "woocommerce-database-data:/var/lib/mysql"
 
@@ -131,8 +129,7 @@ services:
     container_name: "wordpress-multisite-database"
     ports:
       - "1989:3306"
-    environment:
-      VIRTUAL_HOST: ${MULTISITE_DATABASE_HOST:-multisite-database.wordpress.test}
+
     volumes:
       - "multisite-database-data:/var/lib/mysql"
 
@@ -158,8 +155,7 @@ services:
     container_name: "wordpress-multisitedomain-database"
     ports:
       - "1991:3306"
-    environment:
-      VIRTUAL_HOST: ${MULTISITE_DATABASE_HOST:-multisite-database.wordpress.test}
+
     volumes:
       - "multisitedomain-database-data:/var/lib/mysql"
 
@@ -185,8 +181,7 @@ services:
     container_name: "wordpress-standalone-database"
     ports:
       - "1990:3306"
-    environment:
-      VIRTUAL_HOST: ${STANDALONE_DATABASE_HOST:-standalone-database.wordpress.test}
+
     volumes:
       - "standalone-database-data:/var/lib/mysql"
 
@@ -213,8 +208,6 @@ services:
     container_name: "wordpress-nightly-database"
     ports:
       - "1992:3306"
-    environment:
-      VIRTUAL_HOST: ${NIGHTLY_DATABASE_HOST:-nightly-database.wordpress.test}
     volumes:
       - "nightly-database-data:/var/lib/mysql"
 
