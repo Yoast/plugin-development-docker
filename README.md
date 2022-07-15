@@ -21,13 +21,12 @@ Otherwise install:
 - make sure your platform understands the sudo command
 - friendly dns names (e.g. basic.wordpress.test) will not work out of the box
 
-## Setting up the container
+## Setting up the local system
 
-### 1. run `./make.sh`
+### 1. run `./setup.sh`
 
 This will configure your host-file and create the necessary config files first.
 You will likely need to enter your sudo password as this will add local.wordpress.test to your hosts file.
-
 ### 2. run `./start.sh`
 
 This will create and start your containers. You can visit your environment by visiting `http://basic.wordpress.test`. Note that starting other containers, like woocommerce or multisite, will have different domains associated.

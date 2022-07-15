@@ -20,15 +20,11 @@ services:
     ports:
       - 127.0.0.1:8025:8025 # web ui
 
-  # Basic WordPress:
-  basic-database:
-    container_name: "wordpress-basic-database"
+  # base database:
+  base-database:
     image: ${LOCAL_DB_TYPE-mysql}:${LOCAL_DB_VERSION-5.7.25}
-    ports:
-      - "1987:3306"
     restart: always
     environment:
-      VIRTUAL_HOST: ${BASIC_DATABASE_HOST:-basic-database.wordpress.test}
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
@@ -43,6 +39,16 @@ services:
       interval: 1s
       timeout: 10s
       retries: 1200
+
+  # Basic WordPress:
+  basic-database:
+    extends:
+      service: base-database
+    container_name: "wordpress-basic-database"
+    ports:
+      - "1987:3306"
+    environment:
+      VIRTUAL_HOST: ${BASIC_DATABASE_HOST:-basic-database.wordpress.test}
     volumes:
       - "basic-database-data:/var/lib/mysql"
 
@@ -87,32 +93,14 @@ services:
 
   # WooCommerce WordPress:
   woocommerce-database:
+    extends:
+      service: base-database
     container_name: "wordpress-woocommerce-database"
-    image: ${LOCAL_DB_TYPE-mysql}:${LOCAL_DB_VERSION-5.7.25}
     ports:
       - "1988:3306"
-    restart: always
     environment:
       VIRTUAL_HOST: ${WOOCOMMERCE_DATABASE_HOST:-woocommerce-database.wordpress.test}
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpress
-    healthcheck:
-      # needs to work for both MySQL and mariaDB
-      test:
-        [
-          "CMD-SHELL",
-          "mysqladmin -u $$MYSQL_USER -p$$MYSQL_PASSWORD  ping -P 3306 -h $$(hostname) | grep -q 'mysqld is alive'"
-        ]
-      interval: 1s
-      timeout: 10s
-      retries: 1200
     volumes:
-      # - type: tmpfs
-      #   target: /var/lib/mysql:rw,noexec,nosuid
-      #   tmpfs:
-      #     size: 50m
       - "woocommerce-database-data:/var/lib/mysql"
 
   woocommerce-wordpress:
@@ -156,27 +144,13 @@ services:
 
   # Multisite WordPress:
   multisite-database:
+    extends:
+      service: base-database
     container_name: "wordpress-multisite-database"
-    image: ${LOCAL_DB_TYPE-mysql}:${LOCAL_DB_VERSION-5.7.25}
     ports:
       - "1989:3306"
-    restart: always
     environment:
       VIRTUAL_HOST: ${MULTISITE_DATABASE_HOST:-multisite-database.wordpress.test}
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpress
-    healthcheck:
-      # needs to work for both MySQL and mariaDB
-      test:
-        [
-          "CMD-SHELL",
-          "mysqladmin -u $$MYSQL_USER -p$$MYSQL_PASSWORD  ping -P 3306 -h $$(hostname) | grep -q 'mysqld is alive'"
-        ]
-      interval: 1s
-      timeout: 10s
-      retries: 1200
     volumes:
       - "multisite-database-data:/var/lib/mysql"
 
@@ -222,27 +196,13 @@ services:
 
   # Multisite WordPress using Subdomains:
   multisitedomain-database:
+    extends:
+      service: base-database
     container_name: "wordpress-multisitedomain-database"
-    image: ${LOCAL_DB_TYPE-mysql}:${LOCAL_DB_VERSION-5.7.25}
     ports:
       - "1991:3306"
-    restart: always
     environment:
       VIRTUAL_HOST: ${MULTISITE_DATABASE_HOST:-multisite-database.wordpress.test}
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpress
-    healthcheck:
-      # needs to work for both MySQL and mariaDB
-      test:
-        [
-          "CMD-SHELL",
-          "mysqladmin -u $$MYSQL_USER -p$$MYSQL_PASSWORD  ping -P 3306 -h $$(hostname) | grep -q 'mysqld is alive'"
-        ]
-      interval: 1s
-      timeout: 10s
-      retries: 1200
     volumes:
       - "multisitedomain-database-data:/var/lib/mysql"
 
@@ -288,27 +248,13 @@ services:
 
   # Standalone WordPress:
   standalone-database:
+    extends:
+      service: base-database
     container_name: "wordpress-standalone-database"
-    image: ${LOCAL_DB_TYPE-mysql}:${LOCAL_DB_VERSION-5.7.25}
     ports:
       - "1990:3306"
-    restart: always
     environment:
       VIRTUAL_HOST: ${STANDALONE_DATABASE_HOST:-standalone-database.wordpress.test}
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpress
-    healthcheck:
-      # needs to work for both MySQL and mariaDB
-      test:
-        [
-          "CMD-SHELL",
-          "mysqladmin -u $$MYSQL_USER -p$$MYSQL_PASSWORD  ping -P 3306 -h $$(hostname) | grep -q 'mysqld is alive'"
-        ]
-      interval: 1s
-      timeout: 10s
-      retries: 1200
     volumes:
       - "standalone-database-data:/var/lib/mysql"
 
@@ -351,27 +297,13 @@ services:
 
   # Nightly WordPress:
   nightly-database:
+    extends:
+      service: base-database
     container_name: "wordpress-nightly-database"
-    image: ${LOCAL_DB_TYPE-mysql}:${LOCAL_DB_VERSION-5.7.25}
     ports:
       - "1992:3306"
-    restart: always
     environment:
       VIRTUAL_HOST: ${NIGHTLY_DATABASE_HOST:-nightly-database.wordpress.test}
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpress
-    healthcheck:
-      # needs to work for both MySQL and mariaDB
-      test:
-        [
-          "CMD-SHELL",
-          "mysqladmin -u $$MYSQL_USER -p$$MYSQL_PASSWORD  ping -P 3306 -h $$(hostname) | grep -q 'mysqld is alive'"
-        ]
-      interval: 1s
-      timeout: 10s
-      retries: 1200
     volumes:
       - "nightly-database-data:/var/lib/mysql"
 
