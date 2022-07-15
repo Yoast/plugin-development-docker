@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Prevent script from running as root (root-related actions will prompt for the needed credentials)
-[[ $EUID -eq 0 ]] && echo "Do not run with sudo / as root." && exit 1
-
 
 #######################################
 # Function that groups tasks depending on platform
@@ -26,25 +23,4 @@ function platform_tasks() {
         exit 1
     fi
 
-}
-
-#######################################
-# Check if Kubernetes is running
-# Globals:
-#   None
-# Arguments:
-#   None
-# Outputs:
-#   None
-#######################################
-function check_lima_node() {
-	# Current Workaround to disable Kubernetes in Rancher Desktop
-	kubectl config use-context rancher-desktop
-	NODES=$(kubectl get nodes | grep -o "lima-rancher-desktop" || true)
-	if [[ "$NODES" == 'lima-rancher-desktop' ]]; then
-		echo "Lima node is running, shutting it down..."
-		kubectl delete node lima-rancher-desktop
-	else
-		echo "Lima node is not running, continuing..."
-	fi
 }

@@ -12,6 +12,6 @@ hostfile=C:/windows/system32/drivers/etc/hosts
 # Outputs:
 #   None
 #######################################
-function platform_make() {
+function platform_setup() {
 	platform_independent_make $hostfile
 }

@@ -18,6 +18,8 @@ else
     CONTAINERS="$@"
 fi
 
+check_if_container_is_known
+
 echo "Building containers: $CONTAINERS"
 
 #define constants

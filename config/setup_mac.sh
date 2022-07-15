@@ -63,7 +63,7 @@ function setup_NFS(){
 # Outputs:
 #   None
 #######################################
-function platform_make() {
+function platform_setup() {
 	setup_NFS
     platform_independent_make $hostfile
 	kill_port_80_usage
