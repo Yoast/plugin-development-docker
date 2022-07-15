@@ -24,7 +24,6 @@ if [[ "$1" == apache2* ]] || [ "$1" = 'php-fpm' ]; then
 		user="$uid"
 		group="$gid"
 	fi
-
 	if [ ! -e index.php ] && [ ! -e wp-includes/version.php ]; then
 		# if the directory exists and WordPress doesn't appear to be installed AND the permissions of it are root:root, let's chown it (likely a Docker-created directory)
 		if [ "$uid" = '0' ] && [ "$(stat -c '%u:%g' .)" = '0:0' ]; then
@@ -67,7 +66,8 @@ if [[ "$1" == apache2* ]] || [ "$1" = 'php-fpm' ]; then
 		echo >&2 "Complete! WordPress has been successfully copied to $PWD"
 	fi
 	wpEnvs=( "${!WORDPRESS_@}" )
-	if [ ! -f /tmp/wp-config.php ] && [ "${#wpEnvs[@]}" -gt 0 ]; then
+	
+	if [ ! -s wp-config.php ] && [ "${#wpEnvs[@]}" -gt 0 ]; then
 		
 		for wpConfigDocker in \
 			wp-config-docker.php \
@@ -84,8 +84,7 @@ if [[ "$1" == apache2* ]] || [ "$1" = 'php-fpm' ]; then
 						gsub("put your unique phrase here", str)
 					}
 					{ print }
-				' "$wpConfigDocker" > /tmp/wp-config.php
-				ln -sf /tmp/wp-config.php /var/www/html/wp-config.php
+				' "$wpConfigDocker" > wp-config.php
 				if [ "$uid" = '0' ]; then
 					# attempt to ensure that wp-config.php is owned by the run user
 					# could be on a filesystem that doesn't allow chown (like some NFS setups)

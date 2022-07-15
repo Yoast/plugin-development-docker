@@ -98,6 +98,25 @@ function platform_independent_make() {
 }
 
 #######################################
+# Regardless of platform, make empty wp-config.php the files
+# Globals:
+#   None
+# Arguments:
+#   folder_name
+# Outputs:
+#   None
+#######################################
+function setup_wp-config.php() {
+# clean up wp-config.php files
+    # Remove corrupt wp-config.php folder, if existing.
+    [[ -d ./config/$1/wp-config.php ]] && rm -rf ./config/$1/wp-config.php
+    #setup empyy file is not already there
+    [[ ! -f ./config/$1/wp-config.php ]] && mkdir -p ./config/$1/  && touch ./config/$1/wp-config.php && echo "setup clean wp-config.php for $1"
+
+}
+
+
+#######################################
 # Regardless of platform, prepare the files
 # Globals:
 #   None
@@ -120,4 +139,9 @@ function prepare_files() {
   		cat .env.default | sed -e "s/UID=.*/UID=$(id -u)/" | sed -e "s/GID=.*/GID=$(id -g)/" | sed -e "s/WORDPRESS_TABLE_PREFIX=.*/WORDPRESS_TABLE_PREFIX=$WORDPRESS_TABLE_PREFIX/"  > .env
   		echo "WP table prefix: $WORDPRESS_TABLE_PREFIX"
 	fi
+    for name in basic woocommerce nightly multisite multisitedomain standalone
+    do 
+        setup_wp-config.php $name
+    done
 }
+

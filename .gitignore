@@ -15,3 +15,9 @@ sa-plugins/*
 data/.DS_Store
 .env
 /docker-compose.override.yml
+/config/basic 
+/config/woocommerce
+/config/nightly
+/config/multisite
+/config/multisitedomain
+/config/standalone

@@ -97,6 +97,8 @@ services:
       SITE_URL: ${BASIC_HOST:-basic.wordpress.test}
       VIRTUAL_HOST: ${BASIC_HOST:-basic.wordpress.test}
       WORDPRESS_DB_HOST: wordpress-basic-database
+    volumes:
+      - ./config/basic/wp-config.php:/var/www/html/wp-config.php
 
   # WooCommerce WordPress:
   woocommerce-database:
@@ -123,6 +125,8 @@ services:
       SITE_URL: ${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}
       VIRTUAL_HOST: ${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}
       WORDPRESS_DB_HOST: wordpress-woocommerce-database
+    volumes:
+      - ./config/woocommerce/wp-config.php:/var/www/html/wp-config.php
 
   # Multisite WordPress:
   multisite-database:
@@ -151,6 +155,7 @@ services:
       WORDPRESS_DB_HOST: wordpress-multisite-database
     volumes:
       - "./config/multisite.htaccess:/var/www/html/.htaccess"
+      - ./config/multisite/wp-config.php:/var/www/html/wp-config.php
 
   # Multisite WordPress using Subdomains:
   multisitedomain-database:
@@ -179,6 +184,7 @@ services:
       WORDPRESS_DB_HOST: wordpress-multisitedomain-database
     volumes:
       - "./config/multisite.htaccess:/var/www/html/.htaccess"
+      - ./config/multisitedomain/wp-config.php:/var/www/html/wp-config.php
 
   # Standalone WordPress:
   standalone-database:
@@ -201,13 +207,13 @@ services:
       args:
         - SEED_FILE=standalone-wordpress-seed.sh
     environment:
-
       SITE_TITLE: Standalone
       SITE_URL: ${STANDALONE_HOST:-standalone.wordpress.test}
       VIRTUAL_HOST: ${STANDALONE_HOST:-standalone.wordpress.test}
       WORDPRESS_DB_HOST: wordpress-standalone-database
     volumes:
       - "./sa-plugins:/var/www/html/wp-content/plugins"
+      - ./config/standalone/wp-config.php:/var/www/html/wp-config.php
 
   # Nightly WordPress:
   nightly-database:
@@ -230,7 +236,6 @@ services:
       args:
         - SEED_FILE=nightly-wordpress-seed.sh
     environment:
-
       SITE_TITLE: nightly
       SITE_URL: ${NIGHTLY_HOST:-nightly.wordpress.test}
       VIRTUAL_HOST: ${NIGHTLY_HOST:-nightly.wordpress.test}
@@ -238,6 +243,7 @@ services:
 
     volumes:
       - "./wordpress-nightly:/var/www/html"
+      - ./config/nightly/wp-config.php:/var/www/html/wp-config.php
 
 volumes:
   basic-database-data:
