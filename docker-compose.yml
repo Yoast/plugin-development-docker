@@ -71,6 +71,11 @@ services:
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"
     labels:
       - com.yoast.plugin-development-docker.mainwpinstance
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /tmp/done ]" ]
+      interval: 1s
+      timeout: 5s
+      retries: 1200
 
   # Basic WordPress:
   basic-database:
@@ -98,7 +103,7 @@ services:
       VIRTUAL_HOST: ${BASIC_HOST:-basic.wordpress.test}
       WORDPRESS_DB_HOST: wordpress-basic-database
     volumes:
-      - ./config/basic/wp-config.php:/var/www/html/wp-config.php
+      - "./config/basic/wp-config.php:/var/www/html/wp-config.php"
 
   # WooCommerce WordPress:
   woocommerce-database:
@@ -126,7 +131,7 @@ services:
       VIRTUAL_HOST: ${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}
       WORDPRESS_DB_HOST: wordpress-woocommerce-database
     volumes:
-      - ./config/woocommerce/wp-config.php:/var/www/html/wp-config.php
+      - "./config/woocommerce/wp-config.php:/var/www/html/wp-config.php"
 
   # Multisite WordPress:
   multisite-database:
@@ -149,13 +154,13 @@ services:
       args:
         - SEED_FILE=multisite-wordpress-seed.sh
     environment:
-      SITE_TITLE: multisite
-      SITE_URL: ${MULTISITE_HOST:-multisite.wordpress.test}
-      VIRTUAL_HOST: ${MULTISITE_HOST:-multisite.wordpress.test},test.${MULTISITE_HOST:-multisite.wordpress.test},translate.${MULTISITE_HOST:-multisite.wordpress.test}
+      SITE_TITLE: multisitedomain
+      SITE_URL: ${MULTISITEDOMAIN_HOST:-multisite.wordpress.test}
+      VIRTUAL_HOST: ${MULTISITEDOMAIN_HOST:-multisite.wordpress.test},test.${MULTISITEDOMAIN_HOST:-multisite.wordpress.test},translate.${MULTISITEDOMAIN_HOST:-multisite.wordpress.test}
       WORDPRESS_DB_HOST: wordpress-multisite-database
     volumes:
       - "./config/multisite.htaccess:/var/www/html/.htaccess"
-      - ./config/multisite/wp-config.php:/var/www/html/wp-config.php
+      - "./config/multisite/wp-config.php:/var/www/html/wp-config.php"
 
   # Multisite WordPress using Subdomains:
   multisitedomain-database:
@@ -184,7 +189,7 @@ services:
       WORDPRESS_DB_HOST: wordpress-multisitedomain-database
     volumes:
       - "./config/multisite.htaccess:/var/www/html/.htaccess"
-      - ./config/multisitedomain/wp-config.php:/var/www/html/wp-config.php
+      - "./config/multisitedomain/wp-config.php:/var/www/html/wp-config.php"
 
   # Standalone WordPress:
   standalone-database:
@@ -213,7 +218,7 @@ services:
       WORDPRESS_DB_HOST: wordpress-standalone-database
     volumes:
       - "./sa-plugins:/var/www/html/wp-content/plugins"
-      - ./config/standalone/wp-config.php:/var/www/html/wp-config.php
+      - "./config/standalone/wp-config.php:/var/www/html/wp-config.php"
 
   # Nightly WordPress:
   nightly-database:
@@ -243,7 +248,7 @@ services:
 
     volumes:
       - "./wordpress-nightly:/var/www/html"
-      - ./config/nightly/wp-config.php:/var/www/html/wp-config.php
+      - "./config/nightly/wp-config.php:/var/www/html/wp-config.php"
 
 volumes:
   basic-database-data:

@@ -5,7 +5,6 @@
 
 
 # Source files containing needed functions
-source config/config.sh
 source config/setup_functions.sh
 source platform.sh
 

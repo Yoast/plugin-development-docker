@@ -23,7 +23,6 @@ rm -rf ./config/standalone/wp-config.php && mkdir -p ./config/standalone/   && t
 case $1 in
     -a|--all)
         echo "Option '--all' defined. Removing non-default config files."
-        rm -f ./config/config.sh
         rm -f ./config/php.ini
         ;;
 esac

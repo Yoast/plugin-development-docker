@@ -199,8 +199,3 @@ The first run after a make can fail. Quit all docker containers with `docker-com
 
 Issue: [https://github.com/Yoast/plugin-development-docker/issues/11](https://github.com/Yoast/plugin-development-docker/issues/11)
 
-### Multisite main site is not working on custom domain
-
-Changing the domain name of the multisite in `config.sh` does not work yet and causes the main site to do a redirect to the domain `multisite.wordpress.test`. Change the variable `DOMAIN_CURRENT_SITE` in `seeds/multisite-wordpress-seed.sh` to the custom domain you use and restart docker.
-
-Issue: [https://github.com/Yoast/plugin-development-docker/issues/9](https://github.com/Yoast/plugin-development-docker/issues/9)

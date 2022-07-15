@@ -9,8 +9,6 @@ if ! [[ -f './config/php.ini' ]]; then
 fi
 
 source platform.sh
-source ./config/config.sh
-
 
 if [[ -z "$@" ]]; then
     CONTAINERS=basic-wordpress

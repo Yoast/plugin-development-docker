@@ -131,7 +131,7 @@ function prepare_files() {
 	[[ -d ./config/php.ini ]] && rm -rf ./config/php.ini
 	
     [[ ! -f ./config/php.ini ]] && cp  ./config/php.ini.default ./config/php.ini
-    [[ ! -f ./config/config.sh ]] && cp ./config/config.sh.default ./config/config.sh
+    
 	# Set environment variable for the Wordpress DB Table Prefix. and UID and GUI neede for file sysyem access on host system
 	# Save this in a file so it is not random every boot (clean.sh removes this file).
 	if [ ! -f .env ]; then
