@@ -50,9 +50,28 @@ function setup_NFS(){
         echo "nfs.server.mount.require_resv_port = 0" | sudo tee -a /etc/nfs.conf
         sudo nfsd restart
     fi
-
 }
 
+
+#######################################
+# Function setup the crt file used to be trused by the system
+# Globals:
+#   None
+# Arguments:
+#   None
+# Outputs:
+#   None
+#######################################
+function setup_crt_file() {
+    echo $(security verify-cert -c ./config/certs/wordpress.test.crt 2>&1 )
+    if [[ "$(security verify-cert -c ./config/certs/wordpress.test.crt 2>&1 )" != "...certificate verification successful." ]]; then
+        echo "install cert needed:"
+        security add-trusted-cert  ./config/certs/wordpress.test.crt
+    else
+        echo "cert already trused"
+
+    fi
+}
 
 #######################################
 # Function that groups make tasks
@@ -65,7 +84,9 @@ function setup_NFS(){
 #######################################
 function platform_setup() {
 	setup_NFS
+    setup_crt_file
     platform_independent_make $hostfile
 	kill_port_80_usage
     cp -n ./config/macOS/docker-compose.override.yml ./docker-compose.override.yml
 }
+
