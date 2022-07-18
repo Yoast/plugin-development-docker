@@ -9,8 +9,16 @@ if ! [[ -f './config/php.ini' ]]; then
 fi
 
 source .env
-source platform.sh
+source ./config/platform.sh
 source ./config/start_functions.sh
+
+find_platform
+### for upgrade to make.sh to setup.sh
+if ([[ "$PLATFORM" == "APPLE"  ]] || [[ "$PLATFORM" == "APPLE_M1"  ]]) && [[ ! -f docker-compose.override.yml ]] ; then
+    echo "setup was not fnische on mac, running it now"
+    ./setup.sh
+fi
+
 
 if [[ -z "$@" ]]; then
     CONTAINERS=basic-wordpress
@@ -18,6 +26,14 @@ else
     CONTAINERS="$@"
 fi
 
+exit
+
+if [[ "$PLATFORM" == WINDOWS ]]; then
+	source config/start_win.sh
+   
+else
+	source config/start_mac.sh
+fi
 check_if_container_is_known
 
 echo "Building containers: $CONTAINERS"
@@ -136,7 +152,7 @@ function compare_ver(){
     return 0
 }
 
-find_platform
+
 
 if [[ "$PLATFORM" == WINDOWS ]]; then
 	source config/start_win.sh

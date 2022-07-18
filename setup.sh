@@ -5,8 +5,8 @@
 
 
 # Source files containing needed functions
-source config/setup_functions.sh
-source platform.sh
+source ./config/setup_functions.sh
+source ./config/platform.sh
 
 
 prepare_files
