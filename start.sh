@@ -4,7 +4,7 @@
 [[ $EUID -eq 0 ]] && echo "Do not run with sudo / as root." && exit 1
 
 if ! [[ -f './config/php.ini' ]]; then
-    echo '[!] Warning: config file(s) not found. Please run ./make.sh first.'
+    echo '[!] Warning: config file(s) not found. Please run ./setup.sh first.'
 	exit 1
 fi
 
