@@ -26,8 +26,6 @@ else
     CONTAINERS="$@"
 fi
 
-exit
-
 if [[ "$PLATFORM" == WINDOWS ]]; then
 	source config/start_win.sh
    

@@ -138,7 +138,7 @@ function prepare_files() {
 	# Save this in a file so it is not random every boot (clean.sh removes this file).
 	if [ ! -f .env ]; then
   		WORDPRESS_TABLE_PREFIX="$(LC_ALL=C tr -dc a-z < /dev/urandom | head -c 5 | xargs)_"  
-  		cat .env.default | sed -e "s/UID=.*/UID=$(id -u)/" | sed -e "s/GID=.*/GID=$(id -g)/" | sed -e "s/WORDPRESS_TABLE_PREFIX=.*/WORDPRESS_TABLE_PREFIX=$WORDPRESS_TABLE_PREFIX/"  > .env
+  		cat .env.default | sed -e "s/GID=.*/GID=$(id -g)/" | sed -e "s/WORDPRESS_TABLE_PREFIX=.*/WORDPRESS_TABLE_PREFIX=$WORDPRESS_TABLE_PREFIX/"  > .env
   		echo "WP table prefix: $WORDPRESS_TABLE_PREFIX"
 	fi
     for name in basic woocommerce nightly multisite multisitedomain standalone
