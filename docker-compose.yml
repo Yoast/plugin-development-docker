@@ -68,7 +68,7 @@ services:
     volumes:
       - ~/.composer/auth.json:/var/www/.composer/auth.json:ro
       - "./wordpress:/var/www/html"
-      #- "./plugins:/var/www/html/wp-content/plugins"
+      - "./plugins:/var/www/html/wp-content/plugins"
       - "./xdebug:/var/xdebug"
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"
     labels:

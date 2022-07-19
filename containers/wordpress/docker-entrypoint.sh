@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
+# fix docker chown issues#@$$%^
+ls -al /var/www/html
+ls -al /var/www/html/wp-content
+
 if [[ "$1" == apache2* ]] || [ "$1" = 'php-fpm' ]; then
 	uid="$(id -u)"
 	gid="$(id -g)"
