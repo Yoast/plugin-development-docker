@@ -16,9 +16,13 @@ function find_platform {
         msys|cywgin)
             PLATFORM=WINDOWS
             ;;
-        linux-gnu) 
-            PLATFORM=LINUX
-            ;;
+        linux-gnu)
+				if [ -d "/mnt/wsl" ]; then
+					PLATFORM=WINDOWS 
+				else
+					PLATFORM=LINUX
+				fi 
+	    ;;
         darwin*)
             if [[ "$(sysctl -n machdep.cpu.brand_string | grep Intel)" ]] 
             then
