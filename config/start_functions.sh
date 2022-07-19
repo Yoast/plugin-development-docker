@@ -62,7 +62,7 @@ function await_containers() {
         URL=${!URL_VAR}
         echo -n "Waiting for $URL .."
         while [ "$BOOTED" != "true"  ]; do
-            if curl -kI "$URL" 2>/dev/null | grep -q -e "HTTP/1.1 200 OK" -e "HTTP/1.1 302 Found" -e "HTTP/2 200" -e "HTTP/1.1 301 Moved Permanently"; then
+            if curl -kI "$URL" 2>/dev/null | grep -q -e "HTTP/1.1 200 OK" -e "HTTP/1.1 302 Found" -e "HTTP/2 302" -e "HTTP/2 200" -e "HTTP/1.1 301 Moved Permanently"; then
                 BOOTED=true
             else
                 sleep 1
