@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set path to hostfile
-hostfile=/mnt/c/windows/system32/drivers/etc/hosts
+hostfile=/mnt/c/Windows/System32/drivers/etc/hosts
 
 #######################################
 # Function that groups make tasks
