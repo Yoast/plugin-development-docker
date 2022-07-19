@@ -9,7 +9,6 @@ sa-plugins/*
 /wordpress-nightly/*
 !wordpress/.gitkeep
 !wordpress-nightly/.gitkeep
-!wordpress/wp-content/.gitkeep
 .idea/
 .vscode/
 .DS_Store
