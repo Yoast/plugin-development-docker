@@ -8,28 +8,32 @@ Mac users:
 
 - [Rancher Desktop](https://rancherdesktop.io/) see the [Rancher-mac.md](./Rancher-mac.md) guide on how to switch.
 
-Windows
+Windows WSL2:
+Running this setup from WSL is the preferd way. 
 
 - [Rancher Desktop](https://rancherdesktop.io/) see the [Rancher-win.md](./Rancher-win.md) guide on how to switch.
 - [GitExtensions](https://github.com/gitextensions/gitextensions/releases/) includes some unix tools we need.
-- [GSudo](https://github.com/gerardog/gsudo) allows shell scripts to use sudo command on windows
+- optional [GSudo](https://github.com/gerardog/gsudo) allows shell scripts to use sudo command on windows
 
-Otherwise install:
+Windows install:
 
-- [Docker](https://docs.docker.com/v17.09/engine/installation/)
-- [docker-compose](https://docs.docker.com/compose/install/)
-- make sure your platform understands the sudo command
 - friendly dns names (e.g. basic.wordpress.test) will not work out of the box
+  possible fix: make the `c:\windows\system32\drivers\etc\hosts` write and change for users, before running ./setup.sh script from WSL after running the .setup.sh this can be removed again
+- ssl trust will not work out of the box add the config/certs/wordpress.text.crt to the trusted list in windows it self(NOT WSL)
+
+
+
 
 ## Setting up the local system
 
 ### 1. run `./setup.sh`
 
 This will configure your host-file and create the necessary config files first.
-You will likely need to enter your sudo password as this will add local.wordpress.test to your hosts file.
+You will likely need to enter your sudo password as this will add basic.wordpress.test etc to your hosts file. (see note above for windows)
+
 ### 2. run `./start.sh`
 
-This will create and start your containers. You can visit your environment by visiting `http://basic.wordpress.test`. Note that starting other containers, like woocommerce or multisite, will have different domains associated.
+This will create and start your containers. You can visit your environment by visiting `https://basic.wordpress.test`. Note that starting other containers, like woocommerce or multisite, will have different domains associated.
 
 ### Resetting everything
 
@@ -98,7 +102,6 @@ The local WordPress site won't be updated automatically. You have a few options 
 
 ```bash
   ./clean.sh && 
-  ./make.sh &&
   ./start.sh
 ```
 

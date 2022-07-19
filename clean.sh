@@ -9,9 +9,6 @@ docker-compose rm -fv
 rm -rf wordpress
 git checkout -- wordpress/.gitkeep
 
-# Remove our saved WordPress table prefix.
-rm -f .env
-
 # clean up wp-config.php files
 rm -rf ./config/basic/wp-config.php && mkdir -p ./config/basic/   && touch ./config/basic/wp-config.php
 rm -rf ./config/woocommerce/wp-config.php && mkdir -p ./config/woocommerce/   && touch ./config/woocommerce/wp-config.php
@@ -24,5 +21,7 @@ case $1 in
     -a|--all)
         echo "Option '--all' defined. Removing non-default config files."
         rm -f ./config/php.ini
+        # Remove our saved WordPress table prefix.
+        rm -f .env
         ;;
 esac

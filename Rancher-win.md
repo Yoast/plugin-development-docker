@@ -1,12 +1,10 @@
-# Switching to Rancher Desktop on MacOS
+# install wsl2 
 
-## Removing old entries
-
-- Uninstall Docker Desktop
+- run `wsl --install`
 
 ## Installing Rancher Desktop
 
-- Download [Rancher Desktop >= 1.1.1](https://rancherdesktop.io/)
+- Download [Rancher Desktop >= 1.4.1](https://rancherdesktop.io/)
 
 - In the `General` tab disable: `Allow Collection of Anonymous statistics`
 - In the `Kubernetes` tab change container runtime to: `dockerd (Moby)`
@@ -25,17 +23,6 @@ Get-ExecutionPolicy
 Set-ExecutionPolicy AllSigned
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 ```
-
-## Installing docker-compose
-
-- Open Powershell with Administrative Priviledges
-- Execute the following commands to install docker-compose:
-
-```bash
-choco install docker-compose
-```
-
-You can now use plugin-development-docker as you would normally would :)
 
 ## Troubleshooting
 TBD
