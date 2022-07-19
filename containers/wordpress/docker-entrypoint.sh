@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-# fix docker chown issues#@$$%^
-ls -al /var/www/html
-ls -al /var/www/html/wp-content
+# fix docker chown issues#@$$%^ on windows docker ranger
+ls -al /var/www/html > /dev/null
+ls -al /var/www/html/wp-content > /dev/null
 
 if [[ "$1" == apache2* ]] || [ "$1" = 'php-fpm' ]; then
 	uid="$(id -u)"
