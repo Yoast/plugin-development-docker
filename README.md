@@ -17,11 +17,11 @@ Running this setup from WSL is the preferd way.
 
 Windows install:
 
-- friendly dns names (e.g. basic.wordpress.test) will not work out of the box
+- Friendly dns names (e.g. basic.wordpress.test) will not work out of the box
   possible fix: make the `c:\windows\system32\drivers\etc\hosts` write and change for users, before running ./setup.sh script from WSL after running the .setup.sh this can be removed again
-- ssl trust will not work out of the box add the config/certs/wordpress.text.crt to the trusted list in windows it self(NOT WSL)
-
-
+- Ssl trust will not work out of the box add the config/certs/wordpress.text.crt to the trusted list in windows it self(NOT WSL)
+  - First copy the cert to the Windows file system. `cp config/certs/wordpress.test.crt /mnt/c/Users/WindowsUserName/Desktop`
+  - Then add the ssl cert to the Windows certificate store. Start a PowerShell prompt and execute `Import-Certificate -FilePath ".\Desktop\wordpress.test.crt" -CertStoreLocation Cert:\CurrentUser\Root`
 
 
 ## Setting up the local system
