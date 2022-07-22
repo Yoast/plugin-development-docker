@@ -9,6 +9,7 @@ docker-compose rm -fv
 rm -rf wordpress
 git checkout -- wordpress/.gitkeep
 mkdir wordpress/wp-content
+git checkout -- wordpress/wp-content/.gitkeep
 
 # clean up wp-config.php files
 rm -rf ./config/basic/wp-config.php && mkdir -p ./config/basic/   && touch ./config/basic/wp-config.php

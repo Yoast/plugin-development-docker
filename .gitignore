@@ -8,6 +8,7 @@ sa-plugins/*
 /wordpress/*
 /wordpress-nightly/*
 !wordpress/.gitkeep
+!wordpress/wp-content/.gitkeep
 !wordpress-nightly/.gitkeep
 .idea/
 .vscode/
