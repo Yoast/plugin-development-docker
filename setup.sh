@@ -10,7 +10,7 @@ source ./config/platform.sh
 
 
 prepare_files
-mkdir -p wordpress/wp-content
+
 
 source .env
 find_platform
