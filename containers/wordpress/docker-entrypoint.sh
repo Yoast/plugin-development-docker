@@ -5,6 +5,16 @@ set -Eeuo pipefail
 ls -al /var/www/html > /dev/null
 ls -al /var/www/html/wp-content > /dev/null
 
+mkdir -p /var/www/html/wp-content/
+ls -al wp-content/
+if [  -L /var/www/html/wp-content/plugins ] ; then
+	echo link exists
+else
+	echo make link
+	ln -s /mnt/plugins /var/www/html/wp-content/plugins
+fi
+ls -al wp-content/
+
 if [[ "$1" == apache2* ]] || [ "$1" = 'php-fpm' ]; then
 	uid="$(id -u)"
 	gid="$(id -g)"
@@ -66,8 +76,11 @@ if [[ "$1" == apache2* ]] || [ "$1" = 'php-fpm' ]; then
 				sourceTarArgs+=( --exclude "./$contentPath" )
 			fi
 		done
+		sourceTarArgs+=( --exclude "./wp-content/plugins" )
+		ls -al wp-content/
 		tar "${sourceTarArgs[@]}" . | tar "${targetTarArgs[@]}"
 		echo >&2 "Complete! WordPress has been successfully copied to $PWD"
+		ls -al wp-content/
 	fi
 	wpEnvs=( "${!WORDPRESS_@}" )
 	

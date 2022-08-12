@@ -21,7 +21,9 @@ RUN curl -sLO https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhs
 RUN usermod -u $UID www-data && groupmod -o -g $GID www-data \
     && mkdir -p /var/www/.wp-cli/packages \
     && mkdir -p /var/www/.composer/cache/vcs \
-    && chown -R $UID:$GID /var/www 
+    && mkdir -p /mnt/plugins \
+    && chown -R $UID:$GID /var/www \
+    && chown -R $UID:$GID /mnt/plugins 
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 COPY ./seeds/$SEED_FILE /usr/local/bin/wordpress-seed.sh
