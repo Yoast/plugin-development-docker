@@ -15,9 +15,10 @@ RUN curl -sO https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cl
 
 # Install a sendmail replacement which forwards mail to an SMTP server, so we can use Mailhog.
 RUN if [ "$(uname -m)" = "aarch64" ] ; \ 
-    then wget https://github.com/evertiro/mhsendmail/releases/download/v0.2.0-M1/mhsendmail_linux_arm64 -O /usr/local/bin/mhsendmail ;\ 
-    else wget https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64 -O /usr/local/bin/mhsendmail ; fi \
+    then curl -sL https://github.com/evertiro/mhsendmail/releases/download/v0.2.0-M1/mhsendmail_linux_arm64 --output /usr/local/bin/mhsendmail ;\ 
+    else curl -sL https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64 --output /usr/local/bin/mhsendmail ; fi \
     && chmod +x /usr/local/bin/mhsendmail
+
 
 # setup for correct user id and group id use same as user on local system in the container 
 RUN usermod -u $UID www-data && groupmod -o -g $GID www-data \
