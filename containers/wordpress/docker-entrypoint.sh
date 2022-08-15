@@ -3,7 +3,7 @@ set -Eeuo pipefail
 
 # fix docker chown issues#@$$%^ on windows docker ranger
 ls -al /var/www/html > /dev/null
-ls -al /var/www/html/wp-content > /dev/null
+
 mkdir -p /var/www/html/wp-content/
 if [  -L /var/www/html/wp-content/plugins ] ; then
 	echo link exists
