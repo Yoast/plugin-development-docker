@@ -6,7 +6,7 @@
 docker-compose down --volumes --remove-orphans
 docker-compose stop
 docker-compose rm -fv
-rm -rf wordpress
+rm -rf wordpress/*
 git checkout -- wordpress/.gitkeep
 mkdir wordpress/wp-content
 git checkout -- wordpress/wp-content/.gitkeep
