@@ -6,26 +6,26 @@ services:
   basic-wordpress:
     volumes:
       - "nfsmount_WP:/var/www/html"
-      - "nfsmount_plugins:/var/www/html/wp-content/plugins"
+      - "nfsmount_plugins:/mnt/plugins"
       - "nfsmount_xdebug:/var/xdebug"
 
   # WooCommerce WordPress:
   woocommerce-wordpress:
     volumes:
       - "nfsmount_WP:/var/www/html"
-      - "nfsmount_plugins:/var/www/html/wp-content/plugins"
+      - "nfsmount_plugins:/mnt/plugins"
 
   # Multisite WordPress:
   multisite-wordpress:
     volumes:
       - "nfsmount_WP:/var/www/html"
-      - "nfsmount_plugins:/var/www/html/wp-content/plugins"
+      - "nfsmount_plugins:/mnt/plugins"
 
   # Multisite WordPress using Subdomains:
   multisitedomain-wordpress:
     volumes:
       - "nfsmount_WP:/var/www/html"
-      - "nfsmount_plugins:/var/www/html/wp-content/plugins:cached"
+      - "nfsmount_plugins:/mnt/plugins"
 
   # Standalone WordPress:
   standalone-wordpress:
@@ -37,7 +37,7 @@ services:
   nightly-wordpress:
     volumes:
       - "nfsmount_WP_nightly:/var/www/html"
-      - "nfsmount_plugins:/var/www/html/wp-content/plugins"
+      - "nfsmount_plugins:/mnt/plugins"
       - "nfsmount_xdebug:/var/xdebug"
 
 volumes:
