@@ -7,7 +7,8 @@ docker-compose down --volumes --remove-orphans
 docker-compose stop
 docker-compose rm -fv
 
-rm -rf wordpress/{..?*,.[!.]*,*} 
+find wordpress -maxdepth 1 -mindepth 1 | grep -v wordpress/.gitkeep | grep -v wordpress/wp-content | xargs rm -rf
+find wordpress/wp-content -maxdepth 1 -mindepth 1 | grep -v wordpress/wp-content/.gitkeep | grep -v wordpress/wp-content/plugins | xargs rm -rf
 git checkout -- wordpress/.gitkeep
 git checkout -- wordpress/wp-content/.gitkeep
 
