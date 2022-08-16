@@ -94,13 +94,8 @@ function check_minimal_ranger_version() {
     fi
 }
 
-
-
-
-
-
 #######################################
-# Function that groups make tasks
+# Function that groups setup tasks
 # Globals:
 #   None
 # Arguments:
