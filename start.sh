@@ -46,7 +46,7 @@ trap stop_docker INT
 trap stop_docker INT
 
 platform_tasks
-echo ho
+
 build_containers
 
 boot_containers
