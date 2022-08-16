@@ -14,18 +14,21 @@ services:
     volumes:
       - "nfsmount_WP:/var/www/html"
       - "nfsmount_plugins:/mnt/plugins"
+      - "nfsmount_xdebug:/var/xdebug"
 
   # Multisite WordPress:
   multisite-wordpress:
     volumes:
       - "nfsmount_WP:/var/www/html"
       - "nfsmount_plugins:/mnt/plugins"
+      - "nfsmount_xdebug:/var/xdebug"
 
   # Multisite WordPress using Subdomains:
   multisitedomain-wordpress:
     volumes:
       - "nfsmount_WP:/var/www/html"
       - "nfsmount_plugins:/mnt/plugins"
+      - "nfsmount_xdebug:/var/xdebug"
 
   # Standalone WordPress:
   standalone-wordpress:
