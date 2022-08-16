@@ -13,7 +13,7 @@
 # Outputs:
 #   None
 #######################################
-function install_wordpress() {
+function await_install_wordpress() {
     for CONTAINER in $CONTAINERS; do
         echo -n "Waiting for WordPress install and setup to finish in container $CONTAINER..."
 		docker exec -ti "$CONTAINER" /bin/bash -c 'until [[ -f /tmp/done ]]; do echo -n "."; sleep 1; done'
