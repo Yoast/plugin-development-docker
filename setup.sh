@@ -5,12 +5,9 @@
 
 
 # Source files containing needed functions
-source ./config/setup_functions.sh
-source ./config/platform.sh
-
+source ./config/functions.sh
 
 prepare_files
-
 
 source .env
 find_platform

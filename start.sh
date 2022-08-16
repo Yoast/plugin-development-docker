@@ -9,8 +9,7 @@ if ! [[ -f './config/php.ini' ]]; then
 fi
 
 source .env
-source ./config/platform.sh
-source ./config/start_functions.sh
+source ./config/functions.sh
 
 find_platform
 ### for upgrade from make.sh to setup.sh
