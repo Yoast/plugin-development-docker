@@ -62,9 +62,9 @@ function setup_NFS(){
 #   None
 #######################################
 function setup_crt_file() {
-    if [[ "$(security verify-cert -c ./config/certs/wordpress.test.crt 2>&1 )" != "...certificate verification successful." ]]; then
+    if [[ "$(security verify-cert -c ./config/certs/wordpress.test.crt -p ssl 2>&1 | grep '...certificate verification successful.')" != "...certificate verification successful." ]]; then
         echo "install cert needed please enter password in popup to add to keychain:"
-        sudo security add-trusted-cert  -d -r trustAsRoot -k /Library/Keychains/System.keychain ./config/certs/wordpress.test.crt
+        sudo security add-trusted-cert  -d -r trustRoot -p ssl  -k /Library/Keychains/System.keychain ./config/certs/wordpress.test.crt
     fi
 }
 
