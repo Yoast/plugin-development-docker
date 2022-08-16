@@ -43,8 +43,6 @@ STOPPING=false
 trap stop_docker INT
 trap stop_docker INT
 
-platform_tasks
-
 build_containers
 
 boot_containers

@@ -17,15 +17,3 @@ function platform_setup() {
 }
 
 
-#######################################
-# Function that groups tasks depending on platform
-# Globals:
-#   None
-# Arguments:
-#   None
-# Outputs:
-#   None
-#######################################
-function platform_tasks() {
-	 :
-}
