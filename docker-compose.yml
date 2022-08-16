@@ -53,7 +53,7 @@ services:
       context: "./containers/wordpress"
       args:
         - GID=${GID:-1000}
-        - UID=${UID:-1000}
+        - UID=${LOCAL_UID:-1000}
     restart: always
     expose:
       - 80

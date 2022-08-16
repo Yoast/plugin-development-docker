@@ -101,9 +101,7 @@ function platform_tasks() {
     rancher_desktop_version=$(grep -E "release version=\".+?\"" "${default_rancher_loc}" | cut -d '"' -f 2)
     rancher_should_be="1.1.1"
     # Compare the versions and exit if the used version is too old.
-    echo  $rancher_desktop_version $rancher_should_be
     result=$(min_required_verion $rancher_desktop_version $rancher_should_be)
-    echo $result
     if [[ "$result" = "false" ]]; then
         echo "Your Rancher Desktop version is outdated (${rancher_desktop_version}). Please update to at least ${rancher_should_be}"
         exit 1

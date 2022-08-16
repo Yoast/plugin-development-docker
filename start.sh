@@ -8,9 +8,7 @@ if ! [[ -f './config/php.ini' ]]; then
 	exit 1
 fi
 
-set +e
 source .env
-set -e
 
 source ./config/functions.sh
 
