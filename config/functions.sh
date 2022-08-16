@@ -361,3 +361,11 @@ function find_platform {
     esac
 }
 
+find_platform
+
+if [[ "$PLATFORM" == WINDOWS ]]; then
+	source config/functions_win.sh
+else
+	source config/functions_mac.sh
+fi
+

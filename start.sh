@@ -24,11 +24,6 @@ else
     CONTAINERS="$@"
 fi
 
-if [[ "$PLATFORM" == WINDOWS ]]; then
-	source config/start_win.sh
-else
-	source config/start_mac.sh
-fi
 check_if_container_is_known
 
 echo "Building containers: $CONTAINERS"

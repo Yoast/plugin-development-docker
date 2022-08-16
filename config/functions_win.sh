@@ -15,3 +15,17 @@ hostfile=/mnt/c/Windows/System32/drivers/etc/hosts
 function platform_setup() {
 	platform_independent_make $hostfile
 }
+
+
+#######################################
+# Function that groups tasks depending on platform
+# Globals:
+#   None
+# Arguments:
+#   None
+# Outputs:
+#   None
+#######################################
+function platform_tasks() {
+	 :
+}
