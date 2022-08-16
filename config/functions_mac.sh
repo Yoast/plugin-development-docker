@@ -52,7 +52,6 @@ function setup_NFS(){
     fi
 }
 
-
 #######################################
 # Function setup the crt file used to be trused by the system
 # Globals:
@@ -111,5 +110,3 @@ function platform_setup() {
     cp -n ./config/macOS/docker-compose.override.yml ./docker-compose.override.yml
     check_minimal_ranger_version
 }
-
-
