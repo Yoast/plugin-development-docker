@@ -294,6 +294,7 @@ function boot_containers() {
 #   0 for equal, 1 for >, 2 for <
 #######################################
 function compare_ver(){
+    echo $1 $2
     if [[ $1 == $2 ]]
     then
         return 0
@@ -362,11 +363,12 @@ function find_platform {
 }
 
 find_platform
-
 # load platform dependend functions:
 if [[ "$PLATFORM" == WINDOWS ]]; then
+    echo load windows functions
 	source config/functions_win.sh
 else
+    echo load MacOS functions
 	source config/functions_mac.sh
 fi
 

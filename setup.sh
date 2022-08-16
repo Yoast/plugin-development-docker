@@ -8,7 +8,9 @@ source ./config/functions.sh
 
 prepare_files
 
+set +e
 source .env
+set -e
 
 #this function is defined in either setup_win.sh or setup_mac.sh
 echo "Running make script for ${PLATFORM}"

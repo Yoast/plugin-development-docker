@@ -8,10 +8,12 @@ if ! [[ -f './config/php.ini' ]]; then
 	exit 1
 fi
 
+set +e
 source .env
+set -e
+
 source ./config/functions.sh
 
-find_platform
 ### for upgrade from make.sh to setup.sh
 if  [[ ! -f .env ]] ; then
     echo "setup was has not yet finisched, running it now"
@@ -43,16 +45,8 @@ STOPPING=false
 trap stop_docker INT
 trap stop_docker INT
 
-
-if [[ "$PLATFORM" == WINDOWS ]]; then
-	source config/start_win.sh
-   
-else
-	source config/start_mac.sh
-fi
-
 platform_tasks
-
+echo ho
 build_containers
 
 boot_containers
