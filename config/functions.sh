@@ -6,7 +6,7 @@
 PLATFORM='UNKNOWN'
 
 #######################################
-# Check if Hostfile is present 
+# Check if Hostfile is present
 # Globals:
 #   None
 # Arguments:
@@ -17,13 +17,13 @@ PLATFORM='UNKNOWN'
 function verify_hostfile () {
 	local hostfile=$1
 	if [ ! -f "$hostfile" ]; then
-		echo "host file not found at ${hosts_candidate} - aborting..."            
+		echo "host file not found at ${hosts_candidate} - aborting..."
 		exit 1
 	fi
 }
 
 #######################################
-# If the hostfile does not have a empty line create one 
+# If the hostfile does not have a empty line create one
 # Globals:
 #   None
 # Arguments:
@@ -101,7 +101,7 @@ function platform_independent_make() {
 	change_hostfile "$path_to_hostfile" "test.${MULTISITEDOMAIN_HOST:-multisitedomain.wordpress.test}"
 	change_hostfile "$path_to_hostfile" "translate.${MULTISITEDOMAIN_HOST:-multisitedomain.wordpress.test}"
 
-    
+
 }
 
 #######################################
@@ -113,7 +113,7 @@ function platform_independent_make() {
 # Outputs:
 #   None
 #######################################
-function setup_wp-config.php() {
+function setup_wp_config_php() {
 # clean up wp-config.php files
     # Remove corrupt wp-config.php folder, if existing.
     [[ -d ./config/$1/wp-config.php ]] && rm -rf ./config/$1/wp-config.php
@@ -136,19 +136,19 @@ function setup_wp-config.php() {
 function prepare_files() {
 	# Remove corrupt php.ini folder, if existing.
 	[[ -d ./config/php.ini ]] && rm -rf ./config/php.ini
-	
+
     [[ ! -f ./config/php.ini ]] && cp  ./config/php.ini.default ./config/php.ini
-    
+
 	# Set environment variable for the Wordpress DB Table Prefix. and UID and GUI neede for file sysyem access on host system
 	# Save this in a file so it is not random every boot (clean.sh removes this file).
 	if [ ! -f .env ]; then
-  		WORDPRESS_TABLE_PREFIX="$(LC_ALL=C tr -dc a-z < /dev/urandom | head -c 5 | xargs)_"  
+  		WORDPRESS_TABLE_PREFIX="$(LC_ALL=C tr -dc a-z < /dev/urandom | head -c 5 | xargs)_"
   		cat .env.default | sed -e "s/UID=.*/UID=$(id -u)/" | sed -e "s/GID=.*/GID=$(id -g)/" | sed -e "s/WORDPRESS_TABLE_PREFIX=.*/WORDPRESS_TABLE_PREFIX=$WORDPRESS_TABLE_PREFIX/"  > .env
   		echo "WP table prefix: $WORDPRESS_TABLE_PREFIX"
 	fi
     for name in basic woocommerce nightly multisite multisitedomain standalone
-    do 
-        setup_wp-config.php $name
+    do
+        setup_wp_config_php $name
     done
 }
 
@@ -182,9 +182,9 @@ function await_install_wordpress() {
 function check_if_container_is_known() {
     for CONTAINER in $CONTAINERS; do
         case "$CONTAINER" in
-            "woocommerce-wordpress"|"basic-wordpress"|"nightly-wordpress"|"standalone-wordpress"|"multisitedomain-wordpress"|"multisite-wordpress") 
+            "woocommerce-wordpress"|"basic-wordpress"|"nightly-wordpress"|"standalone-wordpress"|"multisitedomain-wordpress"|"multisite-wordpress")
             : ;;
-            *) 
+            *)
             echo "requested $CONTAINER has no config"
             exit 1 ;;
         esac
@@ -327,7 +327,7 @@ function compare_ver(){
 
 
 #######################################
-# Find the OS of the host 
+# Find the OS of the host
 # Globals:
 #   PLATFORM
 # Arguments:
@@ -342,20 +342,20 @@ function find_platform {
             ;;
         linux-gnu)
 				if [ -d "/mnt/wsl" ]; then
-					PLATFORM=WINDOWS 
+					PLATFORM=WINDOWS
 				else
 					PLATFORM=LINUX
-				fi 
+				fi
 	    ;;
         darwin*)
-            if [[ "$(sysctl -n machdep.cpu.brand_string | grep Intel)" ]] 
+            if [[ "$(sysctl -n machdep.cpu.brand_string | grep Intel)" ]]
             then
                 PLATFORM=APPLE
             else
                 PLATFORM=APPLE_M1
             fi
             ;;
-        *) 
+        *)
             PLATFORM=APPLE
             ;;
     esac
