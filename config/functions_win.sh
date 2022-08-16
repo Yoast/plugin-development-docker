@@ -13,10 +13,14 @@ hostfile=/mnt/c/Windows/System32/drivers/etc/hosts
 #   None
 #######################################
 function setup_pass() {
+	echo "check if pass is installed"
 	if [[ -z "$(dpkg -s pass | grep Status | grep installed)" ]]; then
 		sudo apt-get update
 		sudo apt-get -y install pass
+	else
+		echo "OK"
 	fi
+
 }
 
 #######################################
