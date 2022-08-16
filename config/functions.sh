@@ -363,6 +363,7 @@ function find_platform {
 
 find_platform
 
+# load platform dependend functions:
 if [[ "$PLATFORM" == WINDOWS ]]; then
 	source config/functions_win.sh
 else
