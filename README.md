@@ -8,29 +8,32 @@ Mac users:
 
 - [Rancher Desktop](https://rancherdesktop.io/) see the [Rancher-mac.md](./Rancher-mac.md) guide on how to switch.
 
-Windows
+Windows WSL2:
+Running this setup from WSL is the preferd way. 
 
 - [Rancher Desktop](https://rancherdesktop.io/) see the [Rancher-win.md](./Rancher-win.md) guide on how to switch.
 - [GitExtensions](https://github.com/gitextensions/gitextensions/releases/) includes some unix tools we need.
-- [GSudo](https://github.com/gerardog/gsudo) allows shell scripts to use sudo command on windows
+- optional [GSudo](https://github.com/gerardog/gsudo) allows shell scripts to use sudo command on windows
 
-Otherwise install:
+Windows install:
 
-- [Docker](https://docs.docker.com/v17.09/engine/installation/)
-- [docker-compose](https://docs.docker.com/compose/install/)
-- make sure your platform understands the sudo command
-- friendly dns names (e.g. basic.wordpress.test) will not work out of the box
+- Friendly dns names (e.g. basic.wordpress.test) will not work out of the box
+  possible fix: make the `c:\windows\system32\drivers\etc\hosts` write and change for users, before running ./setup.sh script from WSL after running the .setup.sh this can be removed again
+- Ssl trust will not work out of the box add the config/certs/wordpress.text.crt to the trusted list in windows it self(NOT WSL)
+  - First copy the cert to the Windows file system. `cp config/certs/wordpress.test.crt /mnt/c/Users/WindowsUserName/Desktop`
+  - Then add the ssl cert to the Windows certificate store. Start a PowerShell prompt and execute `Import-Certificate -FilePath ".\Desktop\wordpress.test.crt" -CertStoreLocation Cert:\CurrentUser\Root`
 
-## Setting up the container
 
-### 1. run `./make.sh`
+## Setting up the local system
+
+### 1. run `./setup.sh`
 
 This will configure your host-file and create the necessary config files first.
-You will likely need to enter your sudo password as this will add local.wordpress.test to your hosts file.
+You will likely need to enter your sudo password as this will add basic.wordpress.test etc to your hosts file. (see note above for windows)
 
 ### 2. run `./start.sh`
 
-This will create and start your containers. You can visit your environment by visiting `http://basic.wordpress.test`. Note that starting other containers, like woocommerce or multisite, will have different domains associated.
+This will create and start your containers. You can visit your environment by visiting `https://basic.wordpress.test`. Note that starting other containers, like woocommerce or multisite, will have different domains associated.
 
 ### Resetting everything
 
@@ -53,13 +56,6 @@ The following are available:
 
 For example, calling `./start.sh woocommerce-wordpress` will start only the WooCommerce container. Calling `./start.sh basic-wordpress multisite-wordpress` will start both the basic WordPress and multisite containers.
 
-### Disable synchronize clock on Mac Books
-
-By default Docker will be restarted to fix out-of-sync hardware clock on Macs. Sometimes this can cause problems. You can disable the clock sync with this optional paramater `--disable_clock_sync`.
-
-For example: `./start.sh --disable_clock_sync`
-
-When you want to run one of the alternate containers you can use it like this `./start.sh --disable_clock_sync basic-wordpress multisite-wordpress`
 
 ### Running WordPress trunk, beta or RC
 
@@ -106,7 +102,6 @@ The local WordPress site won't be updated automatically. You have a few options 
 
 ```bash
   ./clean.sh && 
-  ./make.sh &&
   ./start.sh
 ```
 
@@ -207,8 +202,3 @@ The first run after a make can fail. Quit all docker containers with `docker-com
 
 Issue: [https://github.com/Yoast/plugin-development-docker/issues/11](https://github.com/Yoast/plugin-development-docker/issues/11)
 
-### Multisite main site is not working on custom domain
-
-Changing the domain name of the multisite in `config.sh` does not work yet and causes the main site to do a redirect to the domain `multisite.wordpress.test`. Change the variable `DOMAIN_CURRENT_SITE` in `seeds/multisite-wordpress-seed.sh` to the custom domain you use and restart docker.
-
-Issue: [https://github.com/Yoast/plugin-development-docker/issues/9](https://github.com/Yoast/plugin-development-docker/issues/9)

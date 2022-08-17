@@ -1,0 +1,70 @@
+version: "3.3"
+
+services:
+
+  # Basic WordPress:
+  basic-wordpress:
+    volumes:
+      - "nfsmount_WP:/var/www/html"
+      - "nfsmount_plugins:/mnt/plugins"
+      - "nfsmount_xdebug:/var/xdebug"
+
+  # WooCommerce WordPress:
+  woocommerce-wordpress:
+    volumes:
+      - "nfsmount_WP:/var/www/html"
+      - "nfsmount_plugins:/mnt/plugins"
+      - "nfsmount_xdebug:/var/xdebug"
+
+  # Multisite WordPress:
+  multisite-wordpress:
+    volumes:
+      - "nfsmount_WP:/var/www/html"
+      - "nfsmount_plugins:/mnt/plugins"
+      - "nfsmount_xdebug:/var/xdebug"
+
+  # Multisite WordPress using Subdomains:
+  multisitedomain-wordpress:
+    volumes:
+      - "nfsmount_WP:/var/www/html"
+      - "nfsmount_plugins:/mnt/plugins"
+      - "nfsmount_xdebug:/var/xdebug"
+
+  # Standalone WordPress:
+  standalone-wordpress:
+    volumes:
+      - "nfsmount_WP:/var/www/html"
+      - "nfsmount_xdebug:/var/xdebug"
+
+  # Nightly WordPress:
+  nightly-wordpress:
+    volumes:
+      - "nfsmount_WP_nightly:/var/www/html"
+      - "nfsmount_plugins:/mnt/plugins"
+      - "nfsmount_xdebug:/var/xdebug"
+
+volumes:
+  nfsmount_WP:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=host.docker.internal,rw,nolock,hard,nointr,nfsvers=3
+      device: ":${PWD}/wordpress"
+  nfsmount_WP_nightly:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=host.docker.internal,rw,nolock,hard,nointr,nfsvers=3
+      device: ":${PWD}/wordpress-nightly"
+  nfsmount_plugins:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=host.docker.internal,rw,nolock,hard,nointr,nfsvers=3
+      device: ":${PWD}/plugins"
+  nfsmount_xdebug:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=host.docker.internal,rw,nolock,hard,nointr,nfsvers=3
+      device: ":${PWD}/xdebug"

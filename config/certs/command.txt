@@ -1,0 +1,6 @@
+
+# create request
+openssl req -new -newkey rsa:2048 -nodes -subj '/C=NL/ST=Gelderland/L=Wijchen/O=Yoast/OU=Development/CN=*.wordpress.test' -keyout ./config/certs/wordpress.test.key -out ./config/certs/wordpress.test.csr
+# create cert
+openssl x509 -req -in ./config/certs/wordpress.test.csr -signkey ./config/certs/wordpress.test.key -out ./config/certs/wordpress.test.crt -days 3650 -sha256 -extfile ./config/certs/v3.ext
+

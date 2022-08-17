@@ -1,5 +1,5 @@
 ---
-version: "3.3"
+version: "3.6"
 services:
   # NginX reverse proxy:
   nginx:
@@ -7,9 +7,11 @@ services:
     image: jwilder/nginx-proxy
     ports:
       - "127.0.0.1:80:80"
+      - "127.0.0.1:443:443"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - "./config/yoastnginx.conf:/etc/nginx/conf.d/yoastnginx.conf"
+      - "./config/certs:/etc/nginx/certs"
 
   # Mailhog:
   mailhog:
@@ -20,28 +22,38 @@ services:
     ports:
       - 127.0.0.1:8025:8025 # web ui
 
-  # Basic WordPress:
-  basic-database:
-    container_name: "wordpress-basic-database"
-    image: "mysql:5.7"
-    ports:
-      - "1987:3306"
+  # base database:
+  base-database:
+    image: ${LOCAL_DB_TYPE-mysql}:${LOCAL_DB_VERSION-5.7.25}
     restart: always
     environment:
-      VIRTUAL_HOST: ${BASIC_DATABASE_HOST:-basic-database.wordpress.test}
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
       MYSQL_PASSWORD: wordpress
-    volumes:
-      - "basic-database-data:/var/lib/mysql"
-  basic-wordpress:
-    container_name: "basic-wordpress"
+    healthcheck:
+      # needs to work for both MySQL and mariaDB
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin -u $$MYSQL_USER -p$$MYSQL_PASSWORD  ping -P 3306 -h $$(hostname) | grep -q 'mysqld is alive'"
+        ]
+      interval: 1s
+      timeout: 10s
+      retries: 1200
+
+  # base wordpress
+  base-wordpress:
     depends_on:
-      - nginx
-      - mailhog
-      - basic-database
-    build: "./containers/wordpress"
+      nginx:
+        condition: service_started
+      mailhog:
+        condition: service_started
+    build:
+      context: "./containers/wordpress"
+      args:
+        - GID=${GID:-1000}
+        - UID=${LOCAL_UID:-1000}
     restart: always
     expose:
       - 80
@@ -49,223 +61,196 @@ services:
       ADMIN_USERNAME: admin
       ADMIN_EMAIL: admin@example.com
       ADMIN_PASSWORD: admin
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX}
+    volumes:
+      - ~/.composer/auth.json:/var/www/.composer/auth.json:ro
+      - "./wordpress:/var/www/html"
+      - "./plugins:/mnt/plugins"
+      - "./xdebug:/var/xdebug"
+      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"
+    labels:
+      - com.yoast.plugin-development-docker.mainwpinstance
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /tmp/done ]" ]
+      interval: 1s
+      timeout: 5s
+      retries: 1200
+
+  # Basic WordPress:
+  basic-database:
+    extends:
+      service: base-database
+    container_name: "wordpress-basic-database"
+    ports:
+      - "1987:3306"
+    volumes:
+      - "basic-database-data:/var/lib/mysql"
+
+  basic-wordpress:
+    extends:
+      service: base-wordpress
+    container_name: "basic-wordpress"
+    depends_on:
+      basic-database:
+        condition: service_healthy
+    build:
+      args:
+        - SEED_FILE=basic-wordpress-seed.sh
+    environment:
       SITE_TITLE: Basic
       SITE_URL: ${BASIC_HOST:-basic.wordpress.test}
       VIRTUAL_HOST: ${BASIC_HOST:-basic.wordpress.test}
-      WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX}
+      WORDPRESS_DB_HOST: wordpress-basic-database
     volumes:
-      - "nfsmount_WP:/var/www/html"
-      - "nfsmount_plugins:/var/www/html/wp-content/plugins:cached"
-      - "./config/basic-wordpress-config.php:/tmp/wp-config.php:ro"
-      - "nfsmount_xdebug:/var/xdebug:cached"
-      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
-    labels:
-      - com.yoast.plugin-development-docker.mainwpinstance
+      - "./config/basic/wp-config.php:/var/www/html/wp-config.php"
 
   # WooCommerce WordPress:
   woocommerce-database:
+    extends:
+      service: base-database
     container_name: "wordpress-woocommerce-database"
-    image: "mysql:5.7"
     ports:
       - "1988:3306"
-    restart: always
-    environment:
-      VIRTUAL_HOST: ${WOOCOMMERCE_DATABASE_HOST:-woocommerce-database.wordpress.test}
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpress
     volumes:
       - "woocommerce-database-data:/var/lib/mysql"
+
   woocommerce-wordpress:
+    extends:
+      service: base-wordpress
     container_name: "woocommerce-wordpress"
     depends_on:
-      - nginx
-      - mailhog
-      - woocommerce-database
-    build: "./containers/wordpress"
-    restart: always
-    expose:
-      - 80
+      woocommerce-database:
+        condition: service_healthy
+    build:
+      args:
+        - SEED_FILE=woocommerce-wordpress-seed.sh
     environment:
-      ADMIN_USERNAME: admin
-      ADMIN_EMAIL: admin@example.com
-      ADMIN_PASSWORD: admin
       SITE_TITLE: WooCommerce
       SITE_URL: ${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}
       VIRTUAL_HOST: ${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}
+      WORDPRESS_DB_HOST: wordpress-woocommerce-database
     volumes:
-      - "nfsmount_WP:/var/www/html"
-      - "nfsmount_plugins:/var/www/html/wp-content/plugins:cached"
-      - "./config/woocommerce-wordpress-config.php:/tmp/wp-config.php:ro"
-      - "./data/xdebug:/var/xdebug:cached"
-      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
-    labels:
-      - com.yoast.plugin-development-docker.mainwpinstance
+      - "./config/woocommerce/wp-config.php:/var/www/html/wp-config.php"
 
   # Multisite WordPress:
   multisite-database:
+    extends:
+      service: base-database
     container_name: "wordpress-multisite-database"
-    image: "mysql:5.7"
     ports:
       - "1989:3306"
-    restart: always
-    environment:
-      VIRTUAL_HOST: ${MULTISITE_DATABASE_HOST:-multisite-database.wordpress.test}
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpress
     volumes:
       - "multisite-database-data:/var/lib/mysql"
+
   multisite-wordpress:
+    extends:
+      service: base-wordpress
     container_name: "multisite-wordpress"
     depends_on:
-      - nginx
-      - mailhog
-      - multisite-database
-    build: "./containers/wordpress"
-    restart: always
-    expose:
-      - 80
+      multisite-database:
+        condition: service_healthy
+    build:
+      args:
+        - SEED_FILE=multisite-wordpress-seed.sh
     environment:
-      ADMIN_USERNAME: admin
-      ADMIN_EMAIL: admin@example.com
-      ADMIN_PASSWORD: admin
-      SITE_TITLE: multisite
-      SITE_URL: ${MULTISITE_HOST:-multisite.wordpress.test}
-      VIRTUAL_HOST: ${MULTISITE_HOST:-multisite.wordpress.test},test.${MULTISITE_HOST:-multisite.wordpress.test},translate.${MULTISITE_HOST:-multisite.wordpress.test}
+      SITE_TITLE: multisitedomain
+      SITE_URL: ${MULTISITEDOMAIN_HOST:-multisite.wordpress.test}
+      VIRTUAL_HOST: ${MULTISITEDOMAIN_HOST:-multisite.wordpress.test},test.${MULTISITEDOMAIN_HOST:-multisite.wordpress.test},translate.${MULTISITEDOMAIN_HOST:-multisite.wordpress.test}
+      WORDPRESS_DB_HOST: wordpress-multisite-database
     volumes:
-      - "nfsmount_WP:/var/www/html"
-      - "nfsmount_plugins:/var/www/html/wp-content/plugins:cached"
-      - "./config/multisite-wordpress-config.php:/tmp/wp-config.php:ro"
-      - "./config/multisite.htaccess:/var/www/html/.htaccess:cached"
-      - "./data/xdebug:/var/xdebug:cached"
-      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
-    labels:
-      - com.yoast.plugin-development-docker.mainwpinstance
+      - "./config/multisite.htaccess:/var/www/html/.htaccess"
+      - "./config/multisite/wp-config.php:/var/www/html/wp-config.php"
 
   # Multisite WordPress using Subdomains:
   multisitedomain-database:
+    extends:
+      service: base-database
     container_name: "wordpress-multisitedomain-database"
-    image: "mysql:5.7"
     ports:
       - "1991:3306"
-    restart: always
-    environment:
-      VIRTUAL_HOST: ${MULTISITE_DATABASE_HOST:-multisite-database.wordpress.test}
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpress
     volumes:
       - "multisitedomain-database-data:/var/lib/mysql"
+
   multisitedomain-wordpress:
+    extends:
+      service: base-wordpress
     container_name: "multisitedomain-wordpress"
     depends_on:
-      - nginx
-      - mailhog
-      - multisitedomain-database
-    build: "./containers/wordpress"
-    restart: always
-    expose:
-      - 80
+      multisitedomain-database:
+        condition: service_healthy
+    build:
+      args:
+        - SEED_FILE=multisitedomain-wordpress-seed.sh
     environment:
-      ADMIN_USERNAME: admin
-      ADMIN_EMAIL: admin@example.com
-      ADMIN_PASSWORD: admin
       SITE_TITLE: multisite
       SITE_URL: ${MULTISITE_HOST:-multisite.wordpress.test}
       VIRTUAL_HOST: ${MULTISITE_HOST:-multisite.wordpress.test},test.${MULTISITE_HOST:-multisite.wordpress.test},translate.${MULTISITE_HOST:-multisite.wordpress.test}
+      WORDPRESS_DB_HOST: wordpress-multisitedomain-database
     volumes:
-      - "nfsmount_WP:/var/www/html"
-      - "nfsmount_plugins:/var/www/html/wp-content/plugins:cached"
-      - "./config/multisitedomain-wordpress-config.php:/tmp/wp-config.php:ro"
-      - "./config/multisite.htaccess:/var/www/html/.htaccess:cached"
-      - "./data/xdebug:/var/xdebug:cached"
-      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
-    labels:
-      - com.yoast.plugin-development-docker.mainwpinstance
+      - "./config/multisite.htaccess:/var/www/html/.htaccess"
+      - "./config/multisitedomain/wp-config.php:/var/www/html/wp-config.php"
 
   # Standalone WordPress:
   standalone-database:
+    extends:
+      service: base-database
     container_name: "wordpress-standalone-database"
-    image: "mysql:5.7"
     ports:
       - "1990:3306"
-    restart: always
-    environment:
-      VIRTUAL_HOST: ${STANDALONE_DATABASE_HOST:-standalone-database.wordpress.test}
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpress
     volumes:
       - "standalone-database-data:/var/lib/mysql"
+
   standalone-wordpress:
+    extends:
+      service: base-wordpress
     container_name: "standalone-wordpress"
     depends_on:
-      - nginx
-      - mailhog
-      - standalone-database
-    build: "./containers/wordpress"
-    restart: always
-    expose:
-      - 80
+      standalone-database:
+        condition: service_healthy
+    build:
+      args:
+        - SEED_FILE=standalone-wordpress-seed.sh
     environment:
-      ADMIN_USERNAME: admin
-      ADMIN_EMAIL: admin@example.com
-      ADMIN_PASSWORD: admin
       SITE_TITLE: Standalone
       SITE_URL: ${STANDALONE_HOST:-standalone.wordpress.test}
       VIRTUAL_HOST: ${STANDALONE_HOST:-standalone.wordpress.test}
+      WORDPRESS_DB_HOST: wordpress-standalone-database
     volumes:
-      - "nfsmount_WP:/var/www/html"
-      - "./sa-plugins:/var/www/html/wp-content/plugins:cached"
-      - "./config/standalone-wordpress-config.php:/tmp/wp-config.php:ro"
-      - "nfsmount_xdebug:/var/xdebug:cached"
-      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
+      - "./sa-plugins:/var/www/html/wp-content/plugins"
+      - "./config/standalone/wp-config.php:/var/www/html/wp-config.php"
 
   # Nightly WordPress:
   nightly-database:
+    extends:
+      service: base-database
     container_name: "wordpress-nightly-database"
-    image: "mysql:5.7"
     ports:
       - "1992:3306"
-    restart: always
-    environment:
-      VIRTUAL_HOST: ${NIGHTLY_DATABASE_HOST:-nightly-database.wordpress.test}
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpress
     volumes:
       - "nightly-database-data:/var/lib/mysql"
+
   nightly-wordpress:
+    extends:
+      service: base-wordpress
     container_name: "nightly-wordpress"
     depends_on:
-      - nginx
-      - mailhog
-      - nightly-database
-    build: "./containers/wordpress"
-    restart: always
-    expose:
-      - 80
+      nightly-database:
+        condition: service_healthy
+    build:
+      args:
+        - SEED_FILE=nightly-wordpress-seed.sh
     environment:
-      ADMIN_USERNAME: admin
-      ADMIN_EMAIL: admin@example.com
-      ADMIN_PASSWORD: admin
       SITE_TITLE: nightly
       SITE_URL: ${NIGHTLY_HOST:-nightly.wordpress.test}
       VIRTUAL_HOST: ${NIGHTLY_HOST:-nightly.wordpress.test}
+      WORDPRESS_DB_HOST: wordpress-nightly-database
+
     volumes:
-      - "nfsmount_WP:/var/www/html"
-      - "nfsmount_plugins:/var/www/html/wp-content/plugins:cached"
-      - "./config/nightly-wordpress-config.php:/tmp/wp-config.php:ro"
-      - "nfsmount_xdebug:/var/xdebug:cached"
-      - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:cached"
-    labels:
-      - com.yoast.plugin-development-docker.mainwpinstance
+      - "./wordpress-nightly:/var/www/html"
+      - "./config/nightly/wp-config.php:/var/www/html/wp-config.php"
 
 volumes:
   basic-database-data:
@@ -274,21 +259,5 @@ volumes:
   multisitedomain-database-data:
   standalone-database-data:
   nightly-database-data:
-  nfsmount_WP:
-    driver: local
-    driver_opts:
-      type: nfs
-      o: addr=host.docker.internal,rw,nolock,hard,nointr,nfsvers=3
-      device: ":${PWD}/wordpress"
-  nfsmount_plugins:
-    driver: local
-    driver_opts:
-      type: nfs
-      o: addr=host.docker.internal,rw,nolock,hard,nointr,nfsvers=3
-      device: ":${PWD}/plugins"
-  nfsmount_xdebug:
-    driver: local
-    driver_opts:
-      type: nfs
-      o: addr=host.docker.internal,rw,nolock,hard,nointr,nfsvers=3
-      device: ":${PWD}/xdebug"
+
+

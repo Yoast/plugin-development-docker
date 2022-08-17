@@ -33,19 +33,11 @@ sudo mkdir -p /usr/local/bin
 sudo chown $USER /usr/local/bin
 ```
 
-## Installing docker-compose
-
-- Install docker-compose:
-
-```bash
-brew install docker-compose
-```
-
 ## Setting up NFS
 
 Run the following commands:
 
-- `./clean.sh` && `./make.sh`
+- `./clean.sh` && `./setup.sh`
 
 You can now start plugin-development-docker using `./start.sh`
 
