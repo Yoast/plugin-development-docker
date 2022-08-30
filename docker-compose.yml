@@ -6,8 +6,8 @@ services:
     container_name: "nginx-router-wordpress"
     image: jwilder/nginx-proxy
     ports:
-      - "127.0.0.1:80:80"
-      - "127.0.0.1:443:443"
+      - "80:80"
+      - "443:443"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - "./config/yoastnginx.conf:/etc/nginx/conf.d/yoastnginx.conf"
@@ -20,7 +20,7 @@ services:
     # logging:
     #   driver: none  # disable saving logs to prevent bloat
     ports:
-      - 127.0.0.1:8025:8025 # web ui
+      - 8025:8025 # web ui
 
   # base database:
   base-database:
