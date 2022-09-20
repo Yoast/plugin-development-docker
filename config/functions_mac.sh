@@ -40,10 +40,13 @@ function kill_port_80_usage () {
 #   None
 #######################################
 function setup_NFS(){
-    if [ -z "$(cat /etc/exports | grep '/System/Volumes/Data ')" ]; then
+    if [ -z "$(cat /etc/exports | grep '/System/Volumes/Data -alldirs -mapall='$UID':20 localhost')" ]; then
         echo update exports
+        grep -v '/System/Volumes/Data '  /etc/exports | sudo tee -a /etc/exports
         echo "/System/Volumes/Data -alldirs -mapall=$UID:20 localhost" | sudo tee -a /etc/exports
         sudo nfsd restart
+    else
+        echo  exports checked
     fi
     if [ -z "$(cat /etc/nfs.conf | grep -e '^nfs.server.mount.require_resv_port = 0$')" ]; then
         echo update exports
