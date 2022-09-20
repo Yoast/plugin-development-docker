@@ -6,8 +6,8 @@ services:
     container_name: "nginx-router-wordpress"
     image: jwilder/nginx-proxy
     ports:
-      - "127.0.0.1:80:80"
-      - "127.0.0.1:443:443"
+      - "80:80"
+      - "443:443"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - "./config/yoastnginx.conf:/etc/nginx/conf.d/yoastnginx.conf"
@@ -41,6 +41,7 @@ services:
       interval: 1s
       timeout: 10s
       retries: 1200
+    profiles: [ "base_service" ]
 
   # base wordpress
   base-wordpress:
@@ -78,6 +79,7 @@ services:
       interval: 1s
       timeout: 5s
       retries: 1200
+    profiles: [ "base_service" ]
 
   # Basic WordPress:
   basic-database:
@@ -88,6 +90,7 @@ services:
       - "1987:3306"
     volumes:
       - "basic-database-data:/var/lib/mysql"
+    profiles: [ "basic-wordpress" ]
 
   basic-wordpress:
     extends:
@@ -106,6 +109,7 @@ services:
       WORDPRESS_DB_HOST: wordpress-basic-database
     volumes:
       - "./config/basic/wp-config.php:/var/www/html/wp-config.php"
+    profiles: [ "basic-wordpress" ]
 
   # WooCommerce WordPress:
   woocommerce-database:
@@ -116,6 +120,7 @@ services:
       - "1988:3306"
     volumes:
       - "woocommerce-database-data:/var/lib/mysql"
+    profiles: [ "woocommerce-wordpress" ]
 
   woocommerce-wordpress:
     extends:
@@ -134,6 +139,7 @@ services:
       WORDPRESS_DB_HOST: wordpress-woocommerce-database
     volumes:
       - "./config/woocommerce/wp-config.php:/var/www/html/wp-config.php"
+    profiles: [ "woocommerce-wordpress" ]
 
   # Multisite WordPress:
   multisite-database:
@@ -144,6 +150,7 @@ services:
       - "1989:3306"
     volumes:
       - "multisite-database-data:/var/lib/mysql"
+    profiles: [ "multisite-wordpress" ]
 
   multisite-wordpress:
     extends:
@@ -163,6 +170,7 @@ services:
     volumes:
       - "./config/multisite.htaccess:/var/www/html/.htaccess"
       - "./config/multisite/wp-config.php:/var/www/html/wp-config.php"
+    profiles: [ "multisite-wordpress" ]
 
   # Multisite WordPress using Subdomains:
   multisitedomain-database:
@@ -173,6 +181,7 @@ services:
       - "1991:3306"
     volumes:
       - "multisitedomain-database-data:/var/lib/mysql"
+    profiles: [ "multisitedomain-wordpress" ]
 
   multisitedomain-wordpress:
     extends:
@@ -192,6 +201,7 @@ services:
     volumes:
       - "./config/multisite.htaccess:/var/www/html/.htaccess"
       - "./config/multisitedomain/wp-config.php:/var/www/html/wp-config.php"
+    profiles: [ "multisitedomain-wordpress" ]
 
   # Standalone WordPress:
   standalone-database:
@@ -202,6 +212,7 @@ services:
       - "1990:3306"
     volumes:
       - "standalone-database-data:/var/lib/mysql"
+    profiles: [ "standalone-wordpress" ]
 
   standalone-wordpress:
     extends:
@@ -221,6 +232,7 @@ services:
     volumes:
       - "./sa-plugins:/var/www/html/wp-content/plugins"
       - "./config/standalone/wp-config.php:/var/www/html/wp-config.php"
+    profiles: [ "standalone-wordpress" ]
 
   # Nightly WordPress:
   nightly-database:
@@ -231,6 +243,7 @@ services:
       - "1992:3306"
     volumes:
       - "nightly-database-data:/var/lib/mysql"
+    profiles: [ "nightly-wordpress" ]
 
   nightly-wordpress:
     extends:
@@ -247,14 +260,15 @@ services:
       SITE_URL: ${NIGHTLY_HOST:-nightly.wordpress.test}
       VIRTUAL_HOST: ${NIGHTLY_HOST:-nightly.wordpress.test}
       WORDPRESS_DB_HOST: wordpress-nightly-database
-
     volumes:
       - "./wordpress-nightly:/var/www/html"
       - "./config/nightly/wp-config.php:/var/www/html/wp-config.php"
+    profiles: [ "nightly-wordpress" ]
 
 volumes:
   basic-database-data:
   woocommerce-database-data:
+
   multisite-database-data:
   multisitedomain-database-data:
   standalone-database-data:
