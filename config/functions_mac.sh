@@ -42,7 +42,7 @@ function kill_port_80_usage () {
 function setup_NFS(){
     if [ -z "$(cat /etc/exports | grep '/System/Volumes/Data -alldirs -mapall='$UID':20 localhost')" ]; then
         echo update exports
-        grep -v '/System/Volumes/Data '  /etc/exports | sudo tee -a /etc/exports
+        grep -v '/System/Volumes/Data '  /etc/exports | sudo tee /etc/exports
         echo "/System/Volumes/Data -alldirs -mapall=$UID:20 localhost" | sudo tee -a /etc/exports
         sudo nfsd restart
     else
