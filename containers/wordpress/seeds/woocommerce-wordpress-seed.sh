@@ -5,7 +5,7 @@ echo "$(wp plugin install woocommerce-admin --activate)"
 echo "$(wp plugin install perfect-woocommerce-brands --activate)"
 echo "$(wp theme install storefront --activate)"
 echo "$(wp wc tool run install_pages --user=admin)"
-wp option add storefront_nux_dismissed true
+echo "$(wp option add storefront_nux_dismissed true)"
 echo "$(wp user meta add 1 dismissed_install_notice true)"
 echo "$(wp post update 1 --post_type=page --post_title=Homepage --comment-status=closed --post_content='<!-- wp:heading {"align":"center"} -->
 <h2 class="has-text-align-center">Shop by Category</h2>
