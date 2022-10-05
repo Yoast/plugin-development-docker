@@ -126,7 +126,7 @@ If you are using PHPStorm follow these instructions:
 1. Name: Give it a recognizeable name or use the following Host.
 1. Host: `<domain name here>` (default for this docker: `basic.wordpress.test`)
 1. Port: 80
-1. File/Directory `plugins/<your-plugin-name>` maps to the absoulte path `/var/www/html/wp-content/plugins/<your-plugin-name>`.
+1. File/Directory `plugins/<your-plugin-name>` maps to the absoulte path `/mnt/plugins/<your-plugin-name>`.
 1. File/Directory `wordpress` maps to the absoulte path `/var/www/html`.
 1. Apply
 
