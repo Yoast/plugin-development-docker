@@ -3,9 +3,12 @@
 # Prevent script from running as root (root-related actions will prompt for the needed credentials)
 [[ $EUID -eq 0 ]] && echo "Do not run with sudo / as root." && exit 1
 
-docker-compose down --volumes --remove-orphans
-docker-compose stop
-docker-compose rm -fv
+docker compose down --volumes --remove-orphans
+docker compose stop
+docker compose rm -fv
+
+docker volume rm $(docker volume ls | cut -d " " -f 6 | grep plugin-development-docker)
+
 
 find wordpress -maxdepth 1 -mindepth 1 | grep -v wordpress/.gitkeep | grep -v wordpress/wp-content | xargs rm -rf
 find wordpress/wp-content -maxdepth 1 -mindepth 1 | grep -v wordpress/wp-content/.gitkeep | grep -v wordpress/wp-content/plugins | xargs rm -rf
