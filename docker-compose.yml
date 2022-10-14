@@ -163,9 +163,9 @@ services:
       args:
         - SEED_FILE=multisite-wordpress-seed.sh
     environment:
-      SITE_TITLE: multisitedomain
-      SITE_URL: ${MULTISITEDOMAIN_HOST:-multisite.wordpress.test}
-      VIRTUAL_HOST: ${MULTISITEDOMAIN_HOST:-multisite.wordpress.test},test.${MULTISITEDOMAIN_HOST:-multisite.wordpress.test},translate.${MULTISITEDOMAIN_HOST:-multisite.wordpress.test}
+      SITE_TITLE: multisite
+      SITE_URL: ${MULTISITE_HOST:-multisite.wordpress.test}
+      VIRTUAL_HOST: ${MULTISITE_HOST:-multisite.wordpress.test},test.${MULTISITE_HOST:-multisite.wordpress.test},translate.${MULTISITE_HOST:-multisite.wordpress.test}
       WORDPRESS_DB_HOST: wordpress-multisite-database
     volumes:
       - "./config/multisite.htaccess:/var/www/html/.htaccess"
@@ -194,9 +194,9 @@ services:
       args:
         - SEED_FILE=multisitedomain-wordpress-seed.sh
     environment:
-      SITE_TITLE: multisite
-      SITE_URL: ${MULTISITE_HOST:-multisite.wordpress.test}
-      VIRTUAL_HOST: ${MULTISITE_HOST:-multisite.wordpress.test},test.${MULTISITE_HOST:-multisite.wordpress.test},translate.${MULTISITE_HOST:-multisite.wordpress.test}
+      SITE_TITLE: multisitedomain
+      SITE_URL: ${MULTISITEDOMAIN_HOST:-multisite.wordpress.test}
+      VIRTUAL_HOST: ${MULTISITEDOMAIN_HOST:-multisite.wordpress.test},test.${MULTISITEDOMAIN_HOST:-multisite.wordpress.test},translate.${MULTISITEDOMAIN_HOST:-multisite.wordpress.test}
       WORDPRESS_DB_HOST: wordpress-multisitedomain-database
     volumes:
       - "./config/multisite.htaccess:/var/www/html/.htaccess"
