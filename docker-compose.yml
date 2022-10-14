@@ -165,7 +165,7 @@ services:
     environment:
       SITE_TITLE: multisite
       SITE_URL: ${MULTISITE_HOST:-multisite.wordpress.test}
-      VIRTUAL_HOST: ${MULTISITE_HOST:-multisite.wordpress.test},test.${MULTISITE_HOST:-multisite.wordpress.test},translate.${MULTISITE_HOST:-multisite.wordpress.test}
+      VIRTUAL_HOST: ${MULTISITE_HOST:-multisite.wordpress.test}
       WORDPRESS_DB_HOST: wordpress-multisite-database
     volumes:
       - "./config/multisite.htaccess:/var/www/html/.htaccess"
