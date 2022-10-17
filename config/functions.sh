@@ -236,7 +236,7 @@ function await_containers() {
 #######################################
 function stop_docker {
     STOPPING=true
-    docker compose down
+    docker compose --profile base_service  down
     wait $PROCESS
     exit
 }

@@ -3,16 +3,9 @@
 # Prevent script from running as root (root-related actions will prompt for the needed credentials)
 [[ $EUID -eq 0 ]] && echo "Do not run with sudo / as root." && exit 1
 
-docker compose --profile multisite-wordpress down --volumes --remove-orphans
-docker compose --profile multisitedomain-wordpress down --volumes --remove-orphans
-docker compose --profile basic-wordpress down --volumes --remove-orphans
-docker compose --profile woocommerce-wordpress down --volumes --remove-orphans
-docker compose --profile nighly-wordpress down --volumes --remove-orphans
-docker compose --profile standalone-wordpress down --volumes --remove-orphans
-
-#docker compose down --volumes --remove-orphans
-docker compose stop
-docker compose rm -fv
+docker compose --profile base_service down --volumes --remove-orphans
+docker compose --profile base_service stop
+docker compose --profile base_service rm -fv
 
 #docker volume rm $(docker volume ls | cut -d " " -f 6 | grep plugin-development-docker)
 
