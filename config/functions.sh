@@ -150,6 +150,8 @@ function prepare_files() {
     do
         setup_wp_config_php $name
     done
+    # need for WP health check:
+    cp ./config/certs/wordpress.test.crt ./containers/wordpress/wordpress.test.crt
 }
 
 #######################################
