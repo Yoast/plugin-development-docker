@@ -12,6 +12,17 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - "./config/yoastnginx.conf:/etc/nginx/conf.d/yoastnginx.conf"
       - "./config/certs:/etc/nginx/certs"
+    networks:
+      wordpress_net:
+        aliases:
+          - ${BASIC_HOST:-basic.wordpress.test}
+          - ${WOOCOMMERCE_HOST:-woocommerce.wordpress.test}
+          - ${MULTISITE_HOST:-multisite.wordpress.test}
+          - ${MULTISITEDOMAIN_HOST:-multisite.wordpress.test}
+          - test.${MULTISITEDOMAIN_HOST:-multisite.wordpress.test}
+          - translate.${MULTISITEDOMAIN_HOST:-multisite.wordpress.test}
+          - ${STANDALONE_HOST:-standalone.wordpress.test}
+          - ${NIGHTLY_HOST:-nightly.wordpress.test}
 
   # Mailhog:
   mailhog:
@@ -21,6 +32,8 @@ services:
     #   driver: none  # disable saving logs to prevent bloat
     ports:
       - 127.0.0.1:8025:8025 # web ui
+    networks:
+      - wordpress_net
 
   # base database:
   base-database:
@@ -42,6 +55,8 @@ services:
       timeout: 10s
       retries: 1200
     profiles: [ "base_service" ]
+    networks:
+      - wordpress_net
 
   # base wordpress
   base-wordpress:
@@ -80,6 +95,8 @@ services:
       timeout: 5s
       retries: 1200
     profiles: [ "base_service" ]
+    networks:
+      - wordpress_net
 
   # Basic WordPress:
   basic-database:
@@ -268,10 +285,13 @@ services:
 volumes:
   basic-database-data:
   woocommerce-database-data:
-
   multisite-database-data:
   multisitedomain-database-data:
   standalone-database-data:
   nightly-database-data:
 
 
+networks:
+  wordpress_net:
+    driver: bridge
+    name: yoast-docker
