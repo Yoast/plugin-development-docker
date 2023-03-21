@@ -1,4 +1,4 @@
-FROM wordpress:latest
+FROM --platform=linux/amd64 wordpress:latest
 ARG UID=1000
 ARG GID=1000
 ARG SEED_FILE=basic-wordpress-seed.sh
@@ -33,5 +33,7 @@ COPY ./seeds/core-install.sh /usr/local/bin/core-install.sh
 # trust *.worpdress.test certificate
 COPY ./wordpress.test.crt /usr/local/share/ca-certificates/wordpress.test.crt
 RUN update-ca-certificates
+RUN curl -L  https://github.com/elastic/apm-agent-php/releases/download/v1.8.1/apm-agent-php_1.8.1_all.deb  --output /tmp/apm-agent-php_1.8.1_all.deb
+RUN dpkg -i  /tmp/apm-agent-php_1.8.1_all.deb
 
 USER www-data
