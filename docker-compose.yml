@@ -102,6 +102,8 @@ services:
         condition: service_started
       memcached:
         condition: service_started
+      phpcacheadmin:
+        condition: service_started
     build:
       context: "./containers/wordpress"
       args:
