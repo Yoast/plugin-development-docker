@@ -6,3 +6,5 @@ echo "$(wp rewrite flush --hard)"
 echo "***Installing Wordpress plugins***"
 echo "$(wp plugin install debug-bar --activate)"
 echo "$(wp plugin install query-monitor --activate)"
+echo "$(wp plugin install w3-total-cache --activate)"
+
