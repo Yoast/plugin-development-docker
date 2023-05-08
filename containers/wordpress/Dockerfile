@@ -3,11 +3,16 @@ ARG UID=1000
 ARG GID=1000
 ARG SEED_FILE=basic-wordpress-seed.sh
 
-RUN pecl install xdebug && docker-php-ext-enable xdebug
+RUN pecl install xdebug-3.1.6 && docker-php-ext-enable xdebug
 RUN docker-php-ext-install pdo_mysql
 
-RUN apt-get update \
-    && apt-get -y install default-mysql-client less
+RUN apt-get update && apt-get install -y zlib1g-dev 
+RUN pecl install memcache
+RUN pecl install redis
+RUN docker-php-ext-enable memcache
+RUN docker-php-ext-enable redis
+
+RUN apt-get -y install default-mysql-client less
 
 RUN curl -sO https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     && chmod +x wp-cli.phar \

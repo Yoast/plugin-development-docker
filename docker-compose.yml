@@ -35,6 +35,39 @@ services:
     networks:
       - wordpress_net
 
+  # Redis container for use with WordPress
+  redis:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning
+    volumes: 
+      - redis-cache:/data
+    networks:
+      - wordpress_net
+
+  # Memcached container for use with WordPress
+  memcached:
+    image: memcached:latest
+    ports:
+      - "11211:11211"
+    networks:
+      - wordpress_net
+
+  # PHPCacheAdmin container for a small tool to check Memcached and Redis statistics
+  phpcacheadmin:
+    image: robinn/phpcacheadmin
+    ports:
+      - "8090:80"
+    environment:
+      - PCA_REDIS_0_HOST=redis
+      - PCA_REDIS_0_PORT=6379
+      - PCA_MEMCACHED_0_HOST=memcached
+      - PCA_MEMCACHED_0_PORT=11211
+    networks:
+      - wordpress_net
+
   # base database:
   base-database:
     image: ${LOCAL_DB_TYPE-mysql}:${LOCAL_DB_VERSION-5.7.25}
@@ -65,6 +98,10 @@ services:
         condition: service_started
       mailhog:
         condition: service_started
+      redis:
+        condition: service_started
+      memcached:
+        condition: service_started
     build:
       context: "./containers/wordpress"
       args:
@@ -81,6 +118,9 @@ services:
       WORDPRESS_DB_PASSWORD: wordpress
       WORDPRESS_DB_NAME: wordpress
       WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
     volumes:
       - ~/.composer/auth.json:/var/www/.composer/auth.json:ro
       - "./wordpress:/var/www/html"
@@ -289,6 +329,8 @@ volumes:
   multisitedomain-database-data:
   standalone-database-data:
   nightly-database-data:
+  redis-cache:
+    driver: local
 
 
 networks:
