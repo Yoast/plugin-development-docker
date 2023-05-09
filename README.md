@@ -194,6 +194,9 @@ The port differs based on the installation you're running.
 | multisitedomain-wordpress | 1991 |
 | nightly-wordpress         | 1992 |
 
+
+## Branch `introduce-caching-containers`:
+This branch contains additional containers to test with Memcached and Redis caching systems. It also contains 
 ## Troubleshooting
 
 ### WordPress is not installed (completely)
