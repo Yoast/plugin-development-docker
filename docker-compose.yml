@@ -122,7 +122,6 @@ services:
       WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX}
       REDIS_HOST: redis
       REDIS_PORT: 6379
-      REDIS_PASSWORD: eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
     volumes:
       - ~/.composer/auth.json:/var/www/.composer/auth.json:ro
       - "./wordpress:/var/www/html"
