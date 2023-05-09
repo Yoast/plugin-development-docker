@@ -224,6 +224,10 @@ So far the setup of the containers. Now you will need to configure W3 Total Cach
 
 That is all there is to it. Set the caching method that you want to test for the cache you want. You can use the dashboard at http://localhost:8090/ to check if caches are wiped or changed.
 
+### tips
+- If you want to quickly switch between caching options, first set up all options for memcached and their correct values, then do the same for Redis. Now you only need to change the caching method on the `General settings` page without having to redo all the host:port options.
+- At the bottom of the `General settings` page, there is an option to export and import options. Set up the caching methods like above and export the options now to be able to import them in a clean installation and skip all host:port setup steps.
+
 ## Troubleshooting
 
 ### WordPress is not installed (completely)
