@@ -196,7 +196,34 @@ The port differs based on the installation you're running.
 
 
 ## Branch `introduce-caching-containers`:
-This branch contains additional containers to test with Memcached and Redis caching systems. It also contains 
+This branch contains additional containers to test with Memcached and Redis caching systems. It also contains a dashboard to investigate and control the contents of each caching system. It requires the W3 total cache plugin for configuration (automatically installed on boot).
+
+### Setup instructions
+- When still on the `main` branch, make sure you have the latest pull
+- Checkout `introduce-caching-containers` and pull
+- Run `./clean.sh`
+- Run `./setup.sh`
+- Start the containers with `docker-compose up --build`
+- Give the containers some time to pull, build and start
+- Open https://basic.wordpress.test/ to verify the site is working
+- open http://localhost:8090/ to verify the caching dashboard is working
+
+So far the setup of the containers. Now you will need to configure W3 Total Cache (W3TC from hereon) for the different caching methods.
+
+- In your WordPress admin, you should see `Performance` in the sidebar, this is from the W3TC plugin.
+- Go to `Performance -> General settings` (it is possible you will need to skip the setup wizard)
+- Here you will get a long page with different blocks. You can enable cache with either Memcached or Redis for the following caches (each having its own block on this page):
+  - Page cache
+  - Database cache
+  - Object cache
+- Just check the `Enable` checkmark and select the caching method under each option (make sure to save your settings).
+- For each of the enabled caches, you have an item with the corresponding name in the menu in the sidebar
+- Visit each of these menu items and look for an option named `Memcached/Redis hostname:port / IP:port:` which will have a value of `127.0.0.1:#####`
+  - If you have selected Memcached for this caching option, change the value to `memcached:11211`
+  - If you have selected Redis for this caching option, change the value to `redis:6379`
+
+That is all there is to it. Set the caching method that you want to test for the cache you want. You can use the dashboard at http://localhost:8090/ to check if caches are wiped or changed.
+
 ## Troubleshooting
 
 ### WordPress is not installed (completely)
