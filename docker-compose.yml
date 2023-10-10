@@ -73,7 +73,8 @@ services:
       mailhog:
         condition: service_started
     build:
-      context: "./containers/wordpress"
+      context: .
+      dockerfile: ./containers/wordpress/Dockerfile
       args:
         - GID=${GID:-1000}
         - UID=${LOCAL_UID:-1000}
