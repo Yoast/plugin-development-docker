@@ -39,21 +39,21 @@ function kill_port_80_usage () {
 # Outputs:
 #   None
 #######################################
-# function setup_NFS(){
-#     if [ -z "$(cat /etc/exports | grep '/System/Volumes/Data -alldirs -mapall='$UID':20 localhost')" ]; then
-#         echo update exports
-#         grep -v '/System/Volumes/Data '  /etc/exports | sudo tee /etc/exports
-#         echo "/System/Volumes/Data -alldirs -mapall=$UID:20 localhost" | sudo tee -a /etc/exports
-#         sudo nfsd restart
-#     else
-#         echo  exports checked
-#     fi
-#     if [ -z "$(cat /etc/nfs.conf | grep -e '^nfs.server.mount.require_resv_port = 0$')" ]; then
-#         echo update exports
-#         echo "nfs.server.mount.require_resv_port = 0" | sudo tee -a /etc/nfs.conf
-#         sudo nfsd restart
-#     fi
-# }
+function setup_NFS(){
+    if [ -z "$(cat /etc/exports | grep '/System/Volumes/Data -alldirs -mapall='$UID':20 localhost')" ]; then
+        echo update exports
+        grep -v '/System/Volumes/Data '  /etc/exports | sudo tee /etc/exports
+        echo "/System/Volumes/Data -alldirs -mapall=$UID:20 localhost" | sudo tee -a /etc/exports
+        sudo nfsd restart
+    else
+        echo  exports checked
+    fi
+    if [ -z "$(cat /etc/nfs.conf | grep -e '^nfs.server.mount.require_resv_port = 0$')" ]; then
+        echo update exports
+        echo "nfs.server.mount.require_resv_port = 0" | sudo tee -a /etc/nfs.conf
+        sudo nfsd restart
+    fi
+}
 
 #######################################
 # Function setup the crt file used to be trused by the system
@@ -80,21 +80,21 @@ function setup_crt_file() {
 # Outputs:
 #   None will Exit if not ok
 #######################################
-# function check_minimal_ranger_version() {
-#     Echo "Check ranger minimal required version"
-#     # Default rancher location, it may be different depending on the user deciding to install the app somewhere else.
-#     default_rancher_loc='/Applications/Rancher Desktop.app/Contents/Resources/resources/linux/rancher-desktop.appdata.xml'
-#     rancher_desktop_version=$(grep -E "release version=\".+?\"" "${default_rancher_loc}" | cut -d '"' -f 2)
-#     rancher_should_be="1.1.1"
-#     # Compare the versions and exit if the used version is too old.
-#     result=$(min_required_verion $rancher_desktop_version $rancher_should_be)
-#     if [[ "$result" = "false" ]]; then
-#         echo "Your Rancher Desktop version is outdated (${rancher_desktop_version}). Please update to at least ${rancher_should_be}"
-#         exit 1
-#     else
-#         echo OK
-#     fi
-# }
+function check_minimal_ranger_version() {
+    Echo "Check ranger minimal required version"
+    # Default rancher location, it may be different depending on the user deciding to install the app somewhere else.
+    default_rancher_loc='/Applications/Rancher Desktop.app/Contents/Resources/resources/linux/rancher-desktop.appdata.xml'
+    rancher_desktop_version=$(grep -E "release version=\".+?\"" "${default_rancher_loc}" | cut -d '"' -f 2)
+    rancher_should_be="1.1.1"
+    # Compare the versions and exit if the used version is too old.
+    result=$(min_required_verion $rancher_desktop_version $rancher_should_be)
+    if [[ "$result" = "false" ]]; then
+        echo "Your Rancher Desktop version is outdated (${rancher_desktop_version}). Please update to at least ${rancher_should_be}"
+        exit 1
+    else
+        echo OK
+    fi
+}
 
 #######################################
 # Function that groups setup tasks
@@ -106,10 +106,7 @@ function setup_crt_file() {
 #   None
 #######################################
 function platform_setup() {
-    #setup_NFS
     setup_crt_file
     platform_independent_make $hostfile
     kill_port_80_usage
-    #cp -n ./config/macOS/docker-compose.override.yml ./docker-compose.override.yml
-    #check_minimal_ranger_version
 }
