@@ -28,6 +28,7 @@ RUN usermod -u $UID www-data && groupmod -o -g $GID www-data \
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 COPY ./seeds/$SEED_FILE /usr/local/bin/wordpress-seed.sh
 COPY ./seeds/core-install.sh /usr/local/bin/core-install.sh
+COPY ./wp-cli-faker.zip /tmp/wp-cli-faker.zip
 # trust *.worpdress.test certificate
 COPY ./wordpress.test.crt /usr/local/share/ca-certificates/wordpress.test.crt
 RUN update-ca-certificates

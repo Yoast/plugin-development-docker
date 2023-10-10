@@ -102,7 +102,7 @@ if [[ "$1" == apache2* ]] || [ "$1" = 'php-fpm' ]; then
 			fi
 		done
 		# setup the site and add data using faker
-		php -d memory_limit=512M "$(which wp)" package install git@github.com:yoast/wp-cli-faker.git || true
+		php -d memory_limit=512M "$(which wp)" package install /tmp/wp-cli-faker.zip || true
 		source /usr/local/bin/wordpress-seed.sh
 		
 	fi

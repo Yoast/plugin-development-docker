@@ -88,7 +88,7 @@ services:
       WORDPRESS_DB_NAME: wordpress
       WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX}
     volumes:
-      - ~/.composer/auth.json:/var/www/.composer/auth.json:ro
+      #- ~/.composer/auth.json:/var/www/.composer/auth.json:ro
       - "./wordpress:/var/www/html"
       - "./plugins:/var/www/html/wp-content/plugins"
       - "./xdebug:/var/xdebug"
