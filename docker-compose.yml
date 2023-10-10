@@ -34,6 +34,7 @@ services:
   mailhog:
     container_name: "mailhog-wordpress"
     image: mailhog/mailhog
+    platform: linux/amd64
     # logging:
     #   driver: none  # disable saving logs to prevent bloat
     ports:
