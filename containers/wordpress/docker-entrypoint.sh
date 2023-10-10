@@ -5,12 +5,12 @@ set -Eeuo pipefail
 ls -al /var/www/html > /dev/null
 
 mkdir -p /var/www/html/wp-content/
-if [  -L /var/www/html/wp-content/plugins ] ; then
-	echo link exists
-else
-	echo make link
-	ln -s /mnt/plugins /var/www/html/wp-content/plugins
-fi
+# if [  -L /var/www/html/wp-content/plugins ] ; then
+# 	echo link exists
+# else
+# 	echo make link
+# 	ln -s /mnt/plugins /var/www/html/wp-content/plugins
+# fi
 
 
 if [[ "$1" == apache2* ]] || [ "$1" = 'php-fpm' ]; then

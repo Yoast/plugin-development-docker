@@ -8,6 +8,12 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    healthcheck:
+      test: ["CMD-SHELL", "nginx -t 2>&1 | grep 'test is successful' || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 7
+      start_period: 10s
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - "./config/yoastnginx.conf:/etc/nginx/conf.d/yoastnginx.conf"
@@ -84,7 +90,7 @@ services:
     volumes:
       - ~/.composer/auth.json:/var/www/.composer/auth.json:ro
       - "./wordpress:/var/www/html"
-      - "./plugins:/mnt/plugins"
+      - "./plugins:/var/www/html/wp-content/plugins"
       - "./xdebug:/var/xdebug"
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"
     labels:
