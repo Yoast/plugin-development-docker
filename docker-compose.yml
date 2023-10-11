@@ -29,6 +29,7 @@ services:
           - translate.${MULTISITEDOMAIN_HOST:-multisite.wordpress.test}
           - ${STANDALONE_HOST:-standalone.wordpress.test}
           - ${NIGHTLY_HOST:-nightly.wordpress.test}
+          - mailhog.local
 
   # Mailhog:
   mailhog:
@@ -41,6 +42,9 @@ services:
       - 127.0.0.1:8025:8025 # web ui
     networks:
       - wordpress_net
+    environment:
+       VIRTUAL_HOST: mailhog.local
+       VIRTUAL_PORT: 8025 
 
   # base database:
   base-database:
