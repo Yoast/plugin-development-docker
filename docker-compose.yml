@@ -30,6 +30,8 @@ services:
           - ${STANDALONE_HOST:-standalone.wordpress.test}
           - ${NIGHTLY_HOST:-nightly.wordpress.test}
           - mailhog.local
+    labels:
+      - dev.orbstack.domains=mailhog.local
 
   # Mailhog:
   mailhog:
