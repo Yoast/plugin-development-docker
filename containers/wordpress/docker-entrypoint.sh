@@ -4,14 +4,7 @@ set -Eeuo pipefail
 # fix docker chown issues#@$$%^ on windows docker ranger
 ls -al /var/www/html > /dev/null
 
-mkdir -p /var/www/html/wp-content/
-if [  -L /var/www/html/wp-content/plugins ] ; then
-	echo link exists
-else
-	echo make link
-	ln -s /mnt/plugins /var/www/html/wp-content/plugins
-fi
-
+#mkdir -p /var/www/html/wp-content/
 
 if [[ "$1" == apache2* ]] || [ "$1" = 'php-fpm' ]; then
 	uid="$(id -u)"
@@ -109,7 +102,7 @@ if [[ "$1" == apache2* ]] || [ "$1" = 'php-fpm' ]; then
 			fi
 		done
 		# setup the site and add data using faker
-		php -d memory_limit=512M "$(which wp)" package install git@github.com:yoast/wp-cli-faker.git || true
+		php -d memory_limit=512M "$(which wp)" package install /tmp/wp-cli-faker.zip || true
 		source /usr/local/bin/wordpress-seed.sh
 		
 	fi

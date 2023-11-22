@@ -8,6 +8,12 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    healthcheck:
+      test: ["CMD-SHELL", "nginx -t 2>&1 | grep 'test is successful' || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 7
+      start_period: 10s
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - "./config/yoastnginx.conf:/etc/nginx/conf.d/yoastnginx.conf"
@@ -23,17 +29,24 @@ services:
           - translate.${MULTISITEDOMAIN_HOST:-multisite.wordpress.test}
           - ${STANDALONE_HOST:-standalone.wordpress.test}
           - ${NIGHTLY_HOST:-nightly.wordpress.test}
+          - mailhog.local
+    labels:
+      - dev.orbstack.domains=mailhog.local
 
   # Mailhog:
   mailhog:
     container_name: "mailhog-wordpress"
     image: mailhog/mailhog
+    platform: linux/amd64
     # logging:
     #   driver: none  # disable saving logs to prevent bloat
     ports:
       - 127.0.0.1:8025:8025 # web ui
     networks:
       - wordpress_net
+    environment:
+       VIRTUAL_HOST: mailhog.local
+       VIRTUAL_PORT: 8025 
 
   # base database:
   base-database:
@@ -66,7 +79,8 @@ services:
       mailhog:
         condition: service_started
     build:
-      context: "./containers/wordpress"
+      context: .
+      dockerfile: ./containers/wordpress/Dockerfile
       args:
         - GID=${GID:-1000}
         - UID=${LOCAL_UID:-1000}
@@ -82,9 +96,8 @@ services:
       WORDPRESS_DB_NAME: wordpress
       WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX}
     volumes:
-      - ~/.composer/auth.json:/var/www/.composer/auth.json:ro
       - "./wordpress:/var/www/html"
-      - "./plugins:/mnt/plugins"
+      - "./plugins:/var/www/html/wp-content/plugins"
       - "./xdebug:/var/xdebug"
       - "./config/php.ini:/usr/local/etc/php/conf.d/custom.ini"
     labels:

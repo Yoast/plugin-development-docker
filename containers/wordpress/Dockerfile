@@ -23,15 +23,14 @@ RUN if [ "$(uname -m)" = "aarch64" ] ; \
 RUN usermod -u $UID www-data && groupmod -o -g $GID www-data \
     && mkdir -p /var/www/.wp-cli/packages \
     && mkdir -p /var/www/.composer/cache/vcs \
-    && mkdir -p /mnt/plugins \
-    && chown -R $UID:$GID /var/www \
-    && chown -R $UID:$GID /mnt/plugins 
+    && chown -R $UID:$GID /var/www
 
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-COPY ./seeds/$SEED_FILE /usr/local/bin/wordpress-seed.sh
-COPY ./seeds/core-install.sh /usr/local/bin/core-install.sh
+COPY ./containers/wordpress/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+COPY ./containers/wordpress/seeds/$SEED_FILE /usr/local/bin/wordpress-seed.sh
+COPY ./containers/wordpress/seeds/core-install.sh /usr/local/bin/core-install.sh
+COPY ./containers/wordpress/wp-cli-faker.zip /tmp/wp-cli-faker.zip
 # trust *.worpdress.test certificate
-COPY ./wordpress.test.crt /usr/local/share/ca-certificates/wordpress.test.crt
+COPY ./config/certs/wordpress.test.crt /usr/local/share/ca-certificates/wordpress.test.crt
 RUN update-ca-certificates
 
 USER www-data

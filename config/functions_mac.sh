@@ -106,10 +106,7 @@ function check_minimal_ranger_version() {
 #   None
 #######################################
 function platform_setup() {
-    setup_NFS
     setup_crt_file
     platform_independent_make $hostfile
     kill_port_80_usage
-    cp -n ./config/macOS/docker-compose.override.yml ./docker-compose.override.yml
-    check_minimal_ranger_version
 }
