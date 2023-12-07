@@ -1,4 +1,4 @@
-FROM wordpress:latest
+FROM wordpress:php8.1-apache
 ARG UID=1000
 ARG GID=1000
 ARG SEED_FILE=basic-wordpress-seed.sh
