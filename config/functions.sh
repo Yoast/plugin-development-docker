@@ -100,8 +100,6 @@ function platform_independent_make() {
 	change_hostfile "$path_to_hostfile" "${MULTISITEDOMAIN_HOST:-multisitedomain.wordpress.test}"
 	change_hostfile "$path_to_hostfile" "test.${MULTISITEDOMAIN_HOST:-multisitedomain.wordpress.test}"
 	change_hostfile "$path_to_hostfile" "translate.${MULTISITEDOMAIN_HOST:-multisitedomain.wordpress.test}"
-
-
 }
 
 #######################################

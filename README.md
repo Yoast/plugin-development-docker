@@ -6,6 +6,10 @@ This is a fairly simple docker container to facilitate development of WordPress 
 
 Mac users:
 
+> **Warning**
+> 
+> Do not clone to your documents folder as this will cause permission issues.
+
 - [Rancher Desktop](https://rancherdesktop.io/) see the [Rancher-mac.md](./Rancher-mac.md) guide on how to switch.
 
 Windows WSL2:
