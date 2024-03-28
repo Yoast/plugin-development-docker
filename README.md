@@ -10,7 +10,7 @@ Mac users:
 > 
 > Do not clone to your documents folder as this will cause permission issues.
 
-- [Rancher Desktop](https://rancherdesktop.io/) see the [Rancher-mac.md](./Rancher-mac.md) guide on how to switch.
+- [OrbStack](https://yoast.atlassian.net/wiki/spaces/OPS/pages/3243376643/Container+managers) includes everything you need.
 
 Windows WSL2:
 Running this setup from WSL is the preferd way. 
