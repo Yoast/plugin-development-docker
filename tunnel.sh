@@ -23,8 +23,8 @@ fi
 CF_TUNNEL_HASH=$(docker run -d cloudflare/cloudflared:latest tunnel --url https://host.docker.internal:443 --no-tls-verify --http-host-header basic.wordpress.test --origin-server-name basic.wordpress.test)
 echo "Cloudflare docker container hash: $CF_TUNNEL_HASH"
 
-echo "Waiting 5 seconds to retrieve your public url."
-sleep 5
+echo "Waiting 8 seconds to retrieve your public url."
+sleep 8
 
 CF_TUNNEL_PUBLIC_URL=$(docker logs $CF_TUNNEL_HASH 2>&1 | grep -E 'INF[ \|]+https' | grep -oE 'https://[^ ]+')
 
