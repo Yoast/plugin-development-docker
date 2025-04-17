@@ -1,5 +1,5 @@
 # Switching to Rancher Desktop on MacOS
-
+> This is deprecated. Use [this](https://yoast.atlassian.net/wiki/spaces/OPS/pages/3243376643/Container+managers) page to install the currently supported container manager. 
 ## Removing old entries
 
 - Uninstall Docker Desktop
