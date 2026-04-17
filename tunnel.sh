@@ -221,6 +221,26 @@ function pre_check_wp_database() {
 }
 
 #######################################
+# Extract the Cloudflare tunnel public URL from container logs.
+# Parses log output to find the HTTPS URL provided by Cloudflare.
+# Globals:
+#   WAIT_FOR_CF_URL - Maximum seconds to wait for URL
+#   CF_TUNNEL_HASH - The Docker container hash to check logs from
+# Arguments:
+#   None
+# Outputs:
+#   Writes the extracted URL to stdout (if found).
+# Returns:
+#   Exits with 0 when URL is found, otherwise exits with non-zero.
+#######################################
+function cf_timed_check () {
+  timeout "$WAIT_FOR_CF_URL" docker logs -f "$CF_TUNNEL_HASH" 2>&1 | \
+    while read -r line; do
+       [[ "$line" =~ INF[\ \|]+https ]] && echo "$line" | grep -E 'INF[ \|]+https' | grep -oE 'https://[^ ]+' && exit 0
+    done
+}
+
+#######################################
 # Start the Cloudflare tunnel Docker container and retrieve the public URL.
 # Waits for Cloudflare to provide the tunnel URL from container logs.
 # Globals:
@@ -243,7 +263,7 @@ function start_cf_container() {
   [[ "$_VERBOSE" ]] && echoverb "Tunnel container hash: $CF_TUNNEL_HASH"
 
   echo "Waiting a maximum of $WAIT_FOR_CF_URL seconds for Cloudflare to provide us with your URL."
-  CF_TUNNEL_PUBLIC_URL="$(timeout "$WAIT_FOR_CF_URL" docker logs -f "$CF_TUNNEL_HASH" 2>&1 | while read -r line; do [[ "$line" =~ INF[\ \|]+https ]] && echo "$line" | grep -E 'INF[ \|]+https' | grep -oE 'https://[^ ]+' && exit 0; done)"
+  CF_TUNNEL_PUBLIC_URL="$(cf_timed_check)"
 
   [[ "$CF_TUNNEL_PUBLIC_URL" == '' ]] && echoerr "Could not retrieve a tunnel URL from Cloudflare. Dumping Cloudflare container logs and aborting." && docker logs --tail 20 "$CF_TUNNEL_HASH" && kill_tunnel && exit 1
 }
@@ -274,7 +294,7 @@ function main() {
   echo "Tunnel is set up. Here is your public URL:"
   box_out "$CF_TUNNEL_PUBLIC_URL"
   echo 
-  echo "Please be aware that your are granting public access to a part of your machine. Do not keep this tunnel running for too long."
+  echo "Be aware that your are granting public access to a part of your machine. Do not keep this tunnel running longer than necessary."
   echo "Press CTRL + C to revert your site to basic.wordpress.test and exit the tunnel."
 
   while true; do sleep 60; done
