@@ -21,4 +21,4 @@ elif [[ "$((count_containers))" > 1 ]]; then
 fi
 
 # Execute the WP-CLI command
-docker exec -ti --user www-data $CONTAINER wp $@
+docker exec -ti --user www-data "$CONTAINER" wp "$@"
