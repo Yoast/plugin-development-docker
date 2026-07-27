@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "wordpress-mcp-server": {
+      "command": "npx",
+      "args": ["@automattic/mcp-wordpress-remote"],
+      "env": {
+        "WP_API_URL": "https://basic.wordpress.test/wp-json/mcp/mcp-adapter-default-server",
+        "WP_API_USERNAME": "admin",
+        "WP_API_PASSWORD": "",
+        "NODE_TLS_REJECT_UNAUTHORIZED": "0"
+      }
+    }
+  }
+}
